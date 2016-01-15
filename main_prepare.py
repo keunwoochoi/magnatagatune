@@ -66,7 +66,7 @@ def create_hdf():
 			else:
 				done_idx = -1
 			for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
-				if write_idx <= done_idx
+				if write_idx <= done_idx:
 					continue
 				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
@@ -207,11 +207,11 @@ def prepare_x():
 
 	args = zip(clip_ids_to_process, paths_to_process)
 	
-	for arg in args:
-		process_all_features(arg)
+	# for arg in args:
+	# 	process_all_features(arg)
 
-	# p = Pool(48)
-	# p.map(process_all_features, args)
+	p = Pool(48)
+	p.map(process_all_features, args)
 
 	return
 #------------------------------------------#
