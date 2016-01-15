@@ -130,7 +130,6 @@ def prepare_x():
 	
 	args = zip(fm.clip_ids, fm.paths)
 	
-	pdb.set_trace()
 	for arg in args:
 		process_all_features(arg)
 
@@ -140,7 +139,7 @@ def prepare_x():
 
 if __name__ == '__main__':
 
-	# prepare_y()
+	prepare_y()
 	prepare_x()
 	# create_hdf()
 	

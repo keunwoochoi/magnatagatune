@@ -10,8 +10,8 @@ import pdb
 
 class File_Manager():
 	def __init__(self):
-		self.clip_ids = []
-		self.paths = []
+		self.clip_ids = [] # integer.
+		self.paths = [] #string
 		self.idx_permutation = []
 		self.id_permutation = []
 		self.id_to_paths = {}
@@ -39,7 +39,7 @@ class File_Manager():
 			for line_idx, line in enumerate(f):
 				values = [value.rstrip('\r\n').strip('"') for value in line.split('\t')]
 				# [0]:clip_id, track_no (in album), title, artist, album, url, seg_start, seg_end, original_url, [9]:mp3_path
-				self.clip_ids.append(values[0])
+				self.clip_ids.append(int(values[0]))
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx
@@ -93,7 +93,7 @@ class File_Manager():
  		return: corresponding numpy array, 2d, for 4-seconds.
  		'''
  		pass
- 		
+
  	# def load_mp3(self, clip_id):
  	# 	return librosa.load(PATH_MAGNA + self.id_to_paths[clip_id], sr=SR)
 
