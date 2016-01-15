@@ -93,7 +93,7 @@ def do_mfcc(src, clip_id, seg_idx):
 	
 	if check_if_done('%s%d_%d.npy'%(PATH_MFCC,clip_id,seg_idx)):
 		return
-
+	pdb.set_trace()
 	mfcc = librosa.feature.mfcc(y=src, 
 								sr=SR, 
 								n_mfcc=30,
@@ -116,6 +116,7 @@ def process_all_features(args):
 	src = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
 	for seg_idx in range(NUM_SEG):
 		src_here = src[seg_idx*sp_per_seg : (seg_idx+1)*sp_per_seg]
+		pdb.set_trace()
 		do_mfcc(src_here, clip_id, seg_idx)
 		do_melgram(src_here, clip_id, seg_idx)
 		do_cqt(src_here, clip_id, seg_idx)
@@ -139,7 +140,7 @@ def prepare_x():
 
 if __name__ == '__main__':
 
-	prepare_y()
+	# prepare_y()
 	prepare_x()
 	# create_hdf()
 	
