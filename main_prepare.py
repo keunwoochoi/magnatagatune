@@ -130,8 +130,8 @@ def prepare_x():
 	
 	args = zip(fm.clip_ids, fm.paths)
 	
-	for arg in args:
-		process_all_features(arg)
+	# for arg in args:
+	# 	process_all_features(arg)
 
 	p = Pool(48)
 	p.map(process_all_features, args)
