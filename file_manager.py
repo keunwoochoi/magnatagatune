@@ -114,7 +114,7 @@ class File_Manager():
 		else:
 			print 'File manager will use a new random permutation file'
 			rand_inds = np.random.permutation(self.num_songs)
-			num_valid = self.num/n_fold
+			num_valid = self.num_songs/n_fold
 
 			train = rand_inds[:num_valid*(n_fold-2)]
 			valid = rand_inds[num_valid*(n_fold-2):num_valid*(n_fold-1)]

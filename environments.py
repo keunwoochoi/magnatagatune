@@ -64,13 +64,13 @@ elif isMacbook:
 	PATH_HOME   = '/Users/gnu/Gnubox/'
 
 if isMacPro:
-	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_temp/'
+	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_magna/'
 elif isDT1:
-	PATH_HDF_LOCAL = '/home/keunwoo/data/'
+	PATH_HDF_LOCAL = '/home/keunwoo/data/hdf_magna/'
 elif isServer:
-	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/ilm10k_hdf/hdf/'
+	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/magnatagatune/hdf/'
 elif isMacbook:
-	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/hdf_data/'
+	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/magnatagatune/'
 
 
 
@@ -85,7 +85,7 @@ PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/stft/'
 PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/mfcc/'
 
 
-for path in [PATH_DATA, PATH_MELGRAM, PATH_CQT, PATH_STFT, PATH_MFCC]:
+for path in [PATH_DATA, PATH_MELGRAM, PATH_CQT, PATH_STFT, PATH_MFCC, PATH_HDF_LOCAL]:
 	if not os.path.exists(path):
 		try:
 			os.mkdir(path)
