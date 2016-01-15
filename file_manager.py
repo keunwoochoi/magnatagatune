@@ -116,12 +116,12 @@ class File_Manager():
 			rand_inds = np.random.permutation(self.num_songs)
 			num_valid = self.num_songs/n_fold
 
-			train = rand_inds[:num_valid*(n_fold-2)]
-			valid = rand_inds[num_valid*(n_fold-2):num_valid*(n_fold-1)]
-			test  = rand_inds[num_valid*(n_fold-1):]
+			train_idx = rand_inds[:num_valid*(n_fold-2)]
+			valid_idx = rand_inds[num_valid*(n_fold-2):num_valid*(n_fold-1)]
+			test_idx  = rand_inds[num_valid*(n_fold-1):]
 
-			np.save(rand_filename, [train, valid, test])
-		return train, valid, test
+			np.save(rand_filename, [train_idx, valid_idx, test_idx])
+		return train_idx, valid_idx, test_idx
 
  	def load_file(self, file_type, clip_idx, seg_idx):
  		'''for file tyle (cqt, stft, mel,..) 
