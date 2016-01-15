@@ -115,11 +115,12 @@ def prepare_x():
 	p = Pool(48)
 	args = zip(fm.clip_ids, fm.paths)
 	
-	p.map(process_all_feature, args)
+	p.map(process_all_features, args)
 	return
 
 if __name__ == '__main__':
 
 	# prepare_y()
 	prepare_x()
+	# create_hdf()
 	
