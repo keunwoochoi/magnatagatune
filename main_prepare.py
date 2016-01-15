@@ -204,9 +204,8 @@ def process_all_features(args):
 	print 'All features are done for all segments of clip_id:%d' % clip_id
 	return
 
-def prepare_x(process_idx):
+def prepare_x():
 	'''It spawns process.
-	process_idx: in range(16).
 	'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
@@ -237,9 +236,8 @@ if __name__ == '__main__':
 	create_hdf()
 	
 	'''
-	process_idx = int(sys.argv[1])
 	prepare_y()
-	prepare_x(process_idx)
+	prepare_x()
 	sys.exit(0)
 	create_hdf()
 	
