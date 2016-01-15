@@ -141,7 +141,7 @@ def prepare_x():
 
 if __name__ == '__main__':
 
-	# prepare_y()
+	prepare_y()
 	prepare_x()
 	# create_hdf()
 	
