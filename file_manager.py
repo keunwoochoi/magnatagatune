@@ -113,7 +113,7 @@ class File_Manager():
 			train_idx, valid_idx, test_idx = np.load(rand_filename)
 		else:
 			print 'File manager will use a new random permutation file'
-			rand_inds = np.random.permutation(self.filenum)
+			rand_inds = np.random.permutation(self.num_songs)
 			num_valid = self.num/n_fold
 
 			train = rand_inds[:num_valid*(n_fold-2)]
