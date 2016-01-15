@@ -111,7 +111,7 @@ def process_all_features(args):
 	# constants
 	num_segments = NUM_SEG # 7
 	len_segments = LEN_SEG # 4.0
-	sp_per_seg = len_segments * SR
+	sp_per_seg = int(len_segments * SR)
 
 	src = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
 	for seg_idx in range(NUM_SEG):
