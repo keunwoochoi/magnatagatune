@@ -44,6 +44,9 @@ class File_Manager():
 				self.clip_ids.append(int(values[0]))
 				if values[9] == '':
 				 	self.idx_no_audio.append(line_idx)
+				elif not os.path.exists(PATH_MAGNA + 'audio/' + values[9]):
+				 	self.idx_no_audio.append(line_idx)
+
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx

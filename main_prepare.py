@@ -130,7 +130,13 @@ def process_all_features(args):
 def prepare_x():
 	'''It spawns process'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	args = zip(fm.clip_ids, fm.paths)
+	idx_to_process = [idx for idx in xrange(len(fm.num_songs)) if idx not in fm.idx_no_audio]
+
+	clip_ids_to_process = [fm.clips_ids[idx] for idx in idx_to_process]
+	paths_to_process = [fm.paths[idx] for idx in idx_to_process]
+	print len(clip_ids_to_process)
+
+	args = zip(clip_ids_to_process, paths_to_process)
 	
 	# for arg in args:
 	# 	process_all_features(arg)
