@@ -1,4 +1,5 @@
 from environments import *
+from constants import *
 import os
 import cPickle as cP
 import time
