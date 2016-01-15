@@ -16,11 +16,21 @@ class File_Manager():
 		self.id_to_paths = {}
 		self.feat_to_paths = {} # string : list, e.g. 'cqt' : blah..
 		self.id_to_idx = {}
-		self.np_whole_label_matrix = None # will be numpy array
+		# self.np_whole_label_matrix = None # will be numpy array
 		self.num_songs = 0
 		self.num_tags = 0
 	
 	def fill_from_csv(self):
+		''' This function fills
+		- self.clip_ids
+		- self.paths
+		- self.id_to_paths
+		- self.id_to_idx
+		- self.id_to_paths
+		- self.num_songs
+		- self.num_tags
+		
+		'''
 		with open(PATH_MAGNA+'clip_info_final.csv', 'r') as f:
 			labels = f.readline() # first line is labels.
 			for line_idx, line in enumerate(f):
@@ -30,7 +40,7 @@ class File_Manager():
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx
-				if line_idx % 50 == 0:
+				if line_idx % 1000 == 0:
 					print 'Line idx : %d loaded.' % line_idx
 			print 'All info from clip_info_final.csv loaded.'
 		self.num_songs = len(self.clip_ids)
@@ -38,20 +48,33 @@ class File_Manager():
 		print 'Now will read annotations_final.csv'
 		with open(PATH_MAGNA + 'annotations_final.csv', 'r') as f:
 			tag_names = f.readline() # clip_id, 188 tags, mp3_path
-			tags = [value.rstrip('\r\n').strip('"') for value in tags.split('\t')]
+			tags = [value.rstrip('\r\n').strip('"') for value in tags_names.split('\t')]
 			self.num_tags  = len(tags) - 2 
-			self.np_whole_label_matrix = np.zeros((num_songs, num_tags), dtype=np.bool_)
+		return
+	
+	def load_label_matrix(self):
+		if os.path.exists(PATH_DATA + FILE_DICT['label_matrix']):
+			return np.load(PATH_DATA + FILE_DICT['label_matrix'])
+		
+		return self.create_label_matrix()
+
+	def create_label_matrix(self):
+		print 'Now will read annotations_final.csv'
+		with open(PATH_MAGNA + 'annotations_final.csv', 'r') as f:
+			tag_names = f.readline() # clip_id, 188 tags, mp3_path
+			tags = [value.rstrip('\r\n').strip('"') for value in tags_names.split('\t')]
+			self.num_tags  = len(tags) - 2 
+			label_matrix = np.zeros((num_songs, num_tags), dtype=np.bool_)
 			for line_idx, line in enumerate(f):
 				values = [value.rstrip('\r\n').strip('"') for value in line.split('\t')]
 				labels = [int(ele) for ele in values[1:-1]]
-				self.np_whole_label_matrix[self.id_to_idx[values[0]], : ] = np.array(labels, dtype=np.int)
-				if line_idx % 50 == 0:
+				label_matrix[self.id_to_idx[values[0]], : ] = np.array(labels, dtype=np.int)
+				if line_idx % 1000 == 0:
 					print 'Line idx : %d loaded.' % line_idx
-			print 'All info from annotations_final.csv loaded.'
-				
- 	def squeeze_label_matrix(self, reduced_num):
- 		'''pick top-N popular tags and return the song-tag matrix.'''
- 		pass
+
+		print 'label matrix created'
+		np.save(PATH_DATA + FILE_DICT['label_matrix'], label_matrix)
+		return label_matrix
 
  	def load_file(self, file_type, clip_id, seg_id):
  		'''for file tyle (cqt, stft, mel,..) 
@@ -64,7 +87,9 @@ class File_Manager():
  		pass
 
 
-
+ 	def squeeze_label_matrix(self, reduced_num, label_matrix):
+ 		'''pick top-N popular tags and return the song-tag matrix.'''
+ 		pass
 
 
 

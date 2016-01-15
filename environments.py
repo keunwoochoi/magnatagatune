@@ -63,23 +63,29 @@ elif isMacbook:
 	PATH_IMPORT = '/Users/gnu/mnt/c4dm/'
 	PATH_HOME   = '/Users/gnu/Gnubox/'
 
-if isMacPro:
-	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_temp/'
-elif isDT1:
-	PATH_HDF_LOCAL = '/home/keunwoo/data/'
-elif isServer:
-	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/ilm10k_hdf/hdf/'
-elif isMacbook:
-	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/hdf_data/'
+# if isMacPro:
+# 	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_temp/'
+# elif isDT1:
+# 	PATH_HDF_LOCAL = '/home/keunwoo/data/'
+# elif isServer:
+# 	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/ilm10k_hdf/hdf/'
+# elif isMacbook:
+# 	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/hdf_data/'
 
-if isMacbook:
-	PATH_WORK = PATH_HOME + "embedding_tag/"
-else:
-	PATH_WORK = PATH_HOME + "embedding/"
+
+
+PATH_WORK = PATH_HOME + "magnatagatune/"
+PATH_DATA = PATH_WORK + 'data/'
 
 PATH_MAGNA = PATH_IMPORT + 'c4dm-datasets/MagnaTagATune/'
 
-for path in []:
+PATH_MELGRAM = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/melgram/'
+PATH_CQT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/cqt/'
+PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/stft/'
+PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/mfcc/'
+
+
+for path in [PATH_DATA, PATH_MELGRAM, PATH_CQT, PATH_STFT, PATH_MFCC]:
 	if not os.path.exists(path):
 		try:
 			os.mkdir(path)
