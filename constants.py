@@ -7,3 +7,5 @@ FRAMES_PER_SEC = float(SR) / HOP_LEN
 FILE_DICT = {}
 FILE_DICT['label_matrix'] = 'label_matrix.npy'
 FILE_DICT['file_manager'] = 'file_manager.cP'
+FILE_DICT['sorted_merged_label_matrix'] = 'sorted_merged_label_matrix.npy'
+
