@@ -132,7 +132,7 @@ def prepare_x():
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	idx_to_process = [idx for idx in xrange(fm.num_songs) if idx not in fm.idx_no_audio]
 
-	clip_ids_to_process = [fm.clips_ids[idx] for idx in idx_to_process]
+	clip_ids_to_process = [fm.clip_ids[idx] for idx in idx_to_process]
 	paths_to_process = [fm.paths[idx] for idx in idx_to_process]
 	print len(clip_ids_to_process)
 

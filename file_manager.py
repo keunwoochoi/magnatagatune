@@ -10,9 +10,9 @@ import pdb
 
 class File_Manager():
 	def __init__(self):
-		self.clip_ids = [] # integer.
-		self.idx_no_audio = []
-		self.paths = [] #string
+		self.clip_ids = [] # integer. sequence aligned.
+		self.idx_no_audio = [] 
+		self.paths = [] #string. sequence aligned.
 		self.idx_permutation = []
 		self.id_permutation = []
 		self.id_to_paths = {}
