@@ -197,11 +197,13 @@ def process_all_features(args):
 		do_cqt(src_here, clip_id, seg_idx)
 		do_stft(src_here, clip_id, seg_idx)
 
-	# print 'All features are done for all segments of clip_id:%d' % clip_id
+	print 'All features are done for all segments of clip_id:%d' % clip_id
 	return
 
-def prepare_x():
-	'''It spawns process'''
+def prepare_x(process_idx):
+	'''It spawns process.
+	process_idx: in range(16).
+	'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
 	clip_ids_to_process = fm.clip_ids
@@ -210,10 +212,11 @@ def prepare_x():
 	args = zip(clip_ids_to_process, paths_to_process)
 	print '%d file clips will be done' % len(clip_ids_to_process)
 	for idx, arg in enumerate(args):
-		process_all_features(arg)
-		if idx % 1000 == 0:
-			print '%-th work done.' % idx
-
+		if idx % 16 == process_idx:
+			process_all_features(arg)
+		else:
+			pass
+	
 	# p = Pool(48)
 	# p.map(process_all_features, args)
 
@@ -229,8 +232,8 @@ if __name__ == '__main__':
 	create_hdf()
 	
 	'''
-
+	process_idx = int(sys.argv[1])
 	prepare_y()
-	prepare_x()
+	prepare_x(process_idx)
 	create_hdf()
 	
