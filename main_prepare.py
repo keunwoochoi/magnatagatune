@@ -236,5 +236,6 @@ if __name__ == '__main__':
 	process_idx = int(sys.argv[1])
 	prepare_y()
 	prepare_x(process_idx)
+	sys.exit(0)
 	create_hdf()
 	
