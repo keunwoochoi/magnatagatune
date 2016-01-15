@@ -97,7 +97,7 @@ def process_all_features(args):
 	len_segments = LEN_SEG # 4.0
 	sp_per_seg = len_segments * SR
 
-	src = librosa.load(PATH_MAGNA + mp3_path, sr=SR)
+	src = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
 	for seg_idx in range(NUM_SEG):
 		src_here = src[seg_idx*sp_per_seg : (seg_idx+1)*sp_per_seg]
 		do_mfcc(src_here, clip_id, seg_idx)
