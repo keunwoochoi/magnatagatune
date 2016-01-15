@@ -3,6 +3,8 @@ import sys
 import os
 from environments import *
 from constants import *
+import cPickle as cP
+
 
 def refine_label_matrix():
 	''' It load label matrix and refine it by
@@ -28,8 +30,8 @@ def refine_label_matrix():
 				['horn', 'horns'],
 				['india', 'indian'],
 				['jazz', 'jazzy'],
-				['male', 'male_singer', 'male_vocal', 'male_vocals', 'male_voice', 'man', 'man singing', 'men']
-				['no beat', 'no drums']
+				['male', 'male_singer', 'male_vocal', 'male_vocals', 'male_voice', 'man', 'man singing', 'men'],
+				['no beat', 'no drums'],
 				['no singer', 'no singing', 'no vocal','no vocals', 'no voice', 'no voices', 'instrumental'],
 				['opera', 'operatic'],
 				['orchestra', 'orchestral'],
@@ -42,11 +44,11 @@ def refine_label_matrix():
 				['vocal', 'vocals', 'voice', 'voices'],
 				['strange', 'weird']]
 
-	fm = cP.load(cP.dump(fm, open(PATH_DATA + FILE_DICT["file_manager"], 'r')))
+	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 
 	whole_label_matrix = fm.load_label_matrix()
 	tags_to_data = {}
-	for tag_idx, tag in self.tags: # for 188 tags,
+	for tag_idx, tag in fm.tags: # for 188 tags,
 		tags_to_data[tag] = whole_label_matrix[:, tag_idx]
 
 	new_tags_to_data = {}
