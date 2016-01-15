@@ -58,7 +58,7 @@ def do_melgram(src, clip_id, seg_idx):
 	if check_if_done('%s%d_%d.npy'%(PATH_MELGRAM,clip_id,seg_idx)):
 		return
 	np.save('%s%d_%d.npy'%(PATH_MELGRAM,clip_id,seg_idx) ,
-				 librosa.logamplitude(librosa.melspectrogram(
+				 librosa.logamplitude(librosa.feature.melspectrogram(
 				 								y=src, 
 												sr=SR, 
 												hop_length=HOP_LEN, 
@@ -96,9 +96,10 @@ def do_mfcc(src, clip_id, seg_idx):
 	
 	mfcc = librosa.feature.mfcc(y=src, 
 								sr=SR, 
-								n_mfcc=30,
+								n_mfcc=31,
 								hop_length=HOP_LEN, 
 								n_fft=N_FFT)
+	mfcc = mfcc[1:, :] # remove the first one.
 
 	np.save('%s%d_%d.npy'%(PATH_MFCC,clip_id,seg_idx), augment_mfcc(mfcc))			 							
 										
