@@ -28,6 +28,13 @@ def check_if_done(path):
 		if os.path.getsize(path) != 0: 
 			return True
 	return False
+#------------------------------------------#
+
+def create_hdf():
+	'''create hdf file that has cqt, stft, mfcc, melgram of train/valid/test set.'''
+
+
+#------------------------------------------#
 
 def prepare_y():
 
@@ -42,6 +49,8 @@ def prepare_y():
 
 	# refine tags
 	my_utils.refine_label_matrix()
+
+#------------------------------------------#
 
 def do_cqt(src, clip_id, seg_idx):
 	if check_if_done('%s%d_%d.npy'%(PATH_CQT,clip_id,seg_idx)):
@@ -143,7 +152,9 @@ def prepare_x():
 
 	p = Pool(48)
 	p.map(process_all_features, args)
+	p.join()
 	return
+#------------------------------------------#
 
 if __name__ == '__main__':
 
