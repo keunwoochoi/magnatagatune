@@ -60,11 +60,14 @@ class File_Manager():
 
 	def create_label_matrix(self):
 		print 'Now will read annotations_final.csv'
+		if self.num_songs == 0 or self.num_tags ==0:
+			raise RuntimeError('self.num_songs:%d, self.num_tags:%d, stop here' % (self.num_songs, self.num_tags))
+			return
 		with open(PATH_MAGNA + 'annotations_final.csv', 'r') as f:
 			tag_names = f.readline() # clip_id, 188 tags, mp3_path
 			tags = [value.rstrip('\r\n').strip('"') for value in tag_names.split('\t')]
 			self.num_tags  = len(tags) - 2 
-			label_matrix = np.zeros((num_songs, num_tags), dtype=np.bool_)
+			label_matrix = np.zeros((self.num_songs, self.num_tags), dtype=np.bool_)
 			for line_idx, line in enumerate(f):
 				values = [value.rstrip('\r\n').strip('"') for value in line.split('\t')]
 				labels = [int(ele) for ele in values[1:-1]]
