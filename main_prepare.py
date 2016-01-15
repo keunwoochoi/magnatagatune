@@ -18,13 +18,20 @@ import pdb
 import librosa
 import time
 from multiprocessing import Pool
+
 from environments import *
 from constants import *
-
+import my_utils
 import file_manager
 
 if __name__ == '__main__':
-	fm = file_manager.File_Manager()
-	fm.fill_from_csv()
-	fm.create_label_matrix()
-	cP.dump(fm, open(PATH_DATA + FILE_DICT["file_manager"], 'w'))
+
+	if os.path.exists(PATH_DATA + FILE_DICT["file_manager"]):
+		fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
+	else:
+		fm = file_manager.File_Manager()
+		fm.fill_from_csv()
+		fm.create_label_matrix()
+		cP.dump(fm, open(PATH_DATA + FILE_DICT["file_manager"], 'w'))
+
+	my_utils.refine_label_matrix()

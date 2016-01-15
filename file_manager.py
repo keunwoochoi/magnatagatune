@@ -20,6 +20,7 @@ class File_Manager():
 		# self.np_whole_label_matrix = None # will be numpy array
 		self.num_songs = 0
 		self.num_tags = 0
+		self.tags = []
 	
 	def fill_from_csv(self):
 		''' This function fills
@@ -30,6 +31,7 @@ class File_Manager():
 		- self.id_to_paths
 		- self.num_songs
 		- self.num_tags
+		- self.tags
 		
 		'''
 		with open(PATH_MAGNA+'clip_info_final.csv', 'r') as f:
@@ -41,7 +43,7 @@ class File_Manager():
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx
-				if line_idx % 1000 == 0:
+				if line_idx % 5000 == 0:
 					print 'Line idx : %d loaded.' % line_idx
 			print 'All info from clip_info_final.csv loaded.'
 		self.num_songs = len(self.clip_ids)
@@ -50,7 +52,9 @@ class File_Manager():
 		with open(PATH_MAGNA + 'annotations_final.csv', 'r') as f:
 			tag_names = f.readline() # clip_id, 188 tags, mp3_path
 			tags = [value.rstrip('\r\n').strip('"') for value in tag_names.split('\t')]
-			self.num_tags  = len(tags) - 2 
+			tags = tags[1:-1]
+			self.num_tags  = len(tags)
+			self.tags = tags
 		return
 	
 	def load_label_matrix(self):
@@ -73,7 +77,7 @@ class File_Manager():
 				values = [value.rstrip('\r\n').strip('"') for value in line.split('\t')]
 				labels = [int(ele) for ele in values[1:-1]]
 				label_matrix[self.id_to_idx[values[0]], : ] = np.array(labels, dtype=np.int)
-				if line_idx % 1000 == 0:
+				if line_idx % 2000 == 0:
 					print 'Line idx : %d loaded.' % line_idx
 
 		print 'label matrix created'
@@ -90,10 +94,6 @@ class File_Manager():
  		'''
  		pass
 
-
- 	def squeeze_label_matrix(self, reduced_num, label_matrix):
- 		'''pick top-N popular tags and return the song-tag matrix.'''
- 		pass
 
 
 
