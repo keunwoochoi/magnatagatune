@@ -108,6 +108,7 @@ def process_all_features(args):
 	''' args = (clip_id, mp3_path)
 	'''
 	clip_id, mp3_path = args # unpack
+	print mp3_path
 	# constants
 	num_segments = NUM_SEG # 7
 	len_segments = LEN_SEG # 4.0
