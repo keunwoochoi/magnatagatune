@@ -151403,12 +151403,391 @@ p57250
 sS'num_songs'
 p57252
 I31382
-sS'num_tags'
+sS'tags'
 p57253
+(lp57254
+S'no voice'
+p57255
+aS'singer'
+p57256
+aS'duet'
+p57257
+aS'plucking'
+p57258
+aS'hard rock'
+p57259
+aS'world'
+p57260
+aS'bongos'
+p57261
+aS'harpsichord'
+p57262
+aS'female singing'
+p57263
+aS'clasical'
+p57264
+aS'sitar'
+p57265
+aS'chorus'
+p57266
+aS'female opera'
+p57267
+aS'male vocal'
+p57268
+aS'vocals'
+p57269
+aS'clarinet'
+p57270
+aS'heavy'
+p57271
+aS'silence'
+p57272
+aS'beats'
+p57273
+aS'men'
+p57274
+aS'woodwind'
+p57275
+aS'funky'
+p57276
+aS'no strings'
+p57277
+aS'chimes'
+p57278
+aS'foreign'
+p57279
+aS'no piano'
+p57280
+aS'horns'
+p57281
+aS'classical'
+p57282
+aS'female'
+p57283
+aS'no voices'
+p57284
+aS'soft rock'
+p57285
+aS'eerie'
+p57286
+aS'spacey'
+p57287
+aS'jazz'
+p57288
+aS'guitar'
+p57289
+aS'quiet'
+p57290
+aS'no beat'
+p57291
+aS'banjo'
+p57292
+aS'electric'
+p57293
+aS'solo'
+p57294
+aS'violins'
+p57295
+aS'folk'
+p57296
+aS'female voice'
+p57297
+aS'wind'
+p57298
+aS'happy'
+p57299
+aS'ambient'
+p57300
+aS'new age'
+p57301
+aS'synth'
+p57302
+aS'funk'
+p57303
+aS'no singing'
+p57304
+aS'middle eastern'
+p57305
+aS'trumpet'
+p57306
+aS'percussion'
+p57307
+aS'drum'
+p57308
+aS'airy'
+p57309
+aS'voice'
+p57310
+aS'repetitive'
+p57311
+aS'birds'
+p57312
+aS'space'
+p57313
+aS'strings'
+p57314
+aS'bass'
+p57315
+aS'harpsicord'
+p57316
+aS'medieval'
+p57317
+aS'male voice'
+p57318
+aS'girl'
+p57319
+aS'keyboard'
+p57320
+aS'acoustic'
+p57321
+aS'loud'
+p57322
+aS'classic'
+p57323
+aS'string'
+p57324
+aS'drums'
+p57325
+aS'electronic'
+p57326
+aS'not classical'
+p57327
+aS'chanting'
+p57328
+aS'no violin'
+p57329
+aS'not rock'
+p57330
+aS'no guitar'
+p57331
+aS'organ'
+p57332
+aS'no vocal'
+p57333
+aS'talking'
+p57334
+aS'choral'
+p57335
+aS'weird'
+p57336
+aS'opera'
+p57337
+aS'soprano'
+p57338
+aS'fast'
+p57339
+aS'acoustic guitar'
+p57340
+aS'electric guitar'
+p57341
+aS'male singer'
+p57342
+aS'man singing'
+p57343
+aS'classical guitar'
+p57344
+aS'country'
+p57345
+aS'violin'
+p57346
+aS'electro'
+p57347
+aS'reggae'
+p57348
+aS'tribal'
+p57349
+aS'dark'
+p57350
+aS'male opera'
+p57351
+aS'no vocals'
+p57352
+aS'irish'
+p57353
+aS'electronica'
+p57354
+aS'horn'
+p57355
+aS'operatic'
+p57356
+aS'arabic'
+p57357
+aS'lol'
+p57358
+aS'low'
+p57359
+aS'instrumental'
+p57360
+aS'trance'
+p57361
+aS'chant'
+p57362
+aS'strange'
+p57363
+aS'drone'
+p57364
+aS'synthesizer'
+p57365
+aS'heavy metal'
+p57366
+aS'modern'
+p57367
+aS'disco'
+p57368
+aS'bells'
+p57369
+aS'man'
+p57370
+aS'deep'
+p57371
+aS'fast beat'
+p57372
+aS'industrial'
+p57373
+aS'hard'
+p57374
+aS'harp'
+p57375
+aS'no flute'
+p57376
+aS'jungle'
+p57377
+aS'pop'
+p57378
+aS'lute'
+p57379
+aS'female vocal'
+p57380
+aS'oboe'
+p57381
+aS'mellow'
+p57382
+aS'orchestral'
+p57383
+aS'viola'
+p57384
+aS'light'
+p57385
+aS'echo'
+p57386
+aS'piano'
+p57387
+aS'celtic'
+p57388
+aS'male vocals'
+p57389
+aS'orchestra'
+p57390
+aS'eastern'
+p57391
+aS'old'
+p57392
+aS'flutes'
+p57393
+aS'punk'
+p57394
+aS'spanish'
+p57395
+aS'sad'
+p57396
+aS'sax'
+p57397
+aS'slow'
+p57398
+aS'male'
+p57399
+aS'blues'
+p57400
+aS'vocal'
+p57401
+aS'indian'
+p57402
+aS'no singer'
+p57403
+aS'scary'
+p57404
+aS'india'
+p57405
+aS'woman'
+p57406
+aS'woman singing'
+p57407
+aS'rock'
+p57408
+aS'dance'
+p57409
+aS'piano solo'
+p57410
+aS'guitars'
+p57411
+aS'no drums'
+p57412
+aS'jazzy'
+p57413
+aS'singing'
+p57414
+aS'cello'
+p57415
+aS'calm'
+p57416
+aS'female vocals'
+p57417
+aS'voices'
+p57418
+aS'different'
+p57419
+aS'techno'
+p57420
+aS'clapping'
+p57421
+aS'house'
+p57422
+aS'monks'
+p57423
+aS'flute'
+p57424
+aS'not opera'
+p57425
+aS'not english'
+p57426
+aS'oriental'
+p57427
+aS'beat'
+p57428
+aS'upbeat'
+p57429
+aS'soft'
+p57430
+aS'noise'
+p57431
+aS'choir'
+p57432
+aS'female singer'
+p57433
+aS'rap'
+p57434
+aS'metal'
+p57435
+aS'hip hop'
+p57436
+aS'quick'
+p57437
+aS'water'
+p57438
+aS'baroque'
+p57439
+aS'women'
+p57440
+aS'fiddle'
+p57441
+aS'english'
+p57442
+asS'num_tags'
+p57443
 I188
 sS'id_to_paths'
-p57254
-(dp57255
+p57444
+(dp57445
 g5
 g57041
 sg6
@@ -214174,14 +214553,14 @@ g48876
 sg31384
 g48877
 ssS'feat_to_paths'
-p57256
-(dp57257
+p57446
+(dp57447
 sS'id_permutation'
-p57258
-(lp57259
+p57448
+(lp57449
 sS'clip_ids'
-p57260
-(lp57261
+p57450
+(lp57451
 S'2'
 aS'6'
 ag20206
