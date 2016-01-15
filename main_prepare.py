@@ -32,6 +32,66 @@ def check_if_done(path):
 
 def create_hdf():
 	'''create hdf file that has cqt, stft, mfcc, melgram of train/valid/test set.'''
+	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
+	set_indices = fm.shuffle(n_fold=8) # train, valid, test indices
+	set_name = ['train', 'valid', 'test']
+	dataset_names = ['stft', 'melgram', 'cqt', 'mfcc']
+	print '='*60
+	print '====== create_hdf ======'
+	print '='*60
+	for idx, indices in enumerate(set_indices): # e.g. For Train set, 
+		# dataset file
+		filename = 'magna_'+set_name[idx] + '.hdf'
+		if os.path.exists(PATH_HDF_LOCAL + filename):
+			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
+			print 'loading hdf file that exists already there.'
+		else:
+			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
+			print 'creating new hdf file.'
+		#
+		num_datapoints = NUM_SEG * len(indices)
+		# dataset name
+		for dataset_name in dataset_names: # e.g. For cqt,
+			test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
+			tf_height = test_tf.shape[0]
+			tf_width = test_tf.shape[1]
+			if dataset_name in file_write:
+				data_to_store = file_write[dataset_name]
+			else:
+				data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
+			# fill the dataset
+			done_idx_file_path = PATH_HDF_LOCAL + filename + '_' +dataset_name + '_done_idx.npy'
+			if os.path.exists(done_idx_file_path):
+				done_idx = np.load(done_idx_file_path)
+			else:
+				done_idx = -1
+			for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
+				if write_idx <= done_idx
+					continue
+				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
+					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+					data_to_store[write_idx + seg_idx*num_datapoints] = tf_here
+				if write_idx % 100 == 0:
+					print '%d-th clip at %s, %s is done' % (clip_idx, dataset_name, filename)
+			np.save(done_idx_file_path, write_idx)
+		print 'Done: %s, %s ' % (dataset_name, filename)
+
+		dataset_name = 'y' # label
+		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
+		if dataset_name in file_write:
+			data_to_store = file_write[dataset_name]
+		else:
+			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, fm.num_tags))
+		# fill it.
+		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
+			for seg_idx in range(NUM_SEG):
+				data_to_store[write_idx + seg_idx*num_datapoints] = label_matrix[clip_idx,:]
+		print 'Labels are DONE as well! for %s' % dataset_name
+	
+
+	print 'HDF for train, valid, test and for all feature is created and stored.'
+	print 'Now copy it from %s to c4dm server.' % PATH_HDF_LOCAL
+	print '='*60
 
 
 #------------------------------------------#
@@ -157,8 +217,16 @@ def prepare_x():
 #------------------------------------------#
 
 if __name__ == '__main__':
-
-	# prepare_y()
+	'''
+	Remove things in data/ to start over, and then,
+	
+	prepare_y()
 	prepare_x()
-	# create_hdf()
+	create_hdf()
+	
+	'''
+
+	prepare_y()
+	prepare_x()
+	create_hdf()
 	

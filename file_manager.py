@@ -119,21 +119,33 @@ class File_Manager():
 			test  = rand_inds[num_valid*(n_fold-1):]
 
 			np.save(rand_filename, [train, valid, test])
+		return train, valid, test
 
-		pass
-
- 	def load_file(self, file_type, clip_id, seg_idx):
+ 	def load_file(self, file_type, clip_idx, seg_idx):
  		'''for file tyle (cqt, stft, mel,..) 
  		file_type : string, 'cqt', 'stft',..
- 		clip_id   : integer. 
+ 		clip_idx  : integer. not ID, just number from 0 to self.num_songs
  		seg_idx   : integer in range(7): 
  		
  		return: corresponding numpy array, 2d, for 4-seconds.
  		'''
- 		pass
+ 		if file_type.lower() == 'cqt':
+ 			path = PATH_CQT
+ 		elif file_type.lower() == 'stft':
+ 			path = PATH_STFT
+ 		elif file_type.lower() == 'mfcc':
+ 			path = PATH_MFCC
+ 		elif file_type.lower() == 'melgram':
+ 			path = PATH_MELGRAM
+ 		else:
+ 			print 'wrong file type in filer_manager.fload_file'
 
- 	# def load_mp3(self, clip_id):
- 	# 	return librosa.load(PATH_MAGNA + self.id_to_paths[clip_id], sr=SR)
+ 		return np.load('%s%d_%d.npy'%(path, self.clip_ids[clip_idx], seg_idx))
+
+ 	def get_labels(self, n_fold=8, top_n=50):
+ 		'''returns train_y, valid_y, test_y '''
+ 		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
+		train_idx, valid_idx, test_idx = fm.shuffle(n_fold=8) # train, valid, test indices
 
 
 
