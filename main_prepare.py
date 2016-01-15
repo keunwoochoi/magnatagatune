@@ -72,7 +72,6 @@ def do_stft(src, clip_id, seg_idx):
 	np.save('%s%d_%d.npy'%(PATH_STFT,clip_id,seg_idx) ,
 				 librosa.logamplitude(np.abs(librosa.stft(
 				 								y=src, 
-												sr=SR, 
 												hop_length=HOP_LEN, 
 												n_fft=N_FFT)
 				 							)**2, 
