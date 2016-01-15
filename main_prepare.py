@@ -130,7 +130,7 @@ def process_all_features(args):
 def prepare_x():
 	'''It spawns process'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	idx_to_process = [idx for idx in xrange(len(fm.num_songs)) if idx not in fm.idx_no_audio]
+	idx_to_process = [idx for idx in xrange(fm.num_songs) if idx not in fm.idx_no_audio]
 
 	clip_ids_to_process = [fm.clips_ids[idx] for idx in idx_to_process]
 	paths_to_process = [fm.paths[idx] for idx in idx_to_process]
@@ -147,7 +147,7 @@ def prepare_x():
 
 if __name__ == '__main__':
 
-	prepare_y()
+	# prepare_y()
 	prepare_x()
 	# create_hdf()
 	
