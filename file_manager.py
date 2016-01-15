@@ -40,6 +40,8 @@ class File_Manager():
 				values = [value.rstrip('\r\n').strip('"') for value in line.split('\t')]
 				# [0]:clip_id, track_no (in album), title, artist, album, url, seg_start, seg_end, original_url, [9]:mp3_path
 				self.clip_ids.append(int(values[0]))
+				if values[9] == '':
+					pdb.set_trace()
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx
