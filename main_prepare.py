@@ -54,6 +54,8 @@ def create_hdf():
 		# dataset name
 		for dataset_name in dataset_names: # e.g. For cqt,
 			test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
+
+
 			tf_height = test_tf.shape[0]
 			tf_width = test_tf.shape[1]
 			if dataset_name in file_write:
@@ -71,6 +73,10 @@ def create_hdf():
 					continue
 				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+					if test_tf == None:
+						os.remove('%s%d_%d.npy' % (PATH_TF['dataset_name'], fm.clip_ids[clip_idx], seg_idx))
+						process_all_features((fm.clip_ids[clip_idx], fm.paths[clip_idx]))
+						tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)	
 					try:
 						data_to_store[write_idx + seg_idx*len(indices)] = tf_here
 					except ValueError:
@@ -244,7 +250,7 @@ if __name__ == '__main__':
 	
 	'''
 	# prepare_y()
-	prepare_x()
+	# prepare_x()
 	
 	create_hdf()
 	

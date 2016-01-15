@@ -144,7 +144,9 @@ class File_Manager():
  		try:
  			return np.load('%s%d_%d.npy'%(path, self.clip_ids[clip_idx], seg_idx))
  		except ValueError:
- 			pdb.set_trace()
+ 			return None
+ 		except IOError:
+ 			return None
 
  	def get_labels(self, n_fold=8, top_n=50):
  		'''returns train_y, valid_y, test_y '''
