@@ -81,6 +81,7 @@ def create_hdf():
 		print 'Done: %s, %s ' % (dataset_name, filename)
 
 		dataset_name = 'y' # label
+		done_idx_file_path = PATH_HDF_LOCAL + filename + '_' +dataset_name + '_done_idx.npy'
 		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 		if dataset_name in file_write:
 			data_to_store = file_write[dataset_name]
@@ -90,6 +91,8 @@ def create_hdf():
 		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
 			for seg_idx in range(NUM_SEG):
 				data_to_store[write_idx + seg_idx*len(indices)] = label_matrix[clip_idx,:]
+			if write_idx % 100 == 0:
+				np.save(done_idx_file_path, write_idx)
 		print 'Labels are DONE as well! for %s' % dataset_name
 	
 

@@ -141,8 +141,10 @@ class File_Manager():
  			path = PATH_MELGRAM
  		else:
  			print 'wrong file type in filer_manager.fload_file'
-
- 		return np.load('%s%d_%d.npy'%(path, self.clip_ids[clip_idx], seg_idx))
+ 		try:
+ 			return np.load('%s%d_%d.npy'%(path, self.clip_ids[clip_idx], seg_idx))
+ 		except ValueError:
+ 			pdb.set_trace()
 
  	def get_labels(self, n_fold=8, top_n=50):
  		'''returns train_y, valid_y, test_y '''
