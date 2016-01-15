@@ -77,7 +77,7 @@ def create_hdf():
 						pdb.set_trace()
 				if write_idx % 100 == 0:
 					print 'write-th clip at %d, %s, %s is done' % (write_idx, dataset_name, filename)
-			np.save(done_idx_file_path, write_idx)
+					np.save(done_idx_file_path, write_idx)
 		print 'Done: %s, %s ' % (dataset_name, filename)
 
 		dataset_name = 'y' # label
