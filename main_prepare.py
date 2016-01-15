@@ -76,7 +76,7 @@ def create_hdf():
 					except ValueError:
 						pdb.set_trace()
 				if write_idx % 100 == 0:
-					print '%d-th clip at %s, %s is done' % (clip_idx, dataset_name, filename)
+					print 'write-th clip at %s, %s is done' % (write_idx, dataset_name, filename)
 			np.save(done_idx_file_path, write_idx)
 		print 'Done: %s, %s ' % (dataset_name, filename)
 
@@ -89,7 +89,7 @@ def create_hdf():
 		# fill it.
 		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
 			for seg_idx in range(NUM_SEG):
-				data_to_store[write_idx + seg_idx*num_datapoints] = label_matrix[clip_idx,:]
+				data_to_store[write_idx + seg_idx*len(indices)] = label_matrix[clip_idx,:]
 		print 'Labels are DONE as well! for %s' % dataset_name
 	
 

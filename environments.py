@@ -72,10 +72,15 @@ elif isServer:
 elif isMacbook:
 	PATH_HDF_LOCAL = '/Users/gnu/Gnubox/Srcs/magnatagatune/'
 
-
-
+if isMacbook:
+	PATH_EMBEDDING = PATH_HOME + "embedding_tag/"
+else:
+	PATH_EMBEDDING = PATH_HOME + "embedding/"
+	
 PATH_WORK = PATH_HOME + "magnatagatune/"
 PATH_DATA = PATH_WORK + 'data/'
+PATH_RESULTS= PATH_WORK + 'results/'
+PATH_RESULTS_W= PATH_WORK + 'results_w/'
 
 PATH_MAGNA = PATH_IMPORT + 'c4dm-datasets/MagnaTagATune/'
 
