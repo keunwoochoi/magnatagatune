@@ -104,7 +104,7 @@ class File_Manager():
 		Then get shuffled array of song_ids.'''
 
 		'''For temporary, however, simple permutation will be used.  '''
-		rand_filename = PATH_DATA +("balanced_sets_%d_%d.npy" % (n_folds, self.num_songs))
+		rand_filename = PATH_DATA +("balanced_sets_%d_%d.npy" % (n_fold, self.num_songs))
 		if os.path.exists(rand_filename):
 			print 'File manager will use a previously made random permutation file'
 
@@ -146,6 +146,7 @@ class File_Manager():
  		'''returns train_y, valid_y, test_y '''
  		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 		train_idx, valid_idx, test_idx = fm.shuffle(n_fold=8) # train, valid, test indices
+
 
 
 

@@ -186,7 +186,11 @@ def process_all_features(args):
 	sp_per_seg = int(len_segments * SR)
 
 	if os.path.exists(PATH_MAGNA + 'audio/' + mp3_path):
-		src, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
+		try:
+			src, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
+		except EOFError:
+			print args
+			pdb.set_trace()
 	else:
 		print 'NO mp3 for %d, %s' % (clip_id, mp3_path)
 		return
