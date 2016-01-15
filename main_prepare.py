@@ -25,4 +25,6 @@ import file_manager
 
 if __name__ == '__main__':
 	fm = file_manager.File_Manager()
+	fm.fill_from_csv()
 	fm.create_label_matrix()
+	cP.dump(fm, open(PATH_DATA + FILE_DICT["file_manager"], 'w'))
