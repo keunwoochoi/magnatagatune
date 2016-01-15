@@ -128,7 +128,10 @@ def process_all_features(args):
 def prepare_x():
 	'''It spawns process'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	
+	for path in fm.paths:
+		print 'path: ' + fm.paths
+		raw_input()
+
 	args = zip(fm.clip_ids, fm.paths)
 	
 	# for arg in args:
