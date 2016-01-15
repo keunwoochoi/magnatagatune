@@ -12,6 +12,10 @@ def refine_label_matrix():
 	- sort columns by total count 
 	- remove rows that has no audio file
 	'''
+	if os.path.exists(PATH_DATA + FILE_DICT['sorted_merged_label_matrix']):
+		if os.path.exists(PATH_DATA + FILE_DICT['sorted_tags']):
+			print 'Seems like I dont need to refine it again. Or you can remove them in data folder.'
+			return
 
 	weird_tags = ['girl', 'lol', 'different', 'english', 'not english']
 	synonyms = [['beat', 'beats'],
@@ -84,6 +88,7 @@ def refine_label_matrix():
 	sorted_merged_label_matrix =  np.minimum(sorted_merged_label_matrix, np.ones(sorted_merged_label_matrix.shape))
 	# Now it's almost done, except there are rows that don't have actual audio file.
 	# Will remove those.
+
 	np.save(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'], sorted_merged_label_matrix)
 	cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_tags'], 'w'))
 	return
