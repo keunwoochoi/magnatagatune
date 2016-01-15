@@ -49,6 +49,8 @@ class File_Manager():
 				 	self.clip_ids_no_audio.append(values[0])
 				elif not os.path.exists(PATH_MAGNA + 'audio/' + values[9]):
 				 	self.clip_ids_no_audio.append(values[0])
+				elif os.path.getsize(PATH_MAGNA + 'audio/' + values[9]) == 0:
+					self.clip_ids_no_audio.append(values[0])
 				else:
 					self.clip_ids.append(int(values[0]))
 					self.paths.append(values[9])
