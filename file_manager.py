@@ -97,19 +97,28 @@ class File_Manager():
 		np.save(PATH_DATA + FILE_DICT['label_matrix'], label_matrix)
 		return label_matrix
 
-	def shuffle(self, n_fold=5):
+	def shuffle(self, n_fold=8):
 		'''load permutation file if exists, create otherwise.
 		Then get random permutations of range(self.num_songs).
 		...which will be done until I get a balanced train, valid, and test sets.
 		Then get shuffled array of song_ids.'''
+
+		'''For temporary, however, simple permutation will be used.  '''
 		rand_filename = PATH_DATA +("balanced_sets_%d_%d.npy" % (n_folds, self.num_songs))
 		if os.path.exists(rand_filename):
 			print 'File manager will use a previously made random permutation file'
+
 			train_idx, valid_idx, test_idx = np.load(rand_filename)
 		else:
 			print 'File manager will use a new random permutation file'
 			rand_inds = np.random.permutation(self.filenum)
-			np.save(rand_filename, rand_inds)
+			num_valid = self.num/n_fold
+
+			train = rand_inds[:num_valid*(n_fold-2)]
+			valid = rand_inds[num_valid*(n_fold-2):num_valid*(n_fold-1)]
+			test  = rand_inds[num_valid*(n_fold-1):]
+
+			np.save(rand_filename, [train, valid, test])
 
 		pass
 
