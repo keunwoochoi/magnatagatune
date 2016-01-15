@@ -208,12 +208,14 @@ def prepare_x():
 	paths_to_process = fm.paths
 
 	args = zip(clip_ids_to_process, paths_to_process)
-	
-	# for arg in args:
-	# 	process_all_features(arg)
+	print '%d file clips will be done' % len(clip_ids_to_process)
+	for idx, arg in enumerate(args):
+		process_all_features(arg)
+		if idx % 1000 == 0:
+			print '%-th work done.' % idx
 
-	p = Pool(48)
-	p.map(process_all_features, args)
+	# p = Pool(48)
+	# p.map(process_all_features, args)
 
 	return
 #------------------------------------------#
