@@ -62,7 +62,7 @@ class File_Manager():
 		print 'Now will read annotations_final.csv'
 		with open(PATH_MAGNA + 'annotations_final.csv', 'r') as f:
 			tag_names = f.readline() # clip_id, 188 tags, mp3_path
-			tags = [value.rstrip('\r\n').strip('"') for value in tags_names.split('\t')]
+			tags = [value.rstrip('\r\n').strip('"') for value in tag_names.split('\t')]
 			self.num_tags  = len(tags) - 2 
 			label_matrix = np.zeros((num_songs, num_tags), dtype=np.bool_)
 			for line_idx, line in enumerate(f):
