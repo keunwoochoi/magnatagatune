@@ -17,6 +17,7 @@ import pdb
 import librosa
 import time
 from multiprocessing import Pool
+import h5py
 
 from environments import *
 from constants import *
