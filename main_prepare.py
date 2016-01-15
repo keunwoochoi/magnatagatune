@@ -214,16 +214,16 @@ def prepare_x(process_idx):
 	paths_to_process = fm.paths
 
 	args = zip(clip_ids_to_process, paths_to_process)
-	print '%d file clips will be done' % len(clip_ids_to_process)
-	print 'process idx is %d' % process_idx
-	for idx, arg in enumerate(args):
-		if idx % 16 == process_idx:
-			process_all_features(arg)
-		else:
-			pass
+	# print '%d file clips will be done' % len(clip_ids_to_process)
+	# print 'process idx is %d' % process_idx
+	# for idx, arg in enumerate(args):
+	# 	if idx % 16 == process_idx:
+	# 		process_all_features(arg)
+	# 	else:
+	# 		pass
 	
-	# p = Pool(48)
-	# p.map(process_all_features, args)
+	p = Pool(48)
+	p.map(process_all_features, args)
 
 	return
 #------------------------------------------#
