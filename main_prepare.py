@@ -236,8 +236,8 @@ if __name__ == '__main__':
 	create_hdf()
 	
 	'''
-	prepare_y()
-	prepare_x()
-	sys.exit(0)
+	# prepare_y()
+	# prepare_x()
+	
 	create_hdf()
 	
