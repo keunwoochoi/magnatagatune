@@ -72,7 +72,7 @@ def create_hdf():
 				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
 					try:
-						data_to_store[write_idx + seg_idx*num_datapoints] = tf_here
+						data_to_store[write_idx + seg_idx*len(indices)] = tf_here
 					except ValueError:
 						pdb.set_trace()
 				if write_idx % 100 == 0:
