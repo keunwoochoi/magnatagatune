@@ -129,7 +129,7 @@ def prepare_x():
 	'''It spawns process'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	for path in fm.paths:
-		print 'path: ' + fm.paths
+		print 'path: ' + path
 		raw_input()
 
 	args = zip(fm.clip_ids, fm.paths)
