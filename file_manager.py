@@ -11,6 +11,7 @@ import pdb
 class File_Manager():
 	def __init__(self):
 		self.clip_ids = [] # integer.
+		self.idx_no_audio = []
 		self.paths = [] #string
 		self.idx_permutation = []
 		self.id_permutation = []
@@ -25,6 +26,7 @@ class File_Manager():
 	def fill_from_csv(self):
 		''' This function fills
 		- self.clip_ids
+		- self.idx_no_audio
 		- self.paths
 		- self.id_to_paths
 		- self.id_to_idx
@@ -41,7 +43,7 @@ class File_Manager():
 				# [0]:clip_id, track_no (in album), title, artist, album, url, seg_start, seg_end, original_url, [9]:mp3_path
 				self.clip_ids.append(int(values[0]))
 				if values[9] == '':
-					pdb.set_trace()
+				 	self.idx_no_audio.append(line_idx)
 				self.paths.append(values[9])
 				self.id_to_paths[values[0]] = values[9]
 				self.id_to_idx[values[0]] = line_idx

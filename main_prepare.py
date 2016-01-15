@@ -30,6 +30,7 @@ def check_if_done(path):
 	return False
 
 def prepare_y():
+
 	# create a file manager
 	if os.path.exists(PATH_DATA + FILE_DICT["file_manager"]):
 		fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
@@ -108,7 +109,8 @@ def process_all_features(args):
 	''' args = (clip_id, mp3_path)
 	'''
 	clip_id, mp3_path = args # unpack
-	print 'mp3 path is: ' + mp3_path
+	if mp3_path == '':
+		return
 	# constants
 	num_segments = NUM_SEG # 7
 	len_segments = LEN_SEG # 4.0
@@ -128,8 +130,6 @@ def process_all_features(args):
 def prepare_x():
 	'''It spawns process'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	pdb.set_trace()
-
 	args = zip(fm.clip_ids, fm.paths)
 	
 	# for arg in args:
