@@ -40,9 +40,9 @@ def create_hdf():
 	print '='*60
 	print '====== create_hdf ======'
 	print '='*60
-	for idx, indices in enumerate(set_indices): # e.g. For Train set, 
+	for set_name_idx, indices in enumerate(set_indices): # e.g. For Train set, it's (0, [random indices])
 		# dataset file
-		filename = 'magna_'+set_name[idx] + '.hdf'
+		filename = 'magna_'+set_name[set_name_idx] + '.hdf'
 		if os.path.exists(PATH_HDF_LOCAL + filename):
 			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
 			print 'loading hdf file that exists already there.'
@@ -71,7 +71,10 @@ def create_hdf():
 					continue
 				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-					data_to_store[write_idx + seg_idx*num_datapoints] = tf_here
+					try:
+						data_to_store[write_idx + seg_idx*num_datapoints] = tf_here
+					except ValueError:
+						pdb.set_trace()
 				if write_idx % 100 == 0:
 					print '%d-th clip at %s, %s is done' % (clip_idx, dataset_name, filename)
 			np.save(done_idx_file_path, write_idx)
