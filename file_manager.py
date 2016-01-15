@@ -84,15 +84,19 @@ class File_Manager():
 		np.save(PATH_DATA + FILE_DICT['label_matrix'], label_matrix)
 		return label_matrix
 
- 	def load_file(self, file_type, clip_id, seg_id):
+ 	def load_file(self, file_type, clip_id, seg_idx):
  		'''for file tyle (cqt, stft, mel,..) 
  		file_type : string, 'cqt', 'stft',..
  		clip_id   : integer. 
- 		seg_id    : integer in range(7): 
+ 		seg_idx   : integer in range(7): 
  		
  		return: corresponding numpy array, 2d, for 4-seconds.
  		'''
  		pass
+ 		
+ 	# def load_mp3(self, clip_id):
+ 	# 	return librosa.load(PATH_MAGNA + self.id_to_paths[clip_id], sr=SR)
+
 
 
 

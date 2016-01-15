@@ -30,7 +30,7 @@ def refine_label_matrix():
 				['horn', 'horns'],
 				['india', 'indian'],
 				['jazz', 'jazzy'],
-				['male', 'male_singer', 'male_vocal', 'male_vocals', 'male_voice', 'man', 'man singing', 'men'],
+				['male', 'male singer', 'male vocal', 'male vocals', 'male voice', 'man', 'man singing', 'men'],
 				['no beat', 'no drums'],
 				['no singer', 'no singing', 'no vocal','no vocals', 'no voice', 'no voices', 'instrumental'],
 				['opera', 'operatic'],
@@ -48,7 +48,7 @@ def refine_label_matrix():
 
 	whole_label_matrix = fm.load_label_matrix()
 	tags_to_data = {}
-	for tag_idx, tag in fm.tags: # for 188 tags,
+	for tag_idx, tag in enumerate(fm.tags): # for 188 tags,
 		tags_to_data[tag] = whole_label_matrix[:, tag_idx]
 
 	new_tags_to_data = {}
@@ -74,13 +74,16 @@ def refine_label_matrix():
 	total_counts = np.sum(merged_label_matrix, axis=0)
 	tag_args = total_counts.argsort()[::-1] # descending order 
 	sorted_merged_label_matrix = np.zeros((fm.num_songs , num_new_tags))
+	sorted_tags = []
 	for new_idx, tag_idx in enumerate(tag_args):
 		sorted_merged_label_matrix[:,new_idx] = merged_label_matrix[:,tag_idx]
+		sorted_tags.append(new_tags[tag_idx])
 
+	# trim at 1.0 
+	sorted_merged_label_matrix =  np.minimum(sorted_merged_label_matrix, np.ones(sorted_merged_label_matrix.shape))
 	np.save(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'], sorted_merged_label_matrix)
+	cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_tags'], 'w'))
 	return
 
-def squeeze_label_matrix(reduced_num, label_matrix):
-	'''pick top-N popular tags and return the song-tag matrix.'''
-	pass
+
 
