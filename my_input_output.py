@@ -54,9 +54,9 @@ def load_x(tf_type=None):
 	return train_x, valid_x, test_x
 
 def load_y(top_n=50):
-	train_y = h5Py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
-	valid_y = h5Py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
-	test_y  = h5Py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
+	train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
+	valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
+	test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
 
 	return train_y, valid_y, test_y
 
