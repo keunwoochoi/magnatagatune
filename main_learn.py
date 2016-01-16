@@ -20,6 +20,19 @@ import my_keras_utils
 import my_plots
 import hyperparams_manager
 
+def append_history(total_history, local_history):
+	'''local history is a dictionary,
+	key:value == string:dictionary.
+
+	key: loss, vall_loss, batch, size
+	Therefore total_history has the same keys and append the values.
+	'''
+
+	for key in local_history:
+		if key not in total_history:
+			total_history[key] = []
+		total_history[key] = total_history[key] + local_history[key]
+
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
 
@@ -129,7 +142,7 @@ def run_with_setting(hyperparams, argv=None):
 														verbose=1, 
 														callbacks=callbacks,
 														shuffle='batch')
-			my_utils.append_history(total_history, history.history)
+			append_history(total_history, history.history)
 			
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
