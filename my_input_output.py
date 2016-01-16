@@ -4,6 +4,7 @@ import h5py
 import numpy as np
 from environments import *
 from constants import *
+import hdf5matrix
 
 def load_x(tf_type=None):
 	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
