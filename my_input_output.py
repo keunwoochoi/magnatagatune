@@ -47,16 +47,16 @@ def load_x(tf_type=None):
 	else:
 		normalizer = None
 
-	train_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_train.h5', tf_type, None, None, normalizer=normalizer)
-	valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.h5', tf_type, None, None, normalizer=normalizer)	
-	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.h5',  tf_type, None, None, normalizer=normalizer)
+	train_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_train.hdf', tf_type, None, None, normalizer=normalizer)
+	valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.hdf', tf_type, None, None, normalizer=normalizer)	
+	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.hdf',  tf_type, None, None, normalizer=normalizer)
 	
 	return train_x, valid_x, test_x
 
 def load_y(top_n=50):
-	train_y = h5Py.File(PATH_HDF_LOCAL + 'magna_train.h5')['y'][:, :top_n]
-	valid_y = h5Py.File(PATH_HDF_LOCAL + 'magna_valid.h5')['y'][:, :top_n]
-	test_y  = h5Py.File(PATH_HDF_LOCAL + 'magna_test.h5')['y'][:, :top_n]
+	train_y = h5Py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
+	valid_y = h5Py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
+	test_y  = h5Py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
 
 	return train_y, valid_y, test_y
 
