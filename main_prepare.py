@@ -100,6 +100,8 @@ def create_hdf():
 		# fill it.
 
 		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
+			if write_idx <= done_idx:
+					continue
 			for seg_idx in range(NUM_SEG):
 				data_to_store[write_idx + seg_idx*len(indices)] = label_matrix[clip_idx,:]
 			if write_idx % 100 == 0:
