@@ -18,6 +18,8 @@ import my_keras_utils
 import my_plots
 import hyperparams_manager
 
+def str2bool(v):
+	return v.lower() in ("yes", "true", "t", "1")
 
 def run_with_setting(hyperparams, argv=None):
 	# pick top-N from label matrix
@@ -180,6 +182,134 @@ def run_with_setting(hyperparams, argv=None):
 
 	
 if __name__ == '__main__':
+		parser = argparse.ArgumentParser(description='parser for input arguments')
+	parser.add_argument('-ne', '--n_epoch', type=int, 
+											help='set the number of epoch, \ndefault=30', 
+											required=False)
+	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, melgram \ndefault=cqt.', 
+								required=False)
+	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
+								   		required=False)
+	parser.add_argument('-l', '--layers', type=int,
+								 		help='set the number(s) of layers, \ndefault=[5], set like 4, 5, 6',
+										required=False)
+	parser.add_argument('-lfc', '--num_fc_layers', type=int,
+								 		help='set the number(s) of fc layers, \ndefault=[2], set like 1, 2, 3',
+										required=False)
+	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
+									   required=False)
+	parser.add_argument('-op', '--optimiser', help='optimiser - rmsprop, sgd, adagrad, adam, adadelta \ndefault=rmsprop', 
+									   required=False)
+	parser.add_argument('-lf', '--loss_function', help='loss function - binary_crossentropy, rmse\ndefault=binary_crossentropy', 
+									   required=False)
+	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
+									   required=False)
+	parser.add_argument('-cps', '--clips_per_song', type=int,
+													help='set #clips/song, \ndefault=3',
+													required=False)
+	parser.add_argument('-dl', '--dim_labels', type=int,
+												help='set dimension of label, \ndefault=3',
+												required=False)
+	parser.add_argument('-fm', '--feature_maps', type=int,
+												help='set number of feature maps in convnet, \ndefault=48',
+												required=False)
+	parser.add_argument('-nu', '--number_units', type=int,
+												help='set number of units in fc layers, \ndefault=512',
+												required=False)	
+	parser.add_argument('-it', '--is_test', type=int,
+												help='say if it is test \ndefault=0 (False)',
+												required=False)
+	parser.add_argument('-memo', '--memo', 	help='short memo \ndefault=""',
+											required=False)
+	parser.add_argument('-do', '--dropout', type=float,
+											help='dropout value that is applied to conv',
+											required=False)
+	parser.add_argument('-do_fc', '--dropout_fc', type=float,
+												help='dropout value that is applied to FC layers',
+												required=False)
+	parser.add_argument('-reg', '--regulariser', type=float,
+												help='regularise coeff that is applied to conv',
+												required=False)
+	parser.add_argument('-reg_fc', '--regulariser_fc', type=float,
+														help='regularise coeff that is applied to fc layer',
+														required=False)
+	parser.add_argument('-bn', '--batch_normalization', type=str,
+														help='BN for conv layers',
+														required=False)
+	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=str,
+															help='BN for fc layers',
+															required=False)
+	parser.add_argument('-debug', '--debug', type=str,
+											help='if debug',
+											required=False)
+	parser.add_argument('-lr', '--learning_rate', type=float,
+													help='learning_rate',
+													required=False)
+	parser.add_argument('-ol', '--output_layer', type=str,
+												help='sigmoid, linear',
+												required=False )
+	
+	
+	args = parser.parse_args()
+	
+	if args.layers:
+		TR_CONST["num_layers"] = args.layers
+	if args.num_fc_layers:
+		TR_CONST["num_fc_layers"] = args.num_fc_layers
+	if args.n_epoch:
+		TR_CONST["num_epoch"] = args.n_epoch
+	if args.tf:
+		TR_CONST["tf_type"] = args.tf
+		print 'tf-representation type is input by: %s' % TR_CONST["tf_type"]
+	if args.optimiser:
+		TR_CONST["optimiser"] = args.optimiser
+	if args.loss_function:
+		TR_CONST["loss_function"] = args.loss_function
+	if args.model:
+		TR_CONST["model_type"] = args.model
+	if args.activations:
+		TR_CONST["activations"] = [args.activations] * TR_CONST["num_layers"]
+		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_fc_layers"]
+	if args.task:
+		if args.task in['class', 'cla', 'c', 'classification']:
+			TR_CONST["isClass"] = True
+			TR_CONST["isRegre"] = False
+		else:
+			TR_CONST["isClass"] = False
+			TR_CONST["isRegre"] = True
+	if args.clips_per_song:
+		TR_CONST["clips_per_song"] = args.clips_per_song
+	if args.dim_labels:
+		TR_CONST["dim_labels"] = args.dim_labels
+	if args.feature_maps:
+		TR_CONST["num_feat_maps"] = [args.feature_maps]*TR_CONST["num_layers"]
+	if args.number_units:
+		TR_CONST["nums_units_fc_layers"] = [args.number_units]*TR_CONST["num_fc_layers"]
+	if args.is_test:
+		TR_CONST["is_test"] = bool(int(args.is_test))
+	if args.memo:
+		TR_CONST["!memo"] = args.memo
+	else:
+		TR_CONST["!memo"] = ''
+	if args.dropout or args.dropout == 0.0:
+		TR_CONST["dropouts"] = [args.dropout]*TR_CONST["num_layers"]
+	if args.dropout_fc or args.dropout_fc == 0.0:
+		TR_CONST["dropouts_fc_layers"] = [args.dropout_fc]*TR_CONST["num_fc_layers"]
+	if args.regulariser or args.regulariser == 0.0:
+		TR_CONST["regulariser"] = [(TR_CONST["regulariser"][0][0], args.regulariser)]*TR_CONST["num_layers"]
+	if args.regulariser_fc or args.regulariser == 0.0:
+		TR_CONST["regulariser_fc_layers"] = [(TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc)]*TR_CONST["num_fc_layers"]
+	if args.batch_normalization:
+		TR_CONST["BN"] = str2bool(args.batch_normalization)
+	if args.batch_normalization_fc:
+		TR_CONST["BN_fc_layers"] = str2bool(args.batch_normalization_fc)
+	if args.learning_rate:
+		TR_CONST["learning_rate"] = args.learning_rate
+	if args.debug:
+		TR_CONST["debug"] = str2bool(args.debug)
+	if args.output_layer:
+		TR_CONST["output_activation"] = args.output_layer
+
 
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
