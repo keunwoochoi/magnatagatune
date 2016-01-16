@@ -48,8 +48,8 @@ def load_x(tf_type=None):
 		normalizer = None
 
 	train_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_train.hdf', tf_type, None, None, normalizer=normalizer)
-	valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_valid.hdf', tf_type, None, None, normalizer=normalizer)	
-	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'data_test.hdf',  tf_type, None, None, normalizer=normalizer)
+	valid_x = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_valid.hdf', tf_type, None, None, normalizer=normalizer)	
+	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_test.hdf',  tf_type, None, None, normalizer=normalizer)
 	
 	return train_x, valid_x, test_x
 
