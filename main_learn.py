@@ -27,6 +27,7 @@ def run_with_setting(hyperparams, argv=None):
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
 	train_y, valid_y, test_y = io.load_y(dim_labels)
 	if hyperparams['is_test']:
+		pdb.set_trace()
 		train_x = train_x[:96]
 		valid_x = valid_x[:96]
 		test_x = test_x[:96]
@@ -111,23 +112,31 @@ def run_with_setting(hyperparams, argv=None):
 
  	# run
 	while True:	
-		
-		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
-										batch_size=batch_size, 
-										nb_epoch=num_epoch, 
-										show_accuracy=True, 
-										verbose=1, 
-										callbacks=callbacks,
-										shuffle='batch')
-		total_epoch += num_epoch
-		print '%d-th epoch is complete' % total_epoch
-		my_utils.append_history(total_history, history.history)
+		num_sub_epoch = 10
+		for sub_epoch_idx in range(num_sub_epoch):
+			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
+			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
+			train_x_here = train_x[seg_from:seg_to]
+			train_y_here = train_y[seg_from:seg_to]
+			history=model.fit(train_x_here, train_y_here, validation_data=(valid_x, valid_y), 
+														batch_size=batch_size, 
+														nb_epoch=1, 
+														show_accuracy=hyperparams['isClass'], 
+														verbose=1, 
+														callbacks=callbacks,
+														shuffle='batch')
+			my_utils.append_history(total_history, history.history)
+			
+		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
+		total_epoch += 1
 		
 		if os.path.exists('will_stop.keunwoo'):	
-			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-			break
+			if total_epoch < num_epoch:
+				pass
+			else:
+				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+				break
 		else:
-			num_epoch = 1
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
