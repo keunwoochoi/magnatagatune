@@ -182,7 +182,7 @@ def run_with_setting(hyperparams, argv=None):
 
 	
 if __name__ == '__main__':
-		parser = argparse.ArgumentParser(description='parser for input arguments')
+	parser = argparse.ArgumentParser(description='parser for input arguments')
 	parser.add_argument('-ne', '--n_epoch', type=int, 
 											help='set the number of epoch, \ndefault=30', 
 											required=False)
