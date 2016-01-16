@@ -92,7 +92,7 @@ def create_hdf():
 		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 		if dataset_name in file_write:
 			data_to_store = file_write[dataset_name]
-			if data_to_store != (num_datapoints, label_matrix.shape[1]):
+			if data_to_store.shape != (num_datapoints, label_matrix.shape[1]):
 				del file_write[dataset_name]
 			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		else:
