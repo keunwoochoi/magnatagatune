@@ -82,13 +82,13 @@ def run_with_setting(hyperparams, argv=None):
 														verbose=0)
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 96
+		batch_size = 64
 	elif hyperparams["tf_type"] == 'stft':
-		batch_size = 48
+		batch_size = 32
 	elif hyperparams["tf_type"] == 'mfcc':
-		batch_size = 192
+		batch_size = 128
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 96
+		batch_size = 64
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -313,9 +313,12 @@ if __name__ == '__main__':
 		TR_CONST["output_activation"] = args.output_layer
 
 
+
+	#----------------------------------------------------------#
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
+	TR_CONST["dim_labels"] = 20
 	# TR_CONST['loss_function'] = 'categorical_crossentropy'
 	# TR_CONST["output_activation"] = 'softmax'
 	TR_CONST['loss_function'] = 'binary_crossentropy'

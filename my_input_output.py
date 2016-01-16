@@ -29,8 +29,8 @@ def load_x(tf_type=None):
 		return (input_data - global_mean) / global_std
 	
 	def normalizer_melgram(input_data):
-		global_mean = 0
-		global_std = 10
+		global_mean = -1.65182
+		global_std = 21.5
 		return (input_data - global_mean) / global_std
 
 	if tf_type is None:
