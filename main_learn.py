@@ -77,11 +77,11 @@ def run_with_setting(hyperparams, argv=None):
 														verbose=0)
 	# other constants
 	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 48
-	elif hyperparams["tf_type"] == 'stft':
-		batch_size = 24
-	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 96
+	elif hyperparams["tf_type"] == 'stft':
+		batch_size = 48
+	elif hyperparams["tf_type"] == 'mfcc':
+		batch_size = 192
 	elif hyperparams["tf_type"] == 'melgram':
 		batch_size = 96
 	else:
@@ -111,7 +111,7 @@ def run_with_setting(hyperparams, argv=None):
 
  	# run
 	while True:	
-		batch_size = batch_size / 2
+		
 		history=model.fit(train_x, train_y, validation_data=(valid_x, valid_y), 
 										batch_size=batch_size, 
 										nb_epoch=num_epoch, 
