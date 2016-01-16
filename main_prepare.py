@@ -51,6 +51,7 @@ def create_hdf():
 			print 'creating new hdf file.'
 		#
 		num_datapoints = NUM_SEG * len(indices)
+		print 'number of data point in %s is %d' % (filename, num_datapoints)
 		# dataset name
 		for dataset_name in dataset_names: # e.g. For cqt,
 			test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
@@ -73,7 +74,7 @@ def create_hdf():
 					continue
 				for seg_idx in range(NUM_SEG):  # e.g. For a segment 
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-					if test_tf == None:
+					if test_tf is None:
 						os.remove('%s%d_%d.npy' % (PATH_TF['dataset_name'], fm.clip_ids[clip_idx], seg_idx))
 						process_all_features((fm.clip_ids[clip_idx], fm.paths[clip_idx]))
 						tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)	
@@ -91,7 +92,7 @@ def create_hdf():
 		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 		if dataset_name in file_write:
 			data_to_store = file_write[dataset_name]
-			if data_to_store.shape[1] != label_matrix.shape[1]:
+			if data_to_store != (num_datapoints, label_matrix.shape[1]):
 				del file_write[dataset_name]
 			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		else:
