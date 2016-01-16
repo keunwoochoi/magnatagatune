@@ -98,7 +98,7 @@ def create_hdf():
 		else:
 			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		# fill it.
-		pdb.set_trace()
+
 		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
 			for seg_idx in range(NUM_SEG):
 				data_to_store[write_idx + seg_idx*len(indices)] = label_matrix[clip_idx,:]
@@ -106,7 +106,6 @@ def create_hdf():
 				np.save(done_idx_file_path, write_idx)
 		print 'Labels are DONE as well! for %s' % dataset_name
 	
-
 	print 'HDF for train, valid, test and for all feature is created and stored.'
 	print 'Now copy it from %s to c4dm server.' % PATH_HDF_LOCAL
 	print '='*60
