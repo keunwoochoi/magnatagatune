@@ -94,7 +94,7 @@ def create_hdf():
 			data_to_store = file_write[dataset_name]
 			if data_to_store.shape != (num_datapoints, label_matrix.shape[1]):
 				del file_write[dataset_name]
-			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
+				data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		else:
 			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		# fill it.
