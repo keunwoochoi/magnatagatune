@@ -23,7 +23,14 @@ def run_with_setting(hyperparams, argv=None):
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
 	train_y, valid_y, test_y = io.load_y(dim_labels)
-
+	if hyperparams['is_test']:
+		train_x = train_x[:96]
+		valid_x = valid_x[:96]
+		test_x = test_x[:96]
+		train_y = train_y[:96]
+		valid_y = valid_y[:96]
+		test_y = test_y[:96]
+		
 	hyperparams['height_image'] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
 	
