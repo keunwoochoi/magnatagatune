@@ -34,16 +34,17 @@ def run_with_setting(hyperparams, argv=None):
 	hyperparams['height_image'] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
 	
-	hyperparams_manager = hyperparams_manager.Hyperparams_Manager()
+	hp_manager = hyperparams_manager.Hyperparams_Manager()
+
 
 	# name, path, ...
-	nickname = hyperparams_manager.get_name(hyperparams)
+	nickname = hp_manager.get_name(hyperparams)
 	timename = time.strftime('%m-%d-%Hh%M')
 	if hyperparams["is_test"]:
 		model_name = 'test_' + nickname
 	else:
 		model_name = timename + '_' + nickname
-	hyperparams_manager.save_new_setting(hyperparams)
+	hp_manager.save_new_setting(hyperparams)
 	print '-'*60
 	print 'model name: %s' % model_name
 	model_name_dir = model_name + '/'
@@ -55,8 +56,8 @@ def run_with_setting(hyperparams, argv=None):
 		os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 		os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
-	hyperparams_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
- 	hyperparams_manager.print_setting(hyperparams)
+	hp_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
+ 	hp_manager.print_setting(hyperparams)
  	# build model
  	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 	# prepare callbacks
