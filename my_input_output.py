@@ -4,6 +4,7 @@ import h5py
 import numpy as np
 from environments import *
 from constants import *
+sys.path.append(PATH_EMBEDDING)
 import hdf5matrix
 
 def load_x(tf_type=None):
