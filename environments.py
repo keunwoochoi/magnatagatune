@@ -89,6 +89,7 @@ PATH_CQT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/cqt/'
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/stft/'
 PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/mfcc/'
 
+PATH_TF = {}
 PATH_TF['cqt'] = PATH_CQT
 PATH_TF['stft']= PATH_STFT
 PATH_TF['mfcc']= PATH_MFCC
