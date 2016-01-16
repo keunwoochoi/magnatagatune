@@ -16,3 +16,6 @@ FILE_DICT['label_matrix'] = 'label_matrix.npy'
 FILE_DICT['file_manager'] = 'file_manager.cP'
 FILE_DICT['sorted_merged_label_matrix'] = 'sorted_merged_label_matrix.npy'
 FILE_DICT['sorted_tags'] = 'sorted_tags.cP'
+
+FILE_DICT["hyperparam_manager"] = "hyperparam_manager.cP"
+
