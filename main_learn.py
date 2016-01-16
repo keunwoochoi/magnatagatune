@@ -318,7 +318,6 @@ if __name__ == '__main__':
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
-	TR_CONST["dim_labels"] = 20
 	# TR_CONST['loss_function'] = 'categorical_crossentropy'
 	# TR_CONST["output_activation"] = 'softmax'
 	TR_CONST['loss_function'] = 'binary_crossentropy'
