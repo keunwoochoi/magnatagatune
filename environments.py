@@ -89,6 +89,10 @@ PATH_CQT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/cqt/'
 PATH_STFT = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/stft/'
 PATH_MFCC = PATH_IMPORT + 'c4dm-04/keunwoo/magnatagatune/mfcc/'
 
+PATH_TF['cqt'] = PATH_CQT
+PATH_TF['stft']= PATH_STFT
+PATH_TF['mfcc']= PATH_MFCC
+PATH_TF['melgram']=PATH_MELGRAM
 
 for path in [PATH_DATA, PATH_MELGRAM, PATH_CQT, PATH_STFT, PATH_MFCC, PATH_HDF_LOCAL]:
 	if not os.path.exists(path):

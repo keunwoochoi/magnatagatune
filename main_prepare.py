@@ -91,8 +91,11 @@ def create_hdf():
 		label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 		if dataset_name in file_write:
 			data_to_store = file_write[dataset_name]
+			if data_to_store.shape[1] != label_matrix.shape[1]:
+				del file_write[dataset_name]
+			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		else:
-			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, fm.num_tags))
+			data_to_store = file_write.create_dataset(dataset_name, (num_datapoints, label_matrix.shape[1]))
 		# fill it.
 		for write_idx, clip_idx in enumerate(indices): # e.g. For a clip, clip_idx is randomly permutted here. 
 			for seg_idx in range(NUM_SEG):
