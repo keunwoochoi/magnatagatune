@@ -163,7 +163,8 @@ def run_with_setting(hyperparams, argv=None):
 		total_epoch += 1
 		
 		if os.path.exists('will_stop.keunwoo'):	
-			if total_epoch < num_epoch:
+			if total_epoch > num_epoch:
+
 				pass
 			else:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
@@ -344,8 +345,6 @@ if __name__ == '__main__':
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
-	# TR_CONST['loss_function'] = 'categorical_crossentropy'
-	# TR_CONST["output_activation"] = 'softmax'
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["output_activation"] = 'sigmoid'
 	TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
