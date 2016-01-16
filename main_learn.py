@@ -1,12 +1,14 @@
 import numpy as np
 import sys
 import os
-import my_input_output as io
-from environments import *
-from constants import *
+import time
 import h5py
 import keras
 from keras.utils.visualize_util import plot as keras_plot
+
+import my_input_output as io
+from environments import *
+from constants import *
 
 sys.path.append(PATH_EMBEDDING)
 from training_settings import *
