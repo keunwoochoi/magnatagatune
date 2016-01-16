@@ -4,6 +4,7 @@ import os
 import time
 import h5py
 import argparse
+import pdb
 import keras
 from keras.utils.visualize_util import plot as keras_plot
 
