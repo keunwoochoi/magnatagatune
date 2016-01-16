@@ -20,6 +20,21 @@ import my_keras_utils
 import my_plots
 import hyperparams_manager
 
+
+def update_setting_dict(setting_dict):
+
+	setting_dict["num_feat_maps"] = [setting_dict["num_feat_maps"][0]]*setting_dict["num_layers"]
+	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
+	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
+	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
+
+	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
+
+	return
+
 def append_history(total_history, local_history):
 	'''local history is a dictionary,
 	key:value == string:dictionary.
@@ -325,8 +340,6 @@ if __name__ == '__main__':
 	if args.output_layer:
 		TR_CONST["output_activation"] = args.output_layer
 
-
-
 	#----------------------------------------------------------#
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
@@ -336,6 +349,7 @@ if __name__ == '__main__':
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["output_activation"] = 'sigmoid'
 	TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
+	TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
 	TR_CONST["BN"] = False
 	TR_CONST["regulariser"] = [('l2', 0.)]*TR_CONST["num_layers"] # use [None] not to use.
 
