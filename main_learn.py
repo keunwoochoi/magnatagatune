@@ -286,7 +286,27 @@ if __name__ == '__main__':
 	
 	
 	args = parser.parse_args()
-	
+	#----------------------------------------------------------#
+	TR_CONST['isClass'] = True
+	TR_CONST['isRegre'] = False
+	TR_CONST["clips_per_song"] = 7
+	TR_CONST['loss_function'] = 'binary_crossentropy'
+	TR_CONST["output_activation"] = 'sigmoid'
+	TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
+	TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
+	TR_CONST["activations"] = ['lrelu']*TR_CONST["num_layers"]
+	TR_CONST["BN"] = False
+	TR_CONST["regulariser"] = [('l2', 0.)]*TR_CONST["num_layers"] # use [None] not to use.
+
+
+	TR_CONST["BN_fc_layers"] = True 
+	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
+
+	TR_CONST["nums_units_fc_layers"] = [128]*TR_CONST["num_fc_layers"]
+	TR_CONST["activations_fc_layers"] = ['lrelu']*TR_CONST["num_fc_layers"]
+	TR_CONST["regulariser_fc_layers"] = [('l2', 0.), ('l2', 0.)]
+	TR_CONST["BN_fc_layers"] = True 
+	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
 	if args.num_fc_layers:
@@ -345,28 +365,9 @@ if __name__ == '__main__':
 	if args.output_layer:
 		TR_CONST["output_activation"] = args.output_layer
 
-	#----------------------------------------------------------#
-	TR_CONST['isClass'] = True
-	TR_CONST['isRegre'] = False
-	TR_CONST["clips_per_song"] = 7
-	TR_CONST['loss_function'] = 'binary_crossentropy'
-	TR_CONST["output_activation"] = 'sigmoid'
-	TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
-	TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
-	TR_CONST["BN"] = False
-	TR_CONST["regulariser"] = [('l2', 0.)]*TR_CONST["num_layers"] # use [None] not to use.
 
 
-	TR_CONST["BN_fc_layers"] = True 
-	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
-
-	TR_CONST["nums_units_fc_layers"] = [128]*TR_CONST["num_fc_layers"]
-	TR_CONST["activations_fc_layers"] = ['lrelu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 0.), ('l2', 0.)]
-	TR_CONST["BN_fc_layers"] = True 
-
-
-
+ 	#----------------------------------------------------------#
 	update_setting_dict(TR_CONST)
 	
 	run_with_setting(TR_CONST, sys.argv)
