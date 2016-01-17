@@ -262,16 +262,20 @@ def standardise():
 		raw_data = f_train[tf][:30000]
 		mean = np.mean(raw_data)
 		std = np.std(raw_data)
+		mean = np.mean(mean, np.mean(f_train[tf][30000:60000]))
+		std = np.mean(std, np.std(f_train[tf][30000:60000]))
+		
 		print '%s, mean %f, std %f' % (tf, mean, std)
 		
 		f_write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
 		f_write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
 		f_write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
-		pdb.set_trace()
+		
 		for idx, sp in enumerate(f_train[tf]):
-			f_write_train[tf][idx] = (sp - mean) / std
-		f_write_valid[tf] = (f_valid[tf] - mean) / std
-		f_write_test[tf] = (f_test[tf] - mean) / std
+			f_write_train[idx] = (sp - mean) / std
+
+		f_write_valid = (f_valid[tf] - mean) / std
+		f_write_test = (f_test[tf] - mean) / std
 
 
 	f_train.close()
