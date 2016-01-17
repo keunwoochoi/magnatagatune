@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 
  	# run
 	while True:	
-		num_sub_epoch = 5
+		num_sub_epoch = 10
 		for sub_epoch_idx in range(num_sub_epoch):
 			if os.path.exists('stop_asap.keunwoo'):
 				break

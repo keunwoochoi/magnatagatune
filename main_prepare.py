@@ -259,4 +259,5 @@ if __name__ == '__main__':
 	# prepare_x()
 	
 	create_hdf()
+	standardise()
 	
