@@ -259,7 +259,7 @@ def standardise():
 	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w')	
 
 	for tf in tfs:
-		raw_data = f_train[tf]
+		raw_data = f_train[tf][:30000]
 		mean = np.mean(raw_data)
 		std = np.std(raw_data)
 		print '%s, mean %f, std %f' % (tf, mean, std)
