@@ -293,6 +293,9 @@ if __name__ == '__main__':
 	parser.add_argument('-ol', '--output_layer', type=str,
 												help='sigmoid, linear',
 												required=False )
+	parser.add_argument('-rs', '--resume', type=str,
+										help='model name with date, without w_, to load.',
+										required=False )
 	
 	
 	args = parser.parse_args()
@@ -374,6 +377,10 @@ if __name__ == '__main__':
 		TR_CONST["debug"] = str2bool(args.debug)
 	if args.output_layer:
 		TR_CONST["output_activation"] = args.output_layer
+	if args.resume:
+		TR_CONST["resume"] = args.resume
+	else:
+		TR_CONST["resume"] = ''
 
 
 
