@@ -229,14 +229,14 @@ def run_with_setting(hyperparams, argv=None):
 	min_loss = np.max(total_history['val_acc'])
 	best_batch = np.argmax(total_history['val_acc'])+1
 	num_run_epoch = len(total_history['val_acc'])
-	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
+	oneline_result = '%6.4f, acc %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
 	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 		pass
-	f = open( (PATH_RESULTS + '%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
+	f = open( (PATH_RESULTS + '%s_%s_acc_%06.4f_at_(%d_of_%d)_%s'  % \
 		(timename, hyperparams["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
 	f.close()
 	with open('one_line_log.txt', 'a') as f:
-		f.write('%6.4f, %d/%d, %s' % (min_loss, best_batch, num_run_epoch, model_name))
+		f.write(oneline_result)
 		f.write(' ' + ' '.join(argv) + '\n')
 	print '========== DONE: %s ==========' % model_name
 	return min_loss
