@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 
  	# run
 	while True:	
-		num_sub_epoch = 10
+		num_sub_epoch = 5
 		for sub_epoch_idx in range(num_sub_epoch):
 			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
@@ -164,7 +164,6 @@ def run_with_setting(hyperparams, argv=None):
 		
 		if os.path.exists('will_stop.keunwoo'):	
 			if total_epoch > num_epoch:
-
 				pass
 			else:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
@@ -219,7 +218,7 @@ if __name__ == '__main__':
 											required=False)
 	parser.add_argument('-tf', '--tf', help='whether cqt, stft, mfcc, melgram \ndefault=cqt.', 
 								required=False)
-	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_sequential.', 
+	parser.add_argument('-m', '--model', help='set the model, \ndefault=vgg_simple.', 
 								   		required=False)
 	parser.add_argument('-l', '--layers', type=int,
 								 		help='set the number(s) of layers, \ndefault=[5], set like 4, 5, 6',
