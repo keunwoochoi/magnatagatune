@@ -245,19 +245,40 @@ def prepare_x():
 
 	return
 #------------------------------------------#
+def standardise():
+	'''load all hdf file and standardise them'''
+
+	tfs = ['cqt', 'melgram', 'stft', 'mfcc']
+	nb_subset = 10
+	f_train = h5py.file(PATH_HDF_LOCAL + 'magna_train.hdf','r+')
+	f_valid = h5py.file(PATH_HDF_LOCAL + 'magna_valid.hdf','r+')
+	f_test = h5py.file(PATH_HDF_LOCAL + 'magna_test.hdf','r+')
+	for tf in tfs:
+		raw_data = f_train[tf]
+		mean = np.mean(raw_data)
+		std = np.std(raw_data)
+
+		f_train[tf] = (f_train[tf] - mean) / std
+		f_valid[tf] = (f_valid[tf] - mean) / std
+		f_test[tf] = (f_test[tf] - mean) / std
+
+	f_train.close()
+	f_valid.close()
+	f_test.close()
+
+
 
 if __name__ == '__main__':
 	'''
-	Remove things in data/ to start over, and then,
+	First, remove things in data/ to restart. Then execute as follows:
 	
 	prepare_y()
 	prepare_x()
 	create_hdf()
-	
+	standardise()
 	'''
 	# prepare_y()
 	# prepare_x()
-	
-	create_hdf()
+	# create_hdf()
 	standardise()
 	
