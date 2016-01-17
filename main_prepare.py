@@ -254,9 +254,9 @@ def standardise():
 	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r')
 	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r')
 
-	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w+')
-	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w+')
-	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w+')	
+	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w')
+	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w')
+	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w')	
 
 	for tf in tfs:
 		raw_data = f_train[tf][:30000]
