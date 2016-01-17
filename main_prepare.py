@@ -262,8 +262,8 @@ def standardise():
 		raw_data = f_train[tf][:30000]
 		mean = np.mean(raw_data)
 		std = np.std(raw_data)
-		mean = np.mean(mean, np.mean(f_train[tf][30000:60000]))
-		std = np.mean(std, np.std(f_train[tf][30000:60000]))
+		mean = np.mean([mean, np.mean(f_train[tf][30000:60000])])
+		std = np.mean([std, np.std(f_train[tf][30000:60000])])
 		
 		print '%s, mean %f, std %f' % (tf, mean, std)
 		
