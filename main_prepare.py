@@ -250,22 +250,36 @@ def standardise():
 
 	tfs = ['cqt', 'melgram', 'stft', 'mfcc']
 	nb_subset = NUM_SEG
-	f_train = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf','r+')
-	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r+')
-	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r+')
+	f_train = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf','r')
+	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r')
+	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r')
+
+	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w')
+	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w')
+	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w')	
+
 	for tf in tfs:
 		raw_data = f_train[tf]
 		mean = np.mean(raw_data)
 		std = np.std(raw_data)
-		sp_per_subset = len(f_train[tf])/nb_subset
+		print '%s, mean %f, std %f' % (tf, mean, std)
 		
-		for f_ptr in [f_train ,f_valid, f_test]:
-			for j in f_ptr[tf]:
-				f_ptr[tf] = (f_ptr[tf] - mean) / std
+		f_write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
+		f_write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
+		f_write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
+		
+		f_write_train[tf] = (f_train[tf] - mean) / std
+		f_write_valid[tf] = (f_valid[tf] - mean) / std
+		f_write_test[tf] = (f_test[tf] - mean) / std
+
 
 	f_train.close()
 	f_valid.close()
 	f_test.close()
+
+	f_write_train.close()
+	f_write_valid.close()
+	f_write_test.close()
 
 	print 'standaridse - done.'
 
