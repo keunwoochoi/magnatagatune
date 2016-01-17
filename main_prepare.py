@@ -267,24 +267,24 @@ def standardise():
 		
 		print '%s, mean %f, std %f' % (tf, mean, std)
 		
-		f_write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
-		f_write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
-		f_write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
+		write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
+		write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
+		write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
 		
 		for idx, sp in enumerate(f_train[tf]):
-			f_write_train[idx] = (sp - mean) / std
+			write_train[idx] = (sp - mean) / std
 
-		f_write_valid = (f_valid[tf] - mean) / std
-		f_write_test = (f_test[tf] - mean) / std
+		write_valid = (f_valid[tf] - mean) / std
+		write_test = (f_test[tf] - mean) / std
 
 
 	f_train.close()
 	f_valid.close()
 	f_test.close()
 
-	f_write_train.close()
-	f_write_valid.close()
-	f_write_test.close()
+	f_train_std.close()
+	f_valid_std.close()
+	f_teststd.close()
 
 	print 'standaridse - done.'
 
