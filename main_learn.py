@@ -180,7 +180,7 @@ def run_with_setting(hyperparams, argv=None):
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
-	best_batch = np.argmin(total_history['val_acc'])+1
+	best_batch = np.argmax(total_history['val_acc'])+1
 	predicted = model.predict(test_x, batch_size=batch_size)
 	print predicted[:10]
 
@@ -203,8 +203,8 @@ def run_with_setting(hyperparams, argv=None):
 												val_acc=total_history['val_acc'], 
 												out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 	
-	min_loss = np.min(total_history['val_acc'])
-	best_batch = np.argmin(total_history['val_acc'])+1
+	min_loss = np.max(total_history['val_acc'])
+	best_batch = np.argmax(total_history['val_acc'])+1
 	num_run_epoch = len(total_history['val_acc'])
 	oneline_result = '%6.4f, %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
 	with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
