@@ -249,7 +249,7 @@ def standardise():
 	'''load all hdf file and standardise them'''
 
 	tfs = ['cqt', 'melgram', 'stft', 'mfcc']
-	nb_subset = 10
+	nb_subset = NUM_SEG
 	f_train = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf','r+')
 	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r+')
 	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r+')
@@ -257,15 +257,23 @@ def standardise():
 		raw_data = f_train[tf]
 		mean = np.mean(raw_data)
 		std = np.std(raw_data)
+		sp_per_subset = len(f_train[tf])/nb_subset
+		
+		for subset_idx in range(nb_subset):
+			start = subset_idx * sp_per_subset
+			end = start + sp_per_subset
+			f_train[tf][start:end] = (f_train[tf][start:end] - mean) / std
+		print '.. %s train is done' % tf
 
-		f_train[tf] = (f_train[tf] - mean) / std
 		f_valid[tf] = (f_valid[tf] - mean) / std
-		f_test[tf] = (f_test[tf] - mean) / std
+		f_test[tf] = (f_test[tf] - mean) / 
+		print '%s: done' % tf
 
 	f_train.close()
 	f_valid.close()
 	f_test.close()
 
+	print 'standaridse - done.'
 
 
 if __name__ == '__main__':
