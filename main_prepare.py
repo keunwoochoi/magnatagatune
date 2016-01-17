@@ -254,9 +254,9 @@ def standardise():
 	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r')
 	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r')
 
-	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w')
-	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w')
-	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w')	
+	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w+')
+	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w+')
+	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w+')	
 
 	for tf in tfs:
 		raw_data = f_train[tf][:30000]
@@ -267,8 +267,8 @@ def standardise():
 		f_write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
 		f_write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
 		f_write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
-		
-		f_write_train[tf] = (f_train[tf] - mean) / std
+		for idx, sp in enumerate(f_train[tf]):
+			f_write_train[tf][idx] = (sp - mean) / std
 		f_write_valid[tf] = (f_valid[tf] - mean) / std
 		f_write_test[tf] = (f_test[tf] - mean) / std
 
