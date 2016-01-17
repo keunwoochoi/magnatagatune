@@ -108,7 +108,7 @@ def run_with_setting(hyperparams, argv=None):
 														patience=patience, 
 														verbose=0)
 	# other constants
-	num_sub_epoch = 3
+	num_sub_epoch = 5
 
 	if hyperparams["tf_type"] == 'cqt':
 		batch_size = 64
@@ -162,7 +162,11 @@ def run_with_setting(hyperparams, argv=None):
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
 			train_x_here = train_x[seg_from:seg_to]
 			train_y_here = train_y[seg_from:seg_to]
-			history=model.fit(train_x_here, train_y_here, validation_data=(valid_x, valid_y), 
+			if sub_epoch_idx % 2 == 0:
+				valid_data = (valid_x, valid_y)
+			else:
+				valid_data = None
+			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 														batch_size=batch_size, 
 														nb_epoch=1, 
 														show_accuracy=hyperparams['isClass'], 
