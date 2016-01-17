@@ -259,15 +259,9 @@ def standardise():
 		std = np.std(raw_data)
 		sp_per_subset = len(f_train[tf])/nb_subset
 		
-		for subset_idx in range(nb_subset):
-			start = subset_idx * sp_per_subset
-			end = start + sp_per_subset
-			f_train[tf][start:end] = (f_train[tf][start:end] - mean) / std
-		print '.. %s train is done' % tf
-
-		f_valid[tf] = (f_valid[tf] - mean) / std
-		f_test[tf] = (f_test[tf] - mean) / std
-		print '%s: done' % tf
+		for f_ptr in [f_train ,f_valid, f_test]:
+			for j in f_ptr[tf]:
+				f_ptr[tf] = (f_ptr[tf] - mean) / std
 
 	f_train.close()
 	f_valid.close()
