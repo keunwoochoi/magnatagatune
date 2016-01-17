@@ -266,7 +266,7 @@ def standardise():
 		print '.. %s train is done' % tf
 
 		f_valid[tf] = (f_valid[tf] - mean) / std
-		f_test[tf] = (f_test[tf] - mean) / 
+		f_test[tf] = (f_test[tf] - mean) / std
 		print '%s: done' % tf
 
 	f_train.close()
