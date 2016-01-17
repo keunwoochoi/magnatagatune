@@ -137,7 +137,6 @@ def run_with_setting(hyperparams, argv=None):
 	f.close()
 	if os.path.exists('stop_asap.keunwoo'):
 		os.remove('stop_asap.keunwoo')
-	total_history = {}
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
 	if hyperparams['is_test']:
@@ -148,9 +147,21 @@ def run_with_setting(hyperparams, argv=None):
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
 			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
+		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
+			total_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 		else:
 			print 'Model starts from zero.'
+			total_history = {}
+
+	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+										filename_prefix='local_INIT', 
+										normalize='local', 
+										mono=True)
+	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+										filename_prefix='global_INIT', 
+										normalize='global', 
+										mono=True)
 
  	# run
 	while True:	
@@ -204,8 +215,8 @@ def run_with_setting(hyperparams, argv=None):
 	print predicted[:10]
 	
 	#save results
-	np.save(PATH_RESULTS + model_name_dir + fileout + '_history.npy', [total_history['acc'], total_history['val_acc']])
-	np.save(PATH_RESULTS + model_name_dir + fileout + '_loss_testset.npy', loss_testset)
+	np.save(PATH_RESULTS + model_name_dir + 'total_history.npy', total_history)
+	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
 
