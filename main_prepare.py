@@ -273,10 +273,10 @@ def standardise():
 		
 		for idx, sp in enumerate(f_train[tf]):
 			write_train[idx] = (sp - mean) / std
-
-		write_valid = (f_valid[tf] - mean) / std
-		write_test = (f_test[tf] - mean) / std
-
+		for idx, sp in enumerate(f_valid[tf]):
+			write_valid[idx] = (sp - mean) / std
+		for idx, sp in enumerate(f_test[tf]):
+			write_test[idx] = (sp - mean) / std
 
 	f_train.close()
 	f_valid.close()
@@ -284,7 +284,7 @@ def standardise():
 
 	f_train_std.close()
 	f_valid_std.close()
-	f_teststd.close()
+	f_test_std.close()
 
 	print 'standaridse - done.'
 
