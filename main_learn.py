@@ -144,6 +144,13 @@ def run_with_setting(hyperparams, argv=None):
 	else:
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
+	if hyperparams['resume'] != '':
+		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
+			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
+			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
+		else:
+			print 'Model starts from zero.'
+
  	# run
 	while True:	
 		num_sub_epoch = 10
