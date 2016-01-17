@@ -250,9 +250,9 @@ def standardise():
 
 	tfs = ['cqt', 'melgram', 'stft', 'mfcc']
 	nb_subset = 10
-	f_train = h5py.file(PATH_HDF_LOCAL + 'magna_train.hdf','r+')
-	f_valid = h5py.file(PATH_HDF_LOCAL + 'magna_valid.hdf','r+')
-	f_test = h5py.file(PATH_HDF_LOCAL + 'magna_test.hdf','r+')
+	f_train = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf','r+')
+	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r+')
+	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r+')
 	for tf in tfs:
 		raw_data = f_train[tf]
 		mean = np.mean(raw_data)
