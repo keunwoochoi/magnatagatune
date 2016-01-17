@@ -146,7 +146,7 @@ def run_with_setting(hyperparams, argv=None):
 	while True:	
 		num_sub_epoch = 5
 		for sub_epoch_idx in range(num_sub_epoch):
-			if os.file.exists('stop_asap.keunwoo'):
+			if os.path.exists('stop_asap.keunwoo'):
 				break
 			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
