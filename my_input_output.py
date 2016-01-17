@@ -7,7 +7,7 @@ from constants import *
 sys.path.append(PATH_EMBEDDING)
 import hdf5matrix
 
-def load_x(tf_type=None):
+def load_x_hdf5matrix(tf_type=None):
 	'''using hdf. perhaps you should set PATH_HDF_LOCAL for the machine you're using.
 	tf_type: cqt, stft, mfcc, chroma. ''
 	task = 'reg', 'cla'
@@ -53,13 +53,20 @@ def load_x(tf_type=None):
 	
 	return train_x, valid_x, test_x
 
+
+def load_x(tf_type):
+	print 'Load x will load a standardised %s' % tf_type
+	train_x = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf')[tf_type]
+	valid_x = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf')[tf_type]
+	test_x  = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf')[tf_type]
+
+	return train_x, valid_x, test_x
+
+
 def load_y(top_n=50):
 	train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
 	valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
 	test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
 
 	return train_y, valid_y, test_y
-
-
-
 

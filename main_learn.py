@@ -72,7 +72,6 @@ def run_with_setting(hyperparams, argv=None):
 	
 	hp_manager = hyperparams_manager.Hyperparams_Manager()
 
-
 	# name, path, ...
 	nickname = hp_manager.get_name(hyperparams)
 	timename = time.strftime('%m-%d-%Hh%M')
@@ -109,6 +108,8 @@ def run_with_setting(hyperparams, argv=None):
 														patience=patience, 
 														verbose=0)
 	# other constants
+	num_sub_epoch = 3
+
 	if hyperparams["tf_type"] == 'cqt':
 		batch_size = 64
 	elif hyperparams["tf_type"] == 'stft':
@@ -127,9 +128,9 @@ def run_with_setting(hyperparams, argv=None):
 		pdb.set_trace()
 	print 'mean of target value:'
 	print np.mean(test_y, axis=0)
-	print 'mean of predicted value:'
-	print np.mean(predicted, axis=0)
-	print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
+	# print 'mean of predicted value:'
+	# print np.mean(predicted, axis=0)
+	# print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
@@ -153,7 +154,7 @@ def run_with_setting(hyperparams, argv=None):
 
  	# run
 	while True:	
-		num_sub_epoch = 10
+		
 		for sub_epoch_idx in range(num_sub_epoch):
 			if os.path.exists('stop_asap.keunwoo'):
 				break
