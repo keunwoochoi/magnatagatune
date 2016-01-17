@@ -146,6 +146,8 @@ def run_with_setting(hyperparams, argv=None):
 	while True:	
 		num_sub_epoch = 5
 		for sub_epoch_idx in range(num_sub_epoch):
+			if os.file.exists('stop_asap.keunwoo'):
+				break
 			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
 			train_x_here = train_x[seg_from:seg_to]
@@ -158,9 +160,12 @@ def run_with_setting(hyperparams, argv=None):
 														callbacks=callbacks,
 														shuffle='batch')
 			append_history(total_history, history.history)
-			
+
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
+		if os.file.exists('stop_asap.keunwoo'):
+			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+			break
 		
 		if os.path.exists('will_stop.keunwoo'):	
 			if total_epoch > num_epoch:
