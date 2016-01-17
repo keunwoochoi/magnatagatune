@@ -134,7 +134,8 @@ def run_with_setting(hyperparams, argv=None):
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
-	os.remove('stop_asap.keunwoo')
+	if os.path.exists('stop_asap.keunwoo'):
+		os.remove('stop_asap.keunwoo')
 	total_history = {}
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
@@ -301,7 +302,7 @@ if __name__ == '__main__':
 	TR_CONST["regulariser"] = [('l2', 0.)]*TR_CONST["num_layers"] # use [None] not to use.
 
 
-	TR_CONST["BN_fc_layers"] = True 
+	TR_CONST["BN_fc_layers"] = False 
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
 	TR_CONST["nums_units_fc_layers"] = [128]*TR_CONST["num_fc_layers"]
