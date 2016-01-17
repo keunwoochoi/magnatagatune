@@ -134,6 +134,7 @@ def run_with_setting(hyperparams, argv=None):
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
+	os.remove('stop_asap.keunwoo')
 	total_history = {}
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
@@ -163,7 +164,8 @@ def run_with_setting(hyperparams, argv=None):
 
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
-		if os.file.exists('stop_asap.keunwoo'):
+		if os.path.exists('stop_asap.keunwoo'):
+			os.remove('stop_asap.keunwoo')
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 			break
 		
