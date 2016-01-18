@@ -34,7 +34,7 @@ def evaluate_result(y_true, y_pred):
 	ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
 	ret['roc_auc_none'] = metrics.roc_auc_score(y_true, y_pred)
 	print '.'*60
-	for key in ret
+	for key in ret:
 		print key, ret[key]
 	print '.'*60
 	return ret
