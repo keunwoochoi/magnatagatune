@@ -471,13 +471,14 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'vanilla_w_bn_all'
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
-	
+		# blue_bunny
 		# 27148/27148 [==============================] - 318s - loss: 0.1499 - acc: 0.9485 - val_loss: 0.1837 - val_acc: 0.9454
 		# overfits.
 		TR_CONST["BN"] = False
 		TR_CONST["BN_fc_layers"] = True
 		TR_CONST["!memo"] = 'vanilla_bn_fc_only'
 		run_with_setting(TR_CONST, sys.argv)
+		# bear_wing
 		# 27148/27148 [==============================] - 1220s - loss: 0.1591 - acc: 0.9475 - val_loss: 0.1613 - val_acc: 0.9464
 		# this time there were 64 features per layer, which seems overkill
 		TR_CONST["BN"] = True # requires very long time -- but why??
@@ -485,11 +486,15 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'vanilla_bn_conv_only'
 		run_with_setting(TR_CONST, sys.argv)
 	
-	TR_CONST["BN"] = False
-	TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
-	TR_CONST["loss_function"] = 'mse'
-	run_with_setting(TR_CONST, sys.argv)
+	# also kinda working
+	# 27148/27148 [==============================] - 167s - loss: 0.0427 - acc: 0.9483 - val_loss: 0.0451 - val_acc: 0.9463
+	# 27148/27148 [==============================] - 165s - loss: 0.0392 - acc: 0.9510 - val_loss: 0.0408 - val_acc: 0.9492
+	# TR_CONST["BN"] = False
+	# TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
+	# TR_CONST["loss_function"] = 'mse'
+	# run_with_setting(TR_CONST, sys.argv)
 
+	TR_CONST["loss_function"] = 'mse'
 	TR_CONST["output_activation"] = 'linear'
 	TR_CONST["!memo"] = 'mse_loss_function_w_linear'
 	run_with_setting(TR_CONST, sys.argv)	
