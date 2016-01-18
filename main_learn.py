@@ -335,7 +335,7 @@ if __name__ == '__main__':
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
 	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
-	TR_CONST["activations_fc_layers"] = ['lrelu']*TR_CONST["num_fc_layers"]
+	TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)]
 	TR_CONST["BN_fc_layers"] = True 
 
