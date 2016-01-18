@@ -441,7 +441,7 @@ if __name__ == '__main__':
 	# may be it's not about regularise. how about lrelu then.
 	# 4. without 
 
-	# 01_18-16h59_cyan_koala
+	# 01-18-18h04_sharp_dog
 	# 27148/27148 [==============================] - 274s - loss: 0.1584 - acc: 0.9477 - val_loss: 0.1589 - val_acc: 0.9466
 	# 27148/27148 [==============================] - 245s - loss: 0.1533 - acc: 0.9484
 	# leark rely works! 
@@ -451,7 +451,7 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
-
+		# 01-18-18h30_pink_lynx
 		# 27148/27148 [==============================] - 222s - loss: 0.1435 - acc: 0.9500 - val_loss: 0.1484 - val_acc: 0.9480
 		TR_CONST["activations"] = ['relu']
 		TR_CONST["activations_fc_layers"] = ['relu']
@@ -461,7 +461,6 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 	
-
 	TR_CONST["BN"] = False
 	TR_CONST["!memo"] = 'vanilla_bn_fc_only'
 	run_with_setting(TR_CONST, sys.argv)
