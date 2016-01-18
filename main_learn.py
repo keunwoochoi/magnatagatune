@@ -331,6 +331,8 @@ if __name__ == '__main__':
 	TR_CONST["tf_type"] = 'melgram'
 	TR_CONST["num_layers"] = 6
 
+	TR_CONST["num_fc_layers"] = 2
+
 	TR_CONST["BN_fc_layers"] = False
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
