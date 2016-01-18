@@ -154,8 +154,8 @@ def run_with_setting(hyperparams, argv=None):
 	eval_result_init = evaluate_result(test_y, predicted)
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
-	print 'mean of target value:'
-	print np.mean(test_y, axis=0)
+	# print 'mean of target value:'
+	# print np.mean(test_y, axis=0)
 	# print 'mean of predicted value:'
 	# print np.mean(predicted, axis=0)
 	# print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
@@ -235,11 +235,11 @@ def run_with_setting(hyperparams, argv=None):
 	predicted = model.predict(test_x, batch_size=batch_size)
 	eval_result_final = evaluate_result(test_y, predicted)
 	print '.'*60
-	for key in eval_result_final:
+	for key in sorted(eval_result_final.keys()):
 		print key, eval_result_init[key], eval_result_final[key]
 	print '.'*60
-	print np.mean(test_y, axis=0)[:10]
-	print predicted[:2][:10]
+	# print np.mean(test_y, axis=0)[:10]
+	# print predicted[:2][:10]
 
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
@@ -453,6 +453,15 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 		# 01-18-18h30_pink_lynx
+		# roc_auc_micro 0.5 0.57511327831
+		# roc_auc_none 0.5 0.553722154374
+		# f1_binary 0.0 0.204950506406
+		# log_loss_after 10.6407992873 36.7952879927
+		# precision 0.527200247219 0.406661829929
+		# f1_macro 0.0 0.151255938067
+		# log_loss_before 10.6407992873 7.84873996332
+		# f1_micro 0.0 0.247900891155
+		# roc_auc_macro 0.5 0.553722154374
 		# 27148/27148 [==============================] - 222s - loss: 0.1435 - acc: 0.9500 - val_loss: 0.1484 - val_acc: 0.9480
 		TR_CONST["activations"] = ['relu']
 		TR_CONST["activations_fc_layers"] = ['relu']
