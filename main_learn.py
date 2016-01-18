@@ -240,6 +240,9 @@ def run_with_setting(hyperparams, argv=None):
 	for key in eval_result_final:
 		print key, eval_result_init[key], eval_result_final[key]
 	print '.'*60
+	print np.mean(test_y, axis=0)[:10]
+	print predicted[:2][:10]
+
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
