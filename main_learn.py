@@ -349,16 +349,16 @@ if __name__ == '__main__':
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
-	TR_CONST["optimiser"] = 'sgd'
+	TR_CONST["optimiser"] = 'adagrad'
 	TR_CONST['learning_rate'] = 5e-1 # for sgd
 	TR_CONST["output_activation"] = 'sigmoid'
 
 	TR_CONST["num_epoch"] = 4
-	TR_CONST["dropouts"] = [0.25]*TR_CONST["num_layers"]
+	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
-	TR_CONST["regulariser"] = [('l2', 5e-4)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_simple'
 	TR_CONST["tf_type"] = 'melgram'
 	TR_CONST["num_layers"] = 6
@@ -366,14 +366,12 @@ if __name__ == '__main__':
 	TR_CONST["num_fc_layers"] = 2
 
 	TR_CONST["BN_fc_layers"] = False
-	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
+	TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
 
 	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)] # bit too large?
-	TR_CONST["BN_fc_layers"] = True 
-
-
+	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
+	TR_CONST["BN_fc_layers"] = False 
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -440,6 +438,13 @@ if __name__ == '__main__':
 
 
  	#----------------------------------------------------------#
+	# 1. vanilla setting: not learning. 
+	# 2. regularise with 5e-4, 5e-4: 01-18-14h48_silly_pup, predicting means
+	# 2-1 with 1e-1, 5e-7... similar result. 
+	# 3. no reg, dropout (0.25, 0.25) only: learning stops after 1 subepoch..
+
+	
+
 	update_setting_dict(TR_CONST)
 	
 	run_with_setting(TR_CONST, sys.argv)
