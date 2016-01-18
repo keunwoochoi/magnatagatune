@@ -7,7 +7,7 @@ import argparse
 import pdb
 import keras
 from keras.utils.visualize_util import plot as keras_plot
-
+import cPickle as cP
 import my_input_output as io
 from environments import *
 from constants import *
@@ -148,10 +148,9 @@ def run_with_setting(hyperparams, argv=None):
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
 			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
-		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy'):
-			previous_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
+		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP'):
+			previous_history = cP.load(open(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP', 'r'))
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
-			pdb.set_trace()
 			append_history(total_history, previous_history)
 
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -215,7 +214,7 @@ def run_with_setting(hyperparams, argv=None):
 	print predicted[:10]
 	
 	#save results
-	np.save(PATH_RESULTS + model_name_dir + 'total_history.npy', total_history)
+	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
