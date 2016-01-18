@@ -220,10 +220,8 @@ def run_with_setting(hyperparams, argv=None):
 		
 		if os.path.exists('will_stop.keunwoo'):	
 			if total_epoch > num_epoch:
-				pass
-			else:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-				break
+				break				
 		else:
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
@@ -444,20 +442,26 @@ if __name__ == '__main__':
 	# 4. without 
 
 	# 01_18-16h59_cyan_koala
-	TR_CONST["activations"] = ['lrelu']
-	TR_CONST["activations_fc_layers"] = ['lrelu']
-	TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	# 27148/27148 [==============================] - 274s - loss: 0.1584 - acc: 0.9477 - val_loss: 0.1589 - val_acc: 0.9466
+	# 27148/27148 [==============================] - 245s - loss: 0.1533 - acc: 0.9484
+	# leark rely works! 
+	if False:
+		TR_CONST["activations"] = ['lrelu']
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
 
-	TR_CONST["activations"] = ['relu']
-	TR_CONST["activations_fc_layers"] = ['relu']
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["!memo"] = 'vanilla_w_bn_all'
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+		# 27148/27148 [==============================] - 222s - loss: 0.1435 - acc: 0.9500 - val_loss: 0.1484 - val_acc: 0.9480
+		TR_CONST["activations"] = ['relu']
+		TR_CONST["activations_fc_layers"] = ['relu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["!memo"] = 'vanilla_w_bn_all'
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
 	
+
 	TR_CONST["BN"] = False
 	TR_CONST["!memo"] = 'vanilla_bn_fc_only'
 	run_with_setting(TR_CONST, sys.argv)
