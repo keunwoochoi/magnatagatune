@@ -147,7 +147,7 @@ def run_with_setting(hyperparams, argv=None):
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
 			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
-		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
+		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy'):
 			total_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 		else:
