@@ -78,7 +78,7 @@ def run_with_setting(hyperparams, argv=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
-	num_sub_epoch = 3
+	num_sub_epoch = 5
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -443,7 +443,7 @@ if __name__ == '__main__':
 	# may be it's not about regularise. how about lrelu then.
 	# 4. without 
 
-
+	# 01_18-16h59_cyan_koala
 	TR_CONST["activations"] = ['lrelu']
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
