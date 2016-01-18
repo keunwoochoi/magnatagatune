@@ -78,7 +78,7 @@ def run_with_setting(hyperparams, argv=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
-	num_sub_epoch = 5
+	num_sub_epoch = 3
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -197,7 +197,7 @@ def run_with_setting(hyperparams, argv=None):
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
 			train_x_here = train_x[seg_from:seg_to]
 			train_y_here = train_y[seg_from:seg_to]
-			if sub_epoch_idx % 2 == 0:
+			if sub_epoch_idx % 3 == 2:
 				valid_data = (valid_x, valid_y)
 			else:
 				valid_data = None
@@ -345,12 +345,13 @@ if __name__ == '__main__':
 	
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
+	TR_CONST["dim_labels"] = 50
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["optimiser"] = 'adagrad'
-	TR_CONST['learning_rate'] = 5e-1 # for sgd
+	TR_CONST['learning_rate'] = 5e-1
 	TR_CONST["output_activation"] = 'sigmoid'
 
 	TR_CONST["num_epoch"] = 4
@@ -368,7 +369,7 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = False
 	TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
 	TR_CONST["BN_fc_layers"] = False 
@@ -434,18 +435,46 @@ if __name__ == '__main__':
 		TR_CONST["resume"] = args.resume
 	else:
 		TR_CONST["resume"] = ''
-
-
-
  	#----------------------------------------------------------#
 	# 1. vanilla setting: not learning. 
 	# 2. regularise with 5e-4, 5e-4: 01-18-14h48_silly_pup, predicting means
 	# 2-1 with 1e-1, 5e-7... similar result. 
-	# 3. no reg, dropout (0.25, 0.25) only: learning stops after 1 subepoch..
+	# 3. no reg, dropout (0.25, 0.25) only: learning stops after 1 subepoch.. (01_18-16h31_rage_gryph)
+	# may be it's not about regularise. how about lrelu then.
+	# 4. without 
 
-	
 
+	TR_CONST["activations"] = ['lrelu']
+	TR_CONST["activations_fc_layers"] = ['lrelu']
+	TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
 	update_setting_dict(TR_CONST)
-	
 	run_with_setting(TR_CONST, sys.argv)
+
+	TR_CONST["activations"] = ['relu']
+	TR_CONST["activations_fc_layers"] = ['relu']
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["!memo"] = 'vanilla_w_bn_all'
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
+	
+	TR_CONST["BN"] = False
+	TR_CONST["!memo"] = 'vanilla_bn_fc_only'
+	run_with_setting(TR_CONST, sys.argv)
+	
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = False
+	TR_CONST["!memo"] = 'vanilla_bn_conv_only'
+	run_with_setting(TR_CONST, sys.argv)
+	
+	TR_CONST["BN"] = False
+	TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
+	TR_CONST["loss_function"] = 'mse'
+	run_with_setting(TR_CONST, sys.argv)
+
+	TR_CONST["output_activation"] = 'linear'
+	TR_CONST["!memo"] = 'mse_loss_function_w_linear'
+	run_with_setting(TR_CONST, sys.argv)	
+
+
 
