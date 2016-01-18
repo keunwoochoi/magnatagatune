@@ -151,6 +151,7 @@ def run_with_setting(hyperparams, argv=None):
 		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy'):
 			previous_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
+			pdb.set_trace()
 			append_history(total_history, previous_history)
 
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
