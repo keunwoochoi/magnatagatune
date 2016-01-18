@@ -52,8 +52,13 @@ def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
 
 def run_with_setting(hyperparams, argv=None):
+	f = open('will_stop.keunwoo', 'w')
+	f.close()
+	if os.path.exists('stop_asap.keunwoo'):
+		os.remove('stop_asap.keunwoo')
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
+	shuffle = 'batch'
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -66,6 +71,7 @@ def run_with_setting(hyperparams, argv=None):
 		train_y = train_y[:96]
 		valid_y = valid_y[:96]
 		test_y = test_y[:96]
+		shuffle = False
 		
 	hyperparams['height_image'] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
@@ -101,7 +107,7 @@ def run_with_setting(hyperparams, argv=None):
 													verbose=1, 
 								             		save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
-	patience = 3
+	patience = 100
 	if hyperparams["is_test"] is True:
 		patience = 99999999
 	early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
@@ -133,10 +139,7 @@ def run_with_setting(hyperparams, argv=None):
 	# print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
-	f = open('will_stop.keunwoo', 'w')
-	f.close()
-	if os.path.exists('stop_asap.keunwoo'):
-		os.remove('stop_asap.keunwoo')
+	
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
 	if hyperparams['is_test']:
@@ -182,7 +185,7 @@ def run_with_setting(hyperparams, argv=None):
 														show_accuracy=hyperparams['isClass'], 
 														verbose=1, 
 														callbacks=callbacks,
-														shuffle='batch')
+														shuffle=shuffle)
 			append_history(total_history, history.history)
 
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
@@ -320,8 +323,10 @@ if __name__ == '__main__':
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["optimiser"] = 'sgd'
+	TR_CONST['learning_rate'] = 5e-1 # for sgd
 	TR_CONST["output_activation"] = 'sigmoid'
 
+	TR_CONST["num_epoch"] = 4
 	TR_CONST["dropouts"] = [0.25]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
@@ -338,7 +343,7 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)]
+	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)] # bit too large?
 	TR_CONST["BN_fc_layers"] = True 
 
 
