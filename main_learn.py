@@ -22,20 +22,22 @@ import my_plots
 import hyperparams_manager
 
 def evaluate_result(y_true, y_pred):
+	ret = {}
+	ret['log_loss_before'] = metrics.log_loss(y_true, y_pred)
 	y_pred = np.round(y_pred)
+	ret['precision'] = metrics.average_precision_score(y_true, y_pred)
+	ret['f1_binary'] = metrics.f1_score(y_true, y_pred, average='binary')
+	ret['f1_micro'] = metrics.f1_score(y_true, y_pred, average='micro')
+	ret['f1_macro'] = metrics.f1_score(y_true, y_pred, average='macro')
+	ret['log_loss_after'] = metrics.log_loss(y_true, y_pred)
+	ret['roc_auc_micro'] = metrics.roc_auc_score(y_true, y_pred, average='micro')
+	ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
+	ret['roc_auc_none'] = metrics.roc_auc_score(y_true, y_pred)
 	print '.'*60
-	pdb.set_trace()
-	print 'precision:', metrics.average_precision_score(y_true, y_pred)
-	print 'f1_binary: ', metrics.f1_score(y_true, y_pred, average='binary')
-	print 'f1_micro: ', metrics.f1_score(y_true, y_pred, average='micro')
-	print 'f1_macro: ', metrics.f1_score(y_true, y_pred, average='macro')
-	print 'log_loss: ', metrics.log_loss(y_true, y_pred)
-	print 'roc_auc_micro: ', metrics.roc_auc_score(y_true, y_pred, average='micro')
-	print 'roc_auc_macro: ', metrics.roc_auc_score(y_true, y_pred, average='macro')
-	print 'roc_auc_none: ', metrics.roc_auc_score(y_true, y_pred)
+	for key in ret
+		print key, ret[key]
 	print '.'*60
-
-	return
+	return ret
 
 
 def update_setting_dict(setting_dict):
@@ -149,7 +151,7 @@ def run_with_setting(hyperparams, argv=None):
 		batch_size = (batch_size * 3)/5
 	# ready to run
 	predicted = model.predict(test_x, batch_size=batch_size)
-	evaluate_result(test_y, predicted)
+	eval_result_init = evaluate_result(test_y, predicted)
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
 	print 'mean of target value:'
@@ -233,8 +235,11 @@ def run_with_setting(hyperparams, argv=None):
 	if not hyperparams['is_test']:
 		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	predicted = model.predict(test_x, batch_size=batch_size)
-	evaluate_result(test_y, predicted)
-	
+	eval_result_final = evaluate_result(test_y, predicted)
+	print '.'*60
+	for key in eval_result_final:
+		print key, eval_result_init[key], eval_result_final[key]
+	print '.'*60
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
