@@ -471,7 +471,9 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 	
+
 	TR_CONST["BN"] = False
+	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["!memo"] = 'vanilla_bn_fc_only'
 	run_with_setting(TR_CONST, sys.argv)
 	
