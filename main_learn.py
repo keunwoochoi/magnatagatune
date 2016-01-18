@@ -144,17 +144,15 @@ def run_with_setting(hyperparams, argv=None):
 	else:
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
+	total_history = {}
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
 			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
 		if os.path.exists(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy'):
-			total_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
+			previous_history = np.load(PATH_RESULTS + hyperparams['resume'] + '/total_history.npy')
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
-		else:
-			print 'Model starts from zero.'
-			total_history = {}
-	else:
-		total_history = {}
+			append_history(total_history, previous_history)
+
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 										filename_prefix='local_INIT', 
 										normalize='local', 
