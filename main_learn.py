@@ -356,7 +356,7 @@ if __name__ == '__main__':
 
 	TR_CONST["num_epoch"] = 4
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
-	TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
+	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
@@ -442,11 +442,12 @@ if __name__ == '__main__':
 	# may be it's not about regularise. how about lrelu then.
 	# 4. without 
 
-	# 01-18-18h04_sharp_dog
-	# 27148/27148 [==============================] - 274s - loss: 0.1584 - acc: 0.9477 - val_loss: 0.1589 - val_acc: 0.9466
-	# 27148/27148 [==============================] - 245s - loss: 0.1533 - acc: 0.9484
-	# leark rely works! 
+	
 	if False:
+		# 01-18-18h04_sharp_dog
+		# 27148/27148 [==============================] - 274s - loss: 0.1584 - acc: 0.9477 - val_loss: 0.1589 - val_acc: 0.9466
+		# 27148/27148 [==============================] - 245s - loss: 0.1533 - acc: 0.9484
+		# leark rely works! 
 		TR_CONST["activations"] = ['lrelu']
 		TR_CONST["activations_fc_layers"] = ['lrelu']
 		TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
@@ -471,16 +472,18 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 	
-
-	TR_CONST["BN"] = False
-	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["!memo"] = 'vanilla_bn_fc_only'
-	run_with_setting(TR_CONST, sys.argv)
-	
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = False
-	TR_CONST["!memo"] = 'vanilla_bn_conv_only'
-	run_with_setting(TR_CONST, sys.argv)
+		# 27148/27148 [==============================] - 318s - loss: 0.1499 - acc: 0.9485 - val_loss: 0.1837 - val_acc: 0.9454
+		# overfits.
+		TR_CONST["BN"] = False
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["!memo"] = 'vanilla_bn_fc_only'
+		run_with_setting(TR_CONST, sys.argv)
+		# 27148/27148 [==============================] - 1220s - loss: 0.1591 - acc: 0.9475 - val_loss: 0.1613 - val_acc: 0.9464
+		# this time there were 64 features per layer, which seems overkill
+		TR_CONST["BN"] = True # requires very long time -- but why??
+		TR_CONST["BN_fc_layers"] = False
+		TR_CONST["!memo"] = 'vanilla_bn_conv_only'
+		run_with_setting(TR_CONST, sys.argv)
 	
 	TR_CONST["BN"] = False
 	TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
