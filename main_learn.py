@@ -66,12 +66,13 @@ def run_with_setting(hyperparams, argv=None):
 	train_y, valid_y, test_y = io.load_y(dim_labels)
 	if hyperparams['is_test']:
 		pdb.set_trace()
-		train_x = train_x[:96]
-		valid_x = valid_x[:96]
-		test_x = test_x[:96]
-		train_y = train_y[:96]
-		valid_y = valid_y[:96]
-		test_y = test_y[:96]
+		num_data_in_test = 256
+		train_x = train_x[:num_data_in_test]
+		valid_x = valid_x[:num_data_in_test]
+		test_x = test_x[:num_data_in_test]
+		train_y = train_y[:num_data_in_test]
+		valid_y = valid_y[:num_data_in_test]
+		test_y = test_y[:num_data_in_test]
 		shuffle = False
 		num_sub_epoch = 1
 		
