@@ -4,6 +4,7 @@ import os
 import time
 import h5py
 import argparse
+from sklearn import metrics
 import pdb
 import keras
 from keras.utils.visualize_util import plot as keras_plot
@@ -20,6 +21,20 @@ import my_keras_utils
 import my_plots
 import hyperparams_manager
 
+def evaluate_result(y_true, y_pred):
+	print '.'*60
+	print 'accuracy:', metrics.accuracy_score(y_true, y_pred)
+	print 'f1_binary: ', metrics.f1_score(y_true, y_pred, average='binary')
+	print 'f1_micro: ', metrics.f1_score(y_true, y_pred, average='micro')
+	print 'f1_macro: ', metrics.f1_score(y_true, y_pred, average='macro')
+	print 'log_loss: ', metrics.log_loss(y_true, y_pred)
+	print 'roc_auc_micro: ', metrics.roc_auc_score(y_true, y_pred, average='micro')
+	print 'roc_auc_macro: ', metrics.roc_auc_score(y_true, y_pred, average='macro')
+	print 'roc_auc_none: ', metrics.roc_auc_score(y_true, y_pred)
+	print '.'*60
+
+	return
+	
 
 def update_setting_dict(setting_dict):
 
@@ -132,6 +147,7 @@ def run_with_setting(hyperparams, argv=None):
 		batch_size = (batch_size * 3)/5
 	# ready to run
 	predicted = model.predict(test_x, batch_size=batch_size)
+	evaluate_result(test_y, predicted)
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
 	print 'mean of target value:'
@@ -209,15 +225,13 @@ def run_with_setting(hyperparams, argv=None):
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
 	best_batch = np.argmax(total_history['val_acc'])+1
-	predicted = model.predict(test_x, batch_size=batch_size)
-	print predicted[:10]
-
+	
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
 	if not hyperparams['is_test']:
 		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	predicted = model.predict(test_x, batch_size=batch_size)
-	print predicted[:10]
+	evaluate_result(test_y, predicted)
 	
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
