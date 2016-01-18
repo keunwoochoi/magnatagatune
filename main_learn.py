@@ -153,7 +153,8 @@ def run_with_setting(hyperparams, argv=None):
 		else:
 			print 'Model starts from zero.'
 			total_history = {}
-
+	else:
+		total_history = {}
 	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 										filename_prefix='local_INIT', 
 										normalize='local', 
