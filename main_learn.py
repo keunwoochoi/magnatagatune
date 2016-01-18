@@ -59,6 +59,7 @@ def run_with_setting(hyperparams, argv=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
+	num_sub_epoch = 5
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -72,6 +73,7 @@ def run_with_setting(hyperparams, argv=None):
 		valid_y = valid_y[:96]
 		test_y = test_y[:96]
 		shuffle = False
+		num_sub_epoch = 1
 		
 	hyperparams['height_image'] = train_x.shape[2]
 	hyperparams["width_image"]  = train_x.shape[3]
@@ -113,8 +115,7 @@ def run_with_setting(hyperparams, argv=None):
 	early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	# other constants
-	num_sub_epoch = 5
+	
 
 	if hyperparams["tf_type"] == 'cqt':
 		batch_size = 64
@@ -179,6 +180,7 @@ def run_with_setting(hyperparams, argv=None):
 				valid_data = (valid_x, valid_y)
 			else:
 				valid_data = None
+
 			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 														batch_size=batch_size, 
 														nb_epoch=1, 
