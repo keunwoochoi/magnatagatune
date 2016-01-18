@@ -486,18 +486,37 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'vanilla_bn_conv_only'
 		run_with_setting(TR_CONST, sys.argv)
 	
-	# also kinda working
-	# 27148/27148 [==============================] - 167s - loss: 0.0427 - acc: 0.9483 - val_loss: 0.0451 - val_acc: 0.9463
-	# 27148/27148 [==============================] - 165s - loss: 0.0392 - acc: 0.9510 - val_loss: 0.0408 - val_acc: 0.9492
-	# TR_CONST["BN"] = False
-	# TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
-	# TR_CONST["loss_function"] = 'mse'
-	# run_with_setting(TR_CONST, sys.argv)
+		# also kinda working
+		# 27148/27148 [==============================] - 167s - loss: 0.0427 - acc: 0.9483 - val_loss: 0.0451 - val_acc: 0.9463
+		# 27148/27148 [==============================] - 165s - loss: 0.0392 - acc: 0.9510 - val_loss: 0.0408 - val_acc: 0.9492
+		TR_CONST["BN"] = False
+		TR_CONST["!memo"] = 'mse_loss_function_w_sigmoid'
+		TR_CONST["loss_function"] = 'mse'
+		run_with_setting(TR_CONST, sys.argv)
 
-	TR_CONST["loss_function"] = 'mse'
-	TR_CONST["output_activation"] = 'linear'
-	TR_CONST["!memo"] = 'mse_loss_function_w_linear'
-	run_with_setting(TR_CONST, sys.argv)	
+		# BN with conve and mse, linear output
+		# 27148/27148 [==============================] - 358s - loss: 0.0434 - acc: 0.9477 - val_loss: 0.0442 - val_acc: 0.9464
+		TR_CONST["loss_function"] = 'mse'
+		TR_CONST["output_activation"] = 'linear'
+		TR_CONST["!memo"] = 'mse_loss_function_w_linear'
+		run_with_setting(TR_CONST, sys.argv)	
 
+	# BN for both, and lrelu
+	TR_CONST["activations"] = ['lrelu']
+	TR_CONST["activations_fc_layers"] = ['lrelu']
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["!memo"] = 'bn on and on, lrelu and lrelu, keep 32 per layer'
+	TR_CONST["num_layers"] = 4
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
+
+	TR_CONST["num_layers"] = 5
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
+
+	TR_CONST["num_layers"] = 5
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 
 
