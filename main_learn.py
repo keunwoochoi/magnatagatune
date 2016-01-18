@@ -22,8 +22,10 @@ import my_plots
 import hyperparams_manager
 
 def evaluate_result(y_true, y_pred):
+	y_pred = np.round(y_pred)
 	print '.'*60
-	print 'accuracy:', metrics.accuracy_score(y_true, y_pred)
+	pdb.set_trace()
+	print 'precision:', metrics.average_precision_score(y_true, y_pred)
 	print 'f1_binary: ', metrics.f1_score(y_true, y_pred, average='binary')
 	print 'f1_micro: ', metrics.f1_score(y_true, y_pred, average='micro')
 	print 'f1_macro: ', metrics.f1_score(y_true, y_pred, average='macro')
@@ -34,7 +36,7 @@ def evaluate_result(y_true, y_pred):
 	print '.'*60
 
 	return
-	
+
 
 def update_setting_dict(setting_dict):
 
