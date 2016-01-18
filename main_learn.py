@@ -344,6 +344,8 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
 	TR_CONST["dim_labels"] = 50
+	TR_CONST["num_layers"] = 6
+
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
@@ -360,7 +362,6 @@ if __name__ == '__main__':
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_simple'
 	TR_CONST["tf_type"] = 'melgram'
-	TR_CONST["num_layers"] = 6
 
 	TR_CONST["num_fc_layers"] = 2
 
