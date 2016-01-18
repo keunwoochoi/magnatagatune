@@ -314,26 +314,30 @@ if __name__ == '__main__':
 	
 	
 	args = parser.parse_args()
-	#----------------------------------------------------------#
+	#------------------- default setting --------------------------------#
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["output_activation"] = 'sigmoid'
-	TR_CONST["dropouts"] = [0.5]*TR_CONST["num_layers"]
-	TR_CONST["num_feat_maps"] = [48]*TR_CONST["num_layers"]
-	TR_CONST["activations"] = ['lrelu']*TR_CONST["num_layers"]
-	TR_CONST["BN"] = False
-	TR_CONST["regulariser"] = [('l2', 0.)]*TR_CONST["num_layers"] # use [None] not to use.
+	
+	TR_CONST["dropouts"] = [0.25]*TR_CONST["num_layers"]
+	TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
+	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
+	TR_CONST["BN"] = True
+	TR_CONST["regulariser"] = [('l2', 5e-4)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST["model_type"] = 'vgg_simple'
+	TR_CONST["tf_type"] = 'melgram'
+	TR_CONST["num_layers"] = 6
 
-
-	TR_CONST["BN_fc_layers"] = False 
+	TR_CONST["BN_fc_layers"] = False
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [128]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['lrelu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 0.), ('l2', 0.)]
+	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)]
 	TR_CONST["BN_fc_layers"] = True 
+
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
