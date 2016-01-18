@@ -319,8 +319,9 @@ if __name__ == '__main__':
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
+	TR_CONST["optimiser"] = 'sgd'
 	TR_CONST["output_activation"] = 'sigmoid'
-	
+
 	TR_CONST["dropouts"] = [0.25]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [64]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
@@ -337,6 +338,7 @@ if __name__ == '__main__':
 	TR_CONST["activations_fc_layers"] = ['lrelu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 1e-2), ('l2', 1e-2)]
 	TR_CONST["BN_fc_layers"] = True 
+
 
 	#--------------------------------------------------------#
 	if args.layers:
