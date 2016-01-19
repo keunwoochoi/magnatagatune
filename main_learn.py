@@ -486,7 +486,7 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'vanilla_bn_conv_only'
 		run_with_setting(TR_CONST, sys.argv)
 	
-		# also kinda working
+		# also kinda working - red_orca
 		# 27148/27148 [==============================] - 167s - loss: 0.0427 - acc: 0.9483 - val_loss: 0.0451 - val_acc: 0.9463
 		# 27148/27148 [==============================] - 165s - loss: 0.0392 - acc: 0.9510 - val_loss: 0.0408 - val_acc: 0.9492
 		TR_CONST["BN"] = False
@@ -494,18 +494,19 @@ if __name__ == '__main__':
 		TR_CONST["loss_function"] = 'mse'
 		run_with_setting(TR_CONST, sys.argv)
 
-		# BN with conve and mse, linear output
+		# BN with conve and mse, linear output - wet_doge
 		# 27148/27148 [==============================] - 358s - loss: 0.0434 - acc: 0.9477 - val_loss: 0.0442 - val_acc: 0.9464
 		TR_CONST["loss_function"] = 'mse'
 		TR_CONST["output_activation"] = 'linear'
 		TR_CONST["!memo"] = 'mse_loss_function_w_linear'
 		run_with_setting(TR_CONST, sys.argv)	
 
-		# BN for both, and lrelu
+		# BN for both, and lrelu - bad_orca
 		TR_CONST["activations"] = ['lrelu']
 		TR_CONST["activations_fc_layers"] = ['lrelu']
 		TR_CONST["BN"] = True
 		TR_CONST["BN_fc_layers"] = True
+		# 01-19-00h37spotty_cat 
 		# when combined BN and lrelu(0.1) together, it seems similar or even better with #layer=4
 		# 27148/27148 [==============================] - 354s - loss: 0.1482 - acc: 0.9490 - val_loss: 0.1679 - val_acc: 0.9465
 		# 27148/27148 [==============================] - 352s - loss: 0.1387 - acc: 0.9509 - val_loss: 0.1478 - val_acc: 0.9483
@@ -518,8 +519,10 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 
-		# then try dropout on FC only first.
+		# then try dropout on FC only first. 01-19-00h53_red_wolf
 		# 27148/27148 [==============================] - 352s - loss: 0.1541 - acc: 0.9480 - val_loss: 0.1529 - val_acc: 0.9474
+		# 27148/27148 [==============================] - 350s - loss: 0.1433 - acc: 0.9497 - val_loss: 0.1472 - val_acc: 0.9482
+		# roc_auc_none 0.5 0.553300884607
 		# ...probably better generalisation? (and should be.)
 		# no time consumption added! So if data allows it would be [0.5] rather than [0.25]
 		# just quickly go with vgg original.
@@ -534,32 +537,47 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 
-	# vgg original.
+		# vgg original. rage_deer
+		# after 6 epochs,
+		# 27148/27148 [==============================] - 737s - loss: 0.1317 - acc: 0.9521 - val_loss: 0.1388 - val_acc: 0.9499
+		# roc_auc_none 0.5 0.585801977209
+		TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["num_layers"] = 2
+		TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
+		TR_CONST["dropouts_fc_layers"] = [0.5]
+		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+		TR_CONST["model_type"] = 'vgg_original'
+
+		# drop out of 0.5
+		TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["num_layers"] = 4
+		TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
+		TR_CONST["dropouts_fc_layers"] = [0.5]
+		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+	
+	# vgg_simple, BN -true,true, num_layer in [3 and 6]
 	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["num_layers"] = 2
+	
 	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
 	TR_CONST["dropouts_fc_layers"] = [0.5]
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
-	TR_CONST["model_type"] = 'vgg_original'
 
-	# drop out of 0.5
-	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
-	TR_CONST["activations_fc_layers"] = ['lrelu']
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["num_layers"] = 4
-	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
-	TR_CONST["dropouts_fc_layers"] = [0.5]
-	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
-
-
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	for num_l in [3,6]:
+		TR_CONST["num_layers"] = num_l
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+	sys.exit()
 	# then small l2 weight decay on FC layers
 
 	# then vgg original, conv-conv-mp
