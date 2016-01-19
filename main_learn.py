@@ -525,8 +525,8 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["num_layers"] = 4
 	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
-	TR_CONST["dropouts_fc_layers"] = 0.25
-	TR_CONST["nums_units_fc_layers"] = 682 # with 0.25 this is equivalent to 512 units
+	TR_CONST["dropouts_fc_layers"] = [0.25]
+	TR_CONST["nums_units_fc_layers"] = [682] # with 0.25 this is equivalent to 512 units
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
