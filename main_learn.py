@@ -197,7 +197,7 @@ def run_with_setting(hyperparams, argv=None):
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
 			train_x_here = train_x[seg_from:seg_to]
 			train_y_here = train_y[seg_from:seg_to]
-			if sub_epoch_idx % 3 == 2:
+			if sub_epoch_idx in [2, 4]:
 				valid_data = (valid_x, valid_y)
 			else:
 				valid_data = None
@@ -448,7 +448,7 @@ if __name__ == '__main__':
 		# 27148/27148 [==============================] - 274s - loss: 0.1584 - acc: 0.9477 - val_loss: 0.1589 - val_acc: 0.9466
 		# 27148/27148 [==============================] - 245s - loss: 0.1533 - acc: 0.9484
 		# leark rely works! 
-		TR_CONST["activations"] = ['lrelu']
+		TR_CONST["activations"] = ['lrelu'] # alpha was 0.1 this time
 		TR_CONST["activations_fc_layers"] = ['lrelu']
 		TR_CONST["!memo"] = 'vanilla_with_leaky_relu'
 		update_setting_dict(TR_CONST)
@@ -501,22 +501,48 @@ if __name__ == '__main__':
 		TR_CONST["!memo"] = 'mse_loss_function_w_linear'
 		run_with_setting(TR_CONST, sys.argv)	
 
-	# BN for both, and lrelu
-	TR_CONST["activations"] = ['lrelu']
+		# BN for both, and lrelu
+		TR_CONST["activations"] = ['lrelu']
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		# when combined BN and lrelu(0.1) together, it seems similar or even better with #layer=4
+		# 27148/27148 [==============================] - 354s - loss: 0.1482 - acc: 0.9490 - val_loss: 0.1679 - val_acc: 0.9465
+		# 27148/27148 [==============================] - 352s - loss: 0.1387 - acc: 0.9509 - val_loss: 0.1478 - val_acc: 0.9483
+		# 27148/27148 [==============================] - 352s - loss: 0.1341 - acc: 0.9518 - val_loss: 0.1447 - val_acc: 0.9488
+		# 27148/27148 [==============================] - 351s - loss: 0.1307 - acc: 0.9526 - val_loss: 0.1447 - val_acc: 0.9489
+		# 27148/27148 [==============================] - 350s - loss: 0.1279 - acc: 0.9532 - val_loss: 0.1461 - val_acc: 0.9490
+		# which is, roc_auc_none 0.5 0.554170834687
+		TR_CONST["!memo"] = 'bn on and on, lrelu and lrelu, keep 32 per layer'
+		TR_CONST["num_layers"] = 4
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+
+	# then try dropout on FC only first.
+	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["!memo"] = 'bn on and on, lrelu and lrelu, keep 32 per layer'
 	TR_CONST["num_layers"] = 4
+	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
+	TR_CONST["dropouts_fc_layers"] = 0.25
+	TR_CONST["nums_units_fc_layers"] = 682 # with 0.25 this is equivalent to 512 units
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
+
+	# then small l2 weight decay on FC layers
+
+	# then vgg original, conv-conv-mp
+
+	# and 3x3s2 mp? as sander did in plankton work.
+
+	# Shit I want to use Lincoln's gpu. 
+
 
 	TR_CONST["num_layers"] = 5
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	TR_CONST["num_layers"] = 5
+	TR_CONST["num_layers"] = 6
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
-
-
