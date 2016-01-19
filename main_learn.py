@@ -666,8 +666,9 @@ if __name__ == '__main__':
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	# dd
-	
+	# default - BN(y,y), dropout(n,y), 6-layer, with elu.01-19-23h09_tiny_horse
+	# 27148/27148 [==============================] - 400s - loss: 0.1651 - acc: 0.9468 - val_loss: 0.1619 - val_acc: 0.9465
+
 	# pooling only by time for the first two.
 
 
