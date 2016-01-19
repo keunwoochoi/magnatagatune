@@ -617,7 +617,14 @@ if __name__ == '__main__':
 		# 27148/27148 [==============================] - 355s - loss: 0.1602 - acc: 0.9475 - val_loss: 0.1635 - val_acc: 0.9451
 		# 27148/27148 [==============================] - 355s - loss: 0.1519 - acc: 0.9483 - val_loss: 0.1551 - val_acc: 0.9470
 		# 27148/27148 [==============================] - 354s - loss: 0.1528 - acc: 0.9483 - val_loss: 0.1726 - val_acc: 0.9437
-		# better than lrelu(0.3)+prelu,
+		# 27148/27148 [==============================] - 355s - loss: 0.1466 - acc: 0.9493 - val_loss: 0.1558 - val_acc: 0.9467
+		# 27148/27148 [==============================] - 354s - loss: 0.1485 - acc: 0.9492 - val_loss: 0.1491 - val_acc: 0.9481
+		# 27148/27148 [==============================] - 354s - loss: 0.1435 - acc: 0.9498 - val_loss: 0.1467 - val_acc: 0.9481
+		# 27148/27148 [==============================] - 354s - loss: 0.1460 - acc: 0.9495 - val_loss: 0.1516 - val_acc: 0.9474
+		# roc_auc_none 0.5 0.565670673522
+		# so lrelu(0.03) is not as good as lrelu(0.3)+prelu or lrelu(0.1)+same_lrelu
+
+		# result: need to look into lrelu(0.1)+prelu, or elu, or lrelu(0.1) only.
 		TR_CONST["activations"] = ['lrelu'] 
 		TR_CONST["activations_fc_layers"] = ['lrelu']
 		TR_CONST["BN"] = True
