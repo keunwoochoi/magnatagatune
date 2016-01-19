@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 128
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 24
+		batch_size = 64
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -565,6 +565,19 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 360s - loss: 0.1619 - acc: 0.9472 - val_loss: 0.1613 - val_acc: 0.9464
 	# 27148/27148 [==============================] - 360s - loss: 0.1584 - acc: 0.9476 - val_loss: 0.1587 - val_acc: 0.9467
 	# So it is not always good. 
+
+
+	# with four layers,
+	# BN BN, dr 0.5, lrelu lrelu + 64 -> 4
+	# 27148/27148 [==============================] - 606s - loss: 0.1774 - acc: 0.9466 - val_loss: 0.2442 - val_acc: 0.9220
+	# It takes too long time per epoch. still performance is not good. 
+
+	# same, batch size of 24
+	# 27148/27148 [==============================] - 383s - loss: 0.1580 - acc: 0.9474 - val_loss: 0.1624 - val_acc: 0.9442
+	# 27148/27148 [==============================] - 380s - loss: 0.1559 - acc: 0.9478 - val_loss: 0.1720 - val_acc: 0.9412
+	
+	# okay, back to B=64.
+	# now lrelu + lrelu, 4layers, BN on/on, dropout 0.5/0.5 go.
 	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["BN"] = True
@@ -572,12 +585,18 @@ if __name__ == '__main__':
 	
 	TR_CONST["!memo"] = 'batch size is 1, it is a stochastic gradient descent.'
 	TR_CONST["dropouts_fc_layers"] = [0.5]
+	TR_CONST["dropouts"] = [0.5]
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 	TR_CONST["num_layers"] = 4
 
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
+
+	# now lrelu + prelu, 4layers, BN on/on, dropout ??/?? go.
+
+	# then apply 
+
 	# then small l2 weight decay on FC layers
 
 	# then vgg original, conv-conv-mp
