@@ -138,13 +138,13 @@ def run_with_setting(hyperparams, argv=None):
 	
 
 	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 64
+		batch_size = 32
 	elif hyperparams["tf_type"] == 'stft':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'mfcc':
-		batch_size = 128
+		batch_size = 32
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 64
+		batch_size = 32
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -634,21 +634,40 @@ if __name__ == '__main__':
 		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 		TR_CONST["num_layers"] = 4
 
+		# 01-19-18h50_blue_shibe --> no activation in conv layer
+		# 27148/27148 [==============================] - 30s - loss: 0.1506 - acc: 0.9488 - val_loss: 0.1574 - val_acc: 0.9471
+		# 27148/27148 [==============================] - 29s - loss: 0.1244 - acc: 0.9545 - val_loss: 0.1500 - val_acc: 0.9489
+		# Okay, not bad. bit overfitting because there was no dropout. and it's very fast so I can do something more
+		# roc_auc_none 0.501975403804 0.547490792132
 
-	TR_CONST["!memo"] = 'go_mfcc_convnet_model, ignore all other info here'
-	TR_CONST['model_type'] = 'gnu_mfcc'
-	TR_CONST['tf_type'] = 'mfcc'
-	update_setting_dict(TR_CONST)
+		# with dropout and BN,
+		# 27148/27148 [==============================] - 41s - loss: 0.1372 - acc: 0.9510 - val_loss: 0.1411 - val_acc: 0.9500
+		# roc_auc_none 0.5 0.569980667246
+		TR_CONST["!memo"] = 'go_mfcc_convnet_model, ignore all other info here'
+		TR_CONST['model_type'] = 'gnu_mfcc'
+		TR_CONST['tf_type'] = 'mfcc'
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+
+		# 01-19-19h09_horse_paw --> no activation in conv layer
+		# 01-19-20h44_aqua_koala --> new! and more complex.
+		# it's too slow, perhaps because there is not much pooling. 
+		# 27148/27148 [==============================] - 959s - loss: 0.1569 - acc: 0.9479 - val_loss: 0.1563 - val_acc: 0.9471
+		# 27148/27148 [==============================] - 957s - loss: 0.1530 - acc: 0.9485 - val_loss: 0.1613 - val_acc: 0.9442
+		# roc_auc_none 0.5 0.527866826088
+
+		TR_CONST["!memo"] = 'design_gnu_convnet_model, ignore all other info here'
+		TR_CONST['model_type'] = 'gnu_1d'
+		TR_CONST['tf_type'] = 'melgram'
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+		sys.exit()
+
+
 	run_with_setting(TR_CONST, sys.argv)
 
-
-	TR_CONST["!memo"] = 'design_gnu_convnet_model, ignore all other info here'
-	TR_CONST['model_type'] = 'gnu_1d'
-	TR_CONST['tf_type'] = 'melgram'
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
-	sys.exit()
-
+	# dd
+	
 	# pooling only by time for the first two.
 
 
@@ -658,3 +677,8 @@ if __name__ == '__main__':
 
 	# Shit I want to use Lincoln's gpu. 
 
+	# Rule of thumb:
+	# batch_size = 32 or 64
+	# dropout = True for fc_layers, not sure for conv layers. will do next time with small values
+	# mfcc + some tf_type make sense.
+	# lrelu > prelu, relu. 
