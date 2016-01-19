@@ -663,7 +663,7 @@ if __name__ == '__main__':
 		run_with_setting(TR_CONST, sys.argv)
 		sys.exit()
 
-
+	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
 	# dd
