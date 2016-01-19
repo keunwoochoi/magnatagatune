@@ -224,7 +224,7 @@ def run_with_setting(hyperparams, argv=None):
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 				break
 			else:
-			print ' *** will go for %d epochs' % (num_epoch - total_epoch)
+				print ' *** will go for %d epochs' % (num_epoch - total_epoch)
 		else:
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
