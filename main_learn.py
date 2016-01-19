@@ -351,7 +351,7 @@ if __name__ == '__main__':
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["optimiser"] = 'adagrad'
-	TR_CONST['learning_rate'] = 5e-1
+	TR_CONST['learning_rate'] = 4e-1
 	TR_CONST["output_activation"] = 'sigmoid'
 
 	TR_CONST["num_epoch"] = 4
@@ -518,18 +518,48 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 
-	# then try dropout on FC only first.
+		# then try dropout on FC only first.
+		# 27148/27148 [==============================] - 352s - loss: 0.1541 - acc: 0.9480 - val_loss: 0.1529 - val_acc: 0.9474
+		# ...probably better generalisation? (and should be.)
+		# no time consumption added! So if data allows it would be [0.5] rather than [0.25]
+		# just quickly go with vgg original.
+		TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["num_layers"] = 4
+		TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
+		TR_CONST["dropouts_fc_layers"] = [0.25]
+		TR_CONST["nums_units_fc_layers"] = [682] # with 0.25 this is equivalent to 512 units
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
+
+	# vgg original.
+	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
+	TR_CONST["activations_fc_layers"] = ['lrelu']
+	TR_CONST["BN"] = True
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["num_layers"] = 2
+	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
+	TR_CONST["dropouts_fc_layers"] = [0.5]
+	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+	TR_CONST["model_type"] = 'vgg_original'
+
+	# drop out of 0.5
 	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["num_layers"] = 4
 	TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
-	TR_CONST["dropouts_fc_layers"] = [0.25]
-	TR_CONST["nums_units_fc_layers"] = [682] # with 0.25 this is equivalent to 512 units
+	TR_CONST["dropouts_fc_layers"] = [0.5]
+	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
+
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 	# then small l2 weight decay on FC layers
 
 	# then vgg original, conv-conv-mp
@@ -539,10 +569,10 @@ if __name__ == '__main__':
 	# Shit I want to use Lincoln's gpu. 
 
 
-	TR_CONST["num_layers"] = 5
+	TR_CONST["num_layers"] = 3
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	TR_CONST["num_layers"] = 6
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	# TR_CONST["num_layers"] = 4
+	# update_setting_dict(TR_CONST)
+	# run_with_setting(TR_CONST, sys.argv)
