@@ -635,16 +635,16 @@ if __name__ == '__main__':
 		TR_CONST["num_layers"] = 4
 
 
-	TR_CONST["!memo"] = 'go_mfcc_convnet_model'
-	TR_CONST['model_type'] = 'gnu_mfcc_ignore_the_info_here'
+	TR_CONST["!memo"] = 'go_mfcc_convnet_model, ignore all other info here'
+	TR_CONST['model_type'] = 'gnu_mfcc'
 	TR_CONST['tf_type'] = 'mfcc'
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
 
-	TR_CONST["!memo"] = 'design_gnu_convnet_model'
-	TR_CONST['model_type'] = 'mainly_1d_convnet_ignore_the_info_here'
-	TR_CONST['tf_type'] = 'mfcc'
+	TR_CONST["!memo"] = 'design_gnu_convnet_model, ignore all other info here'
+	TR_CONST['model_type'] = 'gnu_1d'
+	TR_CONST['tf_type'] = 'melgram'
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
