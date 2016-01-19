@@ -600,27 +600,44 @@ if __name__ == '__main__':
 		sys.exit()
 
 	
-	# now lrelu + prelu, 4layers, BN on/on, dropout ??/?? go.
-	# 01-19-13h43_spotty_deer # be ware! it was logged as 'lrelu'
-	# 27148/27148 [==============================] - 356s - loss: 0.1656 - acc: 0.9471 - val_loss: 0.1651 - val_acc: 0.9459
-	# 27148/27148 [==============================] - 355s - loss: 0.1608 - acc: 0.9474 - val_loss: 0.1605 - val_acc: 0.9463
-	# 27148/27148 [==============================] - 355s - loss: 0.1523 - acc: 0.9482 - val_loss: 0.1611 - val_acc: 0.9466
-	# 27148/27148 [==============================] - 354s - loss: 0.1431 - acc: 0.9498 - val_loss: 0.1442 - val_acc: 0.9490
-	# 27148/27148 [==============================] - 354s - loss: 0.1407 - acc: 0.9503 - val_loss: 0.1424 - val_acc: 0.9491
-	# 27148/27148 [==============================] - 354s - loss: 0.1436 - acc: 0.9499 - val_loss: 0.1424 - val_acc: 0.9494
-	# roc_auc_none 0.5 0.58110036599 --> best so far, similar to lrelu with vgg original for all night. 
-	# so generalsation is not bad.
+		# now lrelu + prelu, 4layers, BN on/on, dropout ??/?? go.
+		# 01-19-13h43_spotty_deer # be ware! it was logged as 'lrelu'
+		# 27148/27148 [==============================] - 356s - loss: 0.1656 - acc: 0.9471 - val_loss: 0.1651 - val_acc: 0.9459
+		# 27148/27148 [==============================] - 355s - loss: 0.1608 - acc: 0.9474 - val_loss: 0.1605 - val_acc: 0.9463
+		# 27148/27148 [==============================] - 355s - loss: 0.1523 - acc: 0.9482 - val_loss: 0.1611 - val_acc: 0.9466
+		# 27148/27148 [==============================] - 354s - loss: 0.1431 - acc: 0.9498 - val_loss: 0.1442 - val_acc: 0.9490
+		# 27148/27148 [==============================] - 354s - loss: 0.1407 - acc: 0.9503 - val_loss: 0.1424 - val_acc: 0.9491
+		# 27148/27148 [==============================] - 354s - loss: 0.1436 - acc: 0.9499 - val_loss: 0.1424 - val_acc: 0.9494
+		# roc_auc_none 0.5 0.58110036599 --> best so far, similar to lrelu with vgg original for all night. 
+		# so generalsation is not bad.
 
-	# maybe, only lrelu(0.03) is better always.
-	TR_CONST["activations"] = ['lrelu'] 
-	TR_CONST["activations_fc_layers"] = ['lrelu']
-	TR_CONST["BN"] = True
-	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["!memo"] = 'lrelu. with alpha=0.1 again.'
-	TR_CONST["dropouts_fc_layers"] = [0.5]
-	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
-	TR_CONST["num_layers"] = 4
+		# 01-19-16h28_red_wolf
+		# maybe, only lrelu(0.03) was better at the beginning, but then...
+		# 27148/27148 [==============================] - 356s - loss: 0.1647 - acc: 0.9471 - val_loss: 0.1664 - val_acc: 0.9461
+		# 27148/27148 [==============================] - 355s - loss: 0.1602 - acc: 0.9475 - val_loss: 0.1635 - val_acc: 0.9451
+		# 27148/27148 [==============================] - 355s - loss: 0.1519 - acc: 0.9483 - val_loss: 0.1551 - val_acc: 0.9470
+		# 27148/27148 [==============================] - 354s - loss: 0.1528 - acc: 0.9483 - val_loss: 0.1726 - val_acc: 0.9437
+		# better than lrelu(0.3)+prelu,
+		TR_CONST["activations"] = ['lrelu'] 
+		TR_CONST["activations_fc_layers"] = ['lrelu']
+		TR_CONST["BN"] = True
+		TR_CONST["BN_fc_layers"] = True
+		TR_CONST["!memo"] = 'lrelu. with alpha=0.03 again.'
+		TR_CONST["dropouts_fc_layers"] = [0.5]
+		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+		TR_CONST["num_layers"] = 4
 
+
+	TR_CONST["!memo"] = 'go_mfcc_convnet_model'
+	TR_CONST['model_type'] = 'gnu_mfcc_ignore_the_info_here'
+	TR_CONST['tf_type'] = 'mfcc'
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
+
+
+	TR_CONST["!memo"] = 'design_gnu_convnet_model'
+	TR_CONST['model_type'] = 'mainly_1d_convnet_ignore_the_info_here'
+	TR_CONST['tf_type'] = 'mfcc'
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
