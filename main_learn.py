@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 128
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 64
+		batch_size = 1
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -213,6 +213,7 @@ def run_with_setting(hyperparams, argv=None):
 
 		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
 		total_epoch += 1
+
 		if os.path.exists('stop_asap.keunwoo'):
 			os.remove('stop_asap.keunwoo')
 			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
@@ -221,7 +222,9 @@ def run_with_setting(hyperparams, argv=None):
 		if os.path.exists('will_stop.keunwoo'):	
 			if total_epoch > num_epoch:
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-				break				
+				break
+			else:
+			print ' *** will go for %d epochs' % (num_epoch - total_epoch)
 		else:
 			print ' *** will go for another one epoch. '
 			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
@@ -351,7 +354,7 @@ if __name__ == '__main__':
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
 	TR_CONST["optimiser"] = 'adagrad'
-	TR_CONST['learning_rate'] = 4e-1
+	TR_CONST['learning_rate'] = 1e-2
 	TR_CONST["output_activation"] = 'sigmoid'
 
 	TR_CONST["num_epoch"] = 4
@@ -551,32 +554,29 @@ if __name__ == '__main__':
 		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
 		TR_CONST["model_type"] = 'vgg_original'
 
-		# drop out of 0.5
-		TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
-		TR_CONST["activations_fc_layers"] = ['lrelu']
-		TR_CONST["BN"] = True
-		TR_CONST["BN_fc_layers"] = True
-		TR_CONST["num_layers"] = 4
-		TR_CONST["!memo"] = 'bn on and on, 4layer, dropout on fc only, lrelu and lrelu, keep 32 per layer'
-		TR_CONST["dropouts_fc_layers"] = [0.5]
-		TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
-		update_setting_dict(TR_CONST)
-		run_with_setting(TR_CONST, sys.argv)
-	
+	#----until here, only 3rd mini batch was using validation, but now 3 and 5 th will do.
 	# vgg_simple, BN -true,true, num_layer in [3 and 6]
+	# with three layers,
+	# 27148/27148 [==============================] - 341s - loss: 0.1563 - acc: 0.9476 - val_loss: 0.1613 - val_acc: 0.9457
+	# 27148/27148 [==============================] - 338s - loss: 0.1532 - acc: 0.9482 - val_loss: 0.1515 - val_acc: 0.9476
+	# with large lr=3e-2, but no difference with adagrad.
+
+	# with six layers,
+	# 27148/27148 [==============================] - 360s - loss: 0.1619 - acc: 0.9472 - val_loss: 0.1613 - val_acc: 0.9464
+	# 27148/27148 [==============================] - 360s - loss: 0.1584 - acc: 0.9476 - val_loss: 0.1587 - val_acc: 0.9467
+	# So it is not always good. 
 	TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
 	TR_CONST["activations_fc_layers"] = ['lrelu']
 	TR_CONST["BN"] = True
 	TR_CONST["BN_fc_layers"] = True
 	
-	TR_CONST["!memo"] = 'grid for layer number'
+	TR_CONST["!memo"] = 'batch size is 1, it is a stochastic gradient descent.'
 	TR_CONST["dropouts_fc_layers"] = [0.5]
 	TR_CONST["nums_units_fc_layers"] = [1024] # with 0.25 this is equivalent to 512 units
+	TR_CONST["num_layers"] = 4
 
-	for num_l in [3,6]:
-		TR_CONST["num_layers"] = num_l
-		update_setting_dict(TR_CONST)
-		run_with_setting(TR_CONST, sys.argv)
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 	sys.exit()
 	# then small l2 weight decay on FC layers
 
