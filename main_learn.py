@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 32
+		batch_size = 20
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -199,12 +199,13 @@ def run_with_setting(hyperparams, argv=None):
 				valid_data = (valid_x, valid_y)
 			else:
 				valid_data = (valid_x[:512], valid_y[:512])
-			if total_epoch ==0:
-				batch_size_applied = batch_size*4/3
-			elif total_epoch % 4 == 0:
-				batch_size_applied = batch_size*2/3
-			else:
-				batch_size_applied = batch_size
+			# if total_epoch ==0:
+			# 	batch_size_applied = batch_size*4/3
+			# elif total_epoch % 4 == 0:
+			# 	batch_size_applied = batch_size*2/3
+			# else:
+			# 	batch_size_applied = batch_size
+
 			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 														batch_size=batch_size_applied, 
 														nb_epoch=1, 
@@ -673,9 +674,7 @@ if __name__ == '__main__':
 
 
 
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
-
+	
 	# default - BN(y,n), dropout(n,y), 6-layer, with elu.01-19-23h09_tiny_horse
 	# 27148/27148 [==============================] - 400s - loss: 0.1651 - acc: 0.9468 - val_loss: 0.1619 - val_acc: 0.9465
 
@@ -713,6 +712,7 @@ if __name__ == '__main__':
 	# roc_auc_none 0.507071232823 0.561989803816
 
 
+	# 01-20-16h57_shark_wing
 	# elu, batch(y,y), dropout(n,y), 3x2 conv layers (vgg_modi_1x1), 3(256-256-256) fc layers
 	# from now, just once in a whole epoch.
 	# 27148/27148 [==============================] - 691s - loss: 0.1533 - acc: 0.9479 - val_loss: 0.1464 - val_acc: 0.9488
@@ -721,6 +721,14 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 700s - loss: 0.1388 - acc: 0.9506 - val_loss: 0.1350 - val_acc: 0.9509``````````````
 	# 27148/27148 [==============================] - 725s - loss: 0.1391 - acc: 0.9507 - val_loss: 0.1360 - val_acc: 0.9502
 	# roc_auc_none 0.5 0.607832063532
+	
+
+	# 01-20-21h59_green_doge - maxout.
+	# Bn (y,y) - not sure if it's working right with maxout.
+	# dropout(n,y), all elu, 3-layer vgg_modi_1x1
+
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 
 
 	# next: 2x2048 fc layers, maxout in convnet?
