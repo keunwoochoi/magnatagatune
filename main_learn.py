@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 24
+		batch_size = 32
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -685,6 +685,8 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 661s - loss: 0.1424 - acc: 0.9503 - val_loss: 0.1420 - val_acc: 0.9494
 	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
 	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
+	# roc_auc_none 0.499981096408 0.584840045702
+	# and resume! with adam from now.		
 	# pooling only by time for the first two.
 
 
