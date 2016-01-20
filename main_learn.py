@@ -205,7 +205,7 @@ def run_with_setting(hyperparams, argv=None):
 			# 	batch_size_applied = batch_size*2/3
 			# else:
 			# 	batch_size_applied = batch_size
-
+			batch_size_applied = batch_size
 			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 														batch_size=batch_size_applied, 
 														nb_epoch=1, 
