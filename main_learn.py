@@ -347,7 +347,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
 	TR_CONST["dim_labels"] = 50
-	TR_CONST["num_layers"] = 2
+	TR_CONST["num_layers"] = 3
 
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
@@ -366,15 +366,15 @@ if __name__ == '__main__':
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 2
+	TR_CONST["num_fc_layers"] = 3
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
-	TR_CONST["BN_fc_layers"] = False 
+	TR_CONST["BN_fc_layers"] = True
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -680,14 +680,27 @@ if __name__ == '__main__':
 	# do it again with BN!
 	# 01-20-01h48_musky_roo, 1024 units, fc dropouts, bn (y,y), l=2, vgg_modi_1x1, elu
 	# 27148/27148 [==============================] - 662s - loss: 0.1511 - acc: 0.9483 - val_loss: 0.1499 - val_acc: 0.9477
+	
+	# shit it was so fast. probably because it doesn't have dropouts in conv layers.
+	# 01-20-05h03_musky_bat
 	# 27148/27148 [==============================] - 662s - loss: 0.1499 - acc: 0.9487 - val_loss: 0.1462 - val_acc: 0.9485
 	# 27148/27148 [==============================] - 662s - loss: 0.1401 - acc: 0.9503 - val_loss: 0.1429 - val_acc: 0.9489
 	# 27148/27148 [==============================] - 661s - loss: 0.1424 - acc: 0.9503 - val_loss: 0.1420 - val_acc: 0.9494
 	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
 	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
+	# ...
+	# ... after 7 iterations
+	# 27148/27148 [==============================] - 662s - loss: 0.1514 - acc: 0.9482 - val_loss: 0.1452 - val_acc: 0.9494
 	# roc_auc_none 0.499981096408 0.584840045702
 	# and resume! with adam from now.		
 	# pooling only by time for the first two.
+
+	# Okay, with less dropout. 0.2
+	# 27148/27148 [==============================] - 1357s - loss: 0.1684 - acc: 0.9456 - val_loss: 0.1578 - val_acc: 0.9472
+	# 27148/27148 [==============================] - 1356s - loss: 0.1640 - acc: 0.9462 - val_loss: 0.1564 - val_acc: 0.9474
+	# 27148/27148 [==============================] - 1356s - loss: 0.1576 - acc: 0.9468 - val_loss: 0.1479 - val_acc: 0.9493
+	# result: no dropout at convnet. yeah......
+	# roc_auc_none 0.507071232823 0.561989803816
 
 
 	# then small l2 weight decay on FC layers
@@ -698,6 +711,6 @@ if __name__ == '__main__':
 
 	# Rule of thumb:
 	# batch_size = 32 or 64
-	# dropout = True for fc_layers, not sure for conv layers. will do next time with small values
+	# dropout = True for only fc_layers.
 	# mfcc + some tf_type make sense.
 	# lrelu > prelu, relu. 
