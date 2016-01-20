@@ -333,6 +333,9 @@ if __name__ == '__main__':
 	parser.add_argument('-bn_fc', '--batch_normalization_fc', type=str,
 															help='BN for fc layers',
 															required=False)
+	parser.add_argument('-mo', '--maxout', type=str,
+											help='Maxout true or false',
+											required=False)
 	parser.add_argument('-debug', '--debug', type=str,
 											help='if debug',
 											required=False)
@@ -369,12 +372,12 @@ if __name__ == '__main__':
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 3
+	TR_CONST["num_fc_layers"] = 2
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [2048]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
 	TR_CONST["BN_fc_layers"] = True
@@ -432,6 +435,8 @@ if __name__ == '__main__':
 		TR_CONST["BN_fc_layers"] = str2bool(args.batch_normalization_fc)
 	if args.learning_rate:
 		TR_CONST["learning_rate"] = args.learning_rate
+	if args.maxout:
+		TR_CONST["maxout"] = str2bool(args.maxout)
 	if args.debug:
 		TR_CONST["debug"] = str2bool(args.debug)
 	if args.output_layer:
@@ -666,6 +671,8 @@ if __name__ == '__main__':
 		run_with_setting(TR_CONST, sys.argv)
 		sys.exit()
 
+
+
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
@@ -705,6 +712,18 @@ if __name__ == '__main__':
 	# result: no dropout at convnet. yeah......
 	# roc_auc_none 0.507071232823 0.561989803816
 
+
+	# elu, batch(y,y), dropout(n,y), 3x2 conv layers (vgg_modi_1x1), 3(256-256-256) fc layers
+	# from now, just once in a whole epoch.
+	# 27148/27148 [==============================] - 691s - loss: 0.1533 - acc: 0.9479 - val_loss: 0.1464 - val_acc: 0.9488
+	# 27148/27148 [==============================] - 643s - loss: 0.1489 - acc: 0.9484 - val_loss: 0.1426 - val_acc: 0.9502
+	# 27148/27148 [==============================] - 701s - loss: 0.1421 - acc: 0.9501 - val_loss: 0.1388 - val_acc: 0.9499
+	# 27148/27148 [==============================] - 700s - loss: 0.1388 - acc: 0.9506 - val_loss: 0.1350 - val_acc: 0.9509``````````````
+	# 27148/27148 [==============================] - 725s - loss: 0.1391 - acc: 0.9507 - val_loss: 0.1360 - val_acc: 0.9502
+	# roc_auc_none 0.5 0.607832063532
+
+
+	# next: 2x2048 fc layers, maxout in convnet?
 
 	# then small l2 weight decay on FC layers
 
