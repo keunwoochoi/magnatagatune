@@ -144,7 +144,7 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 32
+		batch_size = 24
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
@@ -347,32 +347,32 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
 	TR_CONST["dim_labels"] = 50
-	TR_CONST["num_layers"] = 6
+	TR_CONST["num_layers"] = 2
 
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
 	TR_CONST["clips_per_song"] = 7
 	TR_CONST['loss_function'] = 'binary_crossentropy'
-	TR_CONST["optimiser"] = 'adagrad'
+	TR_CONST["optimiser"] = 'adam'
 	TR_CONST['learning_rate'] = 1e-2
 	TR_CONST["output_activation"] = 'sigmoid'
 
 	TR_CONST["num_epoch"] = 4
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
-	TR_CONST["activations"] = ['relu']*TR_CONST["num_layers"]
+	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	TR_CONST["model_type"] = 'vgg_simple'
+	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
 	TR_CONST["num_fc_layers"] = 2
 
-	TR_CONST["BN_fc_layers"] = False
-	TR_CONST["dropouts_fc_layers"] = [0.0]*TR_CONST["num_fc_layers"]
+	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
 	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
-	TR_CONST["activations_fc_layers"] = ['relu']*TR_CONST["num_fc_layers"]
+	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
 	TR_CONST["BN_fc_layers"] = False 
 	#--------------------------------------------------------#
@@ -522,7 +522,7 @@ if __name__ == '__main__':
 		update_setting_dict(TR_CONST)
 		run_with_setting(TR_CONST, sys.argv)
 
-		# then try dropout on FC only first. 01-19-00h53_red_wolf
+		# then try dropout on FC only first. 01-19-00h53_red_wolf ####### THIS IS PERHAPS ONE OF THE BEST!
 		# 27148/27148 [==============================] - 352s - loss: 0.1541 - acc: 0.9480 - val_loss: 0.1529 - val_acc: 0.9474
 		# 27148/27148 [==============================] - 350s - loss: 0.1433 - acc: 0.9497 - val_loss: 0.1472 - val_acc: 0.9482
 		# roc_auc_none 0.5 0.553300884607
@@ -541,7 +541,7 @@ if __name__ == '__main__':
 		run_with_setting(TR_CONST, sys.argv)
 
 		# vgg original. rage_deer
-		# after 6 epochs,
+		# after 6 epochs, (all night)
 		# 27148/27148 [==============================] - 737s - loss: 0.1317 - acc: 0.9521 - val_loss: 0.1388 - val_acc: 0.9499
 		# roc_auc_none 0.5 0.585801977209
 		TR_CONST["activations"] = ['lrelu'] # alpha is 0.3 now
@@ -666,9 +666,25 @@ if __name__ == '__main__':
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	# default - BN(y,y), dropout(n,y), 6-layer, with elu.01-19-23h09_tiny_horse
+	# default - BN(y,n), dropout(n,y), 6-layer, with elu.01-19-23h09_tiny_horse
 	# 27148/27148 [==============================] - 400s - loss: 0.1651 - acc: 0.9468 - val_loss: 0.1619 - val_acc: 0.9465
 
+	# 01-20-00h13_aqua_shep
+	# elu, vgg_modi_1x1, l=2 (effectively 4 layers), dropout(n,y), BN(y,n)
+	# + lr=0.1 !!!! (shit, even worse than original lr = 1e-2)
+	# 27148/27148 [==============================] - 649s - loss: 0.1662 - acc: 0.9467 - val_loss: 0.1640 - val_acc: 0.9463
+	# 27148/27148 [==============================] - 649s - loss: 0.1609 - acc: 0.9474 - val_loss: 0.1538 - val_acc: 0.9477
+	# 27148/27148 [==============================] - 648s - loss: 0.1514 - acc: 0.9483 - val_loss: 0.1509 - val_acc: 0.9480
+
+	# Mistake above: to omit BN.
+	# do it again with BN!
+	# 01-20-01h48_musky_roo, 1024 units, fc dropouts, bn (y,y), l=2, vgg_modi_1x1, elu
+	# 27148/27148 [==============================] - 662s - loss: 0.1511 - acc: 0.9483 - val_loss: 0.1499 - val_acc: 0.9477
+	# 27148/27148 [==============================] - 662s - loss: 0.1499 - acc: 0.9487 - val_loss: 0.1462 - val_acc: 0.9485
+	# 27148/27148 [==============================] - 662s - loss: 0.1401 - acc: 0.9503 - val_loss: 0.1429 - val_acc: 0.9489
+	# 27148/27148 [==============================] - 661s - loss: 0.1424 - acc: 0.9503 - val_loss: 0.1420 - val_acc: 0.9494
+	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
+	# 27148/27148 [==============================] - 661s - loss: 0.1336 - acc: 0.9518 - val_loss: 0.1414 - val_acc: 0.9489
 	# pooling only by time for the first two.
 
 
