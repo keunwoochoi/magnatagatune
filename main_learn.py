@@ -200,7 +200,7 @@ def run_with_setting(hyperparams, argv=None):
 			else:
 				valid_data = (valid_x[:512], valid_y[:512])
 			if total_epoch ==0:
-				batch_size_applied = batch_size*2
+				batch_size_applied = batch_size*4/3
 			elif total_epoch % 4 == 0:
 				batch_size_applied = batch_size*2/3
 			else:
