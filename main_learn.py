@@ -186,10 +186,8 @@ def run_with_setting(hyperparams, argv=None):
 										filename_prefix='global_INIT', 
 										normalize='global', 
 										mono=True)
-
  	# run
 	while True:	
-		
 		for sub_epoch_idx in range(num_sub_epoch):
 			if os.path.exists('stop_asap.keunwoo'):
 				break
@@ -197,13 +195,18 @@ def run_with_setting(hyperparams, argv=None):
 			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
 			train_x_here = train_x[seg_from:seg_to]
 			train_y_here = train_y[seg_from:seg_to]
-			if sub_epoch_idx in [2, 4]:
+			if sub_epoch_idx == (num_sub_epoch-1):
 				valid_data = (valid_x, valid_y)
 			else:
-				valid_data = None
-
+				valid_data = (valid_x[:512], valid_y[:512])
+			if total_epoch ==0:
+				batch_size_applied = batch_size*2
+			elif total_epoch % 4 == 0:
+				batch_size_applied = batch_size*2/3
+			else:
+				batch_size_applied = batch_size
 			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
-														batch_size=batch_size, 
+														batch_size=batch_size_applied, 
 														nb_epoch=1, 
 														show_accuracy=hyperparams['isClass'], 
 														verbose=1, 
