@@ -364,12 +364,12 @@ if __name__ == '__main__':
 	TR_CONST['learning_rate'] = 1e-2
 	TR_CONST["output_activation"] = 'sigmoid'
 
-	TR_CONST["num_epoch"] = 4
+	TR_CONST["num_epoch"] = 5
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
-	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST["regulariser"] = [('l1', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
@@ -380,8 +380,9 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [2048]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
+	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0), ('l1', 0.0)] 
 	TR_CONST["BN_fc_layers"] = True
+	TR_CONST["maxout"] = True
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -723,9 +724,12 @@ if __name__ == '__main__':
 	# roc_auc_none 0.5 0.607832063532
 	
 
-	# 01-20-21h59_green_doge - maxout.
+	# 01-20-22h18_gryph_paw - maxout.  #### PROMISING.... ###
 	# Bn (y,y) - not sure if it's working right with maxout.
 	# dropout(n,y), all elu, 3-layer vgg_modi_1x1
+	# 27148/27148 [==============================] - 984s - loss: 0.1452 - acc: 0.9497 - val_loss: 0.1432 - val_acc: 0.9480
+	# 27148/27148 [==============================] - 983s - loss: 0.1265 - acc: 0.9536 - val_loss: 0.1400 - val_acc: 0.9484
+	# roc_auc_none 0.5 0.611699031992
 
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
