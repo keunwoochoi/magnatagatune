@@ -144,14 +144,14 @@ def run_with_setting(hyperparams, argv=None):
 	elif hyperparams["tf_type"] == 'mfcc':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 24
+		batch_size = 16
 	else:
 		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
 	if hyperparams['model_type'] == 'vgg_original':
 		batch_size = (batch_size * 3)/5
 	# ready to run
-	predicted = model.predict(test_x, batch_size=batch_size)
-	eval_result_init = evaluate_result(test_y, predicted)
+	# predicted = model.predict(test_x, batch_size=batch_size)
+	# eval_result_init = evaluate_result(test_y, predicted)
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
 	# print 'mean of target value:'
@@ -159,7 +159,7 @@ def run_with_setting(hyperparams, argv=None):
 	# print 'mean of predicted value:'
 	# print np.mean(predicted, axis=0)
 	# print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
-	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
+	# np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	
 	num_epoch = hyperparams["num_epoch"]
@@ -731,6 +731,23 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 983s - loss: 0.1265 - acc: 0.9536 - val_loss: 0.1400 - val_acc: 0.9484
 	# roc_auc_none 0.5 0.611699031992
 
+
+	# 01-21-03h04_rage_roo
+	# with more complex setting, which results in overfitting.
+	# roc_auc_none 0.5 0.614563063192
+	# at the end,
+	# 27148/27148 [==============================] - 983s - loss: 0.1265 - acc: 0.9536 - val_loss: 0.1400 - val_acc: 0.9484
+	
+
+	# 01-21-12h22_blue_mare
+	# rage_roo was with wrong convnet BN axis, so do it again + additionally with l1-reg in fc layer.
+	# 27148/27148 [==============================] - 804s - loss: 0.1328 - acc: 0.9519 - val_loss: 0.1335 - val_acc: 0.9514
+	# 27148/27148 [==============================] - 708s - loss: 0.1267 - acc: 0.9532 - val_loss: 0.1362 - val_acc: 0.9497
+	# 27148/27148 [==============================] - 804s - loss: 0.1236 - acc: 0.9541 - val_loss: 0.1354 - val_acc: 0.9501
+	# 27148/27148 [==============================] - 789s - loss: 0.1098 - acc: 0.9585 - val_loss: 0.1503 - val_acc: 0.9441
+	# WE NEED REGULARIZATION. Dropout on convnet again!
+	# roc_auc_none 0.5 0.60138259003
+	
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
