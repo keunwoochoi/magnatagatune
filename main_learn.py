@@ -243,7 +243,7 @@ def run_with_setting(hyperparams, argv=None):
 	eval_result_final = evaluate_result(test_y, predicted)
 	print '.'*60
 	for key in sorted(eval_result_final.keys()):
-		print key, eval_result_init[key], eval_result_final[key]
+		print key, eval_result_final[key]
 	print '.'*60
 	# print np.mean(test_y, axis=0)[:10]
 	# print predicted[:2][:10]
@@ -747,14 +747,16 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 789s - loss: 0.1098 - acc: 0.9585 - val_loss: 0.1503 - val_acc: 0.9441
 	# WE NEED REGULARIZATION. Dropout on convnet again!
 	# roc_auc_none 0.5 0.60138259003
-	
+
+	# with dropout in convnet,
+	# 27148/27148 [==============================] - 936s - loss: 0.1442 - acc: 0.9500 - val_loss: 0.1961 - val_acc: 0.9323
+	# 27148/27148 [==============================] - 933s - loss: 0.1368 - acc: 0.9512 - val_loss: 0.1427 - val_acc: 0.9494
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
+	# mae as loss function?? and l1 vs l2 regulaisation?? .. more dropout for conv layers with more features?
 
-	# next: 2x2048 fc layers, maxout in convnet?
-
-	# then small l2 weight decay on FC layers
+	# then small l1 weight decay on FC layers
 
 	# and 3x3s2 mp? as sander did in plankton work.
 
