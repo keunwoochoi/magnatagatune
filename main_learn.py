@@ -177,61 +177,61 @@ def run_with_setting(hyperparams, argv=None):
 			previous_history = cP.load(open(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP', 'r'))
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 			append_history(total_history, previous_history)
+	if not hyperparams['do_not_learn']:
+		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+											filename_prefix='local_INIT', 
+											normalize='local', 
+											mono=True)
+		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
+											filename_prefix='global_INIT', 
+											normalize='global', 
+											mono=True)
+	 	# run
+		while True:	
+			for sub_epoch_idx in range(num_sub_epoch):
+				if os.path.exists('stop_asap.keunwoo'):
+					break
+				seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
+				seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
+				train_x_here = train_x[seg_from:seg_to]
+				train_y_here = train_y[seg_from:seg_to]
+				if sub_epoch_idx == (num_sub_epoch-1):
+					valid_data = (valid_x, valid_y)
+				else:
+					valid_data = (valid_x[:512], valid_y[:512])
+				# if total_epoch ==0:
+				# 	batch_size_applied = batch_size*4/3
+				# elif total_epoch % 4 == 0:
+				# 	batch_size_applied = batch_size*2/3
+				# else:
+				# 	batch_size_applied = batch_size
+				batch_size_applied = batch_size
+				history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
+															batch_size=batch_size_applied, 
+															nb_epoch=1, 
+															show_accuracy=hyperparams['isClass'], 
+															verbose=1, 
+															callbacks=callbacks,
+															shuffle=shuffle)
+				append_history(total_history, history.history)
 
-	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
-										filename_prefix='local_INIT', 
-										normalize='local', 
-										mono=True)
-	my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
-										filename_prefix='global_INIT', 
-										normalize='global', 
-										mono=True)
- 	# run
-	while True:	
-		for sub_epoch_idx in range(num_sub_epoch):
+			print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
+			total_epoch += 1
+
 			if os.path.exists('stop_asap.keunwoo'):
-				break
-			seg_from = sub_epoch_idx * (train_x.shape[0]/num_sub_epoch)
-			seg_to   = (sub_epoch_idx+1) * (train_x.shape[0]/num_sub_epoch)
-			train_x_here = train_x[seg_from:seg_to]
-			train_y_here = train_y[seg_from:seg_to]
-			if sub_epoch_idx == (num_sub_epoch-1):
-				valid_data = (valid_x, valid_y)
-			else:
-				valid_data = (valid_x[:512], valid_y[:512])
-			# if total_epoch ==0:
-			# 	batch_size_applied = batch_size*4/3
-			# elif total_epoch % 4 == 0:
-			# 	batch_size_applied = batch_size*2/3
-			# else:
-			# 	batch_size_applied = batch_size
-			batch_size_applied = batch_size
-			history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
-														batch_size=batch_size_applied, 
-														nb_epoch=1, 
-														show_accuracy=hyperparams['isClass'], 
-														verbose=1, 
-														callbacks=callbacks,
-														shuffle=shuffle)
-			append_history(total_history, history.history)
-
-		print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
-		total_epoch += 1
-
-		if os.path.exists('stop_asap.keunwoo'):
-			os.remove('stop_asap.keunwoo')
-			loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
-			break
-		
-		if os.path.exists('will_stop.keunwoo'):	
-			if total_epoch > num_epoch:
+				os.remove('stop_asap.keunwoo')
 				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 				break
+			
+			if os.path.exists('will_stop.keunwoo'):	
+				if total_epoch > num_epoch:
+					loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+					break
+				else:
+					print ' *** will go for %d epochs' % (num_epoch - total_epoch)
 			else:
-				print ' *** will go for %d epochs' % (num_epoch - total_epoch)
-		else:
-			print ' *** will go for another one epoch. '
-			print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
+				print ' *** will go for another one epoch. '
+				print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
 	#
 	best_batch = np.argmax(total_history['val_acc'])+1
 	
@@ -349,6 +349,9 @@ if __name__ == '__main__':
 	parser.add_argument('-rs', '--resume', type=str,
 										help='model name with date, without w_, to load.',
 										required=False )
+	parser.add_argument('-dnl', '--do_not_learn', type=str,
+										help='model name with date, without w_, to load.',
+										required=False )
 	
 	
 	args = parser.parse_args()
@@ -447,6 +450,9 @@ if __name__ == '__main__':
 		TR_CONST["resume"] = args.resume
 	else:
 		TR_CONST["resume"] = ''
+	if args.do_not_learn:
+		TR_CONST["do_not_learn"] = args.do_not_learn
+
  	#----------------------------------------------------------#
 	# 1. vanilla setting: not learning. 
 	# 2. regularise with 5e-4, 5e-4: 01-18-14h48_silly_pup, predicting means
