@@ -760,6 +760,8 @@ if __name__ == '__main__':
 	# with dropout in convnet,
 	# 27148/27148 [==============================] - 936s - loss: 0.1442 - acc: 0.9500 - val_loss: 0.1961 - val_acc: 0.9323
 	# 27148/27148 [==============================] - 933s - loss: 0.1368 - acc: 0.9512 - val_loss: 0.1427 - val_acc: 0.9494
+	# 27148/27148 [==============================] - 933s - loss: 0.1221 - acc: 0.9548 - val_loss: 0.1502 - val_acc: 0.9455
+	# 27148/27148 [==============================] - 933s - loss: 0.1128 - acc: 0.9578 - val_loss: 0.1564 - val_acc: 0.9432
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
