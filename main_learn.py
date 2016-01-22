@@ -379,12 +379,12 @@ if __name__ == '__main__':
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 2
+	TR_CONST["num_fc_layers"] = 3
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [2048]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0), ('l1', 0.0)] 
 	TR_CONST["BN_fc_layers"] = True
@@ -757,11 +757,27 @@ if __name__ == '__main__':
 	# WE NEED REGULARIZATION. Dropout on convnet again!
 	# roc_auc_none 0.5 0.60138259003
 
+	# 01-21-17h03_big_puma
 	# with dropout in convnet,
 	# 27148/27148 [==============================] - 936s - loss: 0.1442 - acc: 0.9500 - val_loss: 0.1961 - val_acc: 0.9323
 	# 27148/27148 [==============================] - 933s - loss: 0.1368 - acc: 0.9512 - val_loss: 0.1427 - val_acc: 0.9494
 	# 27148/27148 [==============================] - 933s - loss: 0.1221 - acc: 0.9548 - val_loss: 0.1502 - val_acc: 0.9455
 	# 27148/27148 [==============================] - 933s - loss: 0.1128 - acc: 0.9578 - val_loss: 0.1564 - val_acc: 0.9432
+	
+	# 01-22-01h30_dark_bear
+	# put a very strong l1 regulariser for maxout and conv. (0.01), and dropout at conv:0.25 -> 0.30
+	# not learning well. Probably dropout is wrong..
+
+	# 01-22-02h31_sharp_shark
+	# remove dropout.
+	# 27148/27148 [==============================] - 1092s - loss: 5.9497 - acc: 0.9462 - val_loss: 0.1930 - val_acc: 0.9432
+	# 27148/27148 [==============================] - 1090s - loss: 5.8483 - acc: 0.9464 - val_loss: 0.1724 - val_acc: 0.9461
+	# 27148/27148 [==============================] - 1090s - loss: 5.8221 - acc: 0.9463 - val_loss: 0.1745 - val_acc: 0.9453
+	# 27148/27148 [==============================] - 1094s - loss: 5.7915 - acc: 0.9464 - val_loss: 0.1725 - val_acc: 0.9451
+
+	#okay, stop l1 reg on convnet..
+	# should find something better than gryph_paw and blue_mare!
+
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
