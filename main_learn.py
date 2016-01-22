@@ -370,12 +370,12 @@ if __name__ == '__main__':
 	TR_CONST['learning_rate'] = 1e-2
 	TR_CONST["output_activation"] = 'sigmoid'
 
-	TR_CONST["num_epoch"] = 5
+	TR_CONST["num_epoch"] = 3
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
-	TR_CONST["regulariser"] = [('l1', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST["regulariser"] = [('l2', 0.0005)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
@@ -778,6 +778,22 @@ if __name__ == '__main__':
 	#okay, stop l1 reg on convnet..
 	# should find something better than gryph_paw and blue_mare!
 
+	# 01-22-09h40_spotty_lynx
+	# mae doesn't work well.
+
+
+	# mse 01-22-10h45_wolfy_wolf
+	# stop at the similar point. 
+	# 27148/27148 [==============================] - 721s - loss: 0.0417 - acc: 0.9488 - val_loss: 0.0411 - val_acc: 0.9483
+	#...
+	# 27148/27148 [==============================] - 717s - loss: 0.0366 - acc: 0.9542 - val_loss: 0.0396 - val_acc: 0.9490
+	# roc_auc_none 0.604942623177
+	# should look into predict value, how unique vector does it predict. 
+
+
+	# hinge loss
+
+	# add gaussian noise of sgm=0.1 to input of every conv layer?
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
