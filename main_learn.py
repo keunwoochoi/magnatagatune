@@ -386,7 +386,7 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0), ('l1', 0.0)] 
+	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	#--------------------------------------------------------#
@@ -790,10 +790,17 @@ if __name__ == '__main__':
 	# roc_auc_none 0.604942623177
 	# should look into predict value, how unique vector does it predict. 
 
+	# 01-22-17h02_musky_orca
+	# l2 on conv only,
+	# after 3 iteration,
+	# 27148/27148 [==============================] - 714s - loss: 0.1427 - acc: 0.9503 - val_loss: 0.1503 - val_acc: 0.9491
+	# roc_auc_none 0.597105533848
+
 
 	# hinge loss
 
 	# add gaussian noise of sgm=0.1 to input of every conv layer?
+
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
