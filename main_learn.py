@@ -135,8 +135,6 @@ def run_with_setting(hyperparams, argv=None):
 	early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	
-
 	if hyperparams["tf_type"] == 'cqt':
 		batch_size = 32
 	elif hyperparams["tf_type"] == 'stft':
@@ -150,16 +148,8 @@ def run_with_setting(hyperparams, argv=None):
 	if hyperparams['model_type'] == 'vgg_original':
 		batch_size = (batch_size * 3)/5
 	# ready to run
-	# predicted = model.predict(test_x, batch_size=batch_size)
-	# eval_result_init = evaluate_result(test_y, predicted)
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
-	# print 'mean of target value:'
-	# print np.mean(test_y, axis=0)
-	# print 'mean of predicted value:'
-	# print np.mean(predicted, axis=0)
-	# print 'mse with just predicting average is %f' % np.mean((test_y - np.mean(test_y, axis=0))**2)
-	# np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_init.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
 	
 	num_epoch = hyperparams["num_epoch"]
@@ -199,12 +189,7 @@ def run_with_setting(hyperparams, argv=None):
 					valid_data = (valid_x, valid_y)
 				else:
 					valid_data = (valid_x[:512], valid_y[:512])
-				# if total_epoch ==0:
-				# 	batch_size_applied = batch_size*4/3
-				# elif total_epoch % 4 == 0:
-				# 	batch_size_applied = batch_size*2/3
-				# else:
-				# 	batch_size_applied = batch_size
+
 				batch_size_applied = batch_size
 				history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 															batch_size=batch_size_applied, 
@@ -232,7 +217,6 @@ def run_with_setting(hyperparams, argv=None):
 			else:
 				print ' *** will go for another one epoch. '
 				print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
-	#
 	
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
@@ -244,9 +228,7 @@ def run_with_setting(hyperparams, argv=None):
 	for key in sorted(eval_result_final.keys()):
 		print key, eval_result_final[key]
 	print '.'*60
-	# print np.mean(test_y, axis=0)[:10]
-	# print predicted[:2][:10]
-
+	
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
@@ -809,6 +791,12 @@ if __name__ == '__main__':
 	# 	TR_CONST['gn_sigma'] = sigma
 	# 	update_setting_dict(TR_CONST)
 	# 	run_with_setting(TR_CONST, sys.argv)
+
+	# 01-23-13h31_shark_toy sgm=0.01
+	# result: still overfit after 0.945x. 
+
+	# have very large fc layer - probably this is the bottleneck.
+	
 	TR_CONST['gn_sigma'] = 0.01
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
