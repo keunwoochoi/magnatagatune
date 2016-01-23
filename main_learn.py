@@ -153,7 +153,7 @@ def run_with_setting(hyperparams, argv=None):
 
 	total_history = {}
 	total_label_count = train_y.shape[0]*train_y.shape[1]
-	print 'With predicting all zero, acc is %0.6f' % (total_label_count - np.sum(train_y))/float(total_label_count)
+	print 'With predicting all zero, acc is %0.6f' % ((total_label_count - np.sum(train_y))/float(total_label_count))
 
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
