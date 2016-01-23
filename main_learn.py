@@ -389,6 +389,7 @@ if __name__ == '__main__':
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
+	TR_CONST["gaussian_noise"] = True
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -796,8 +797,13 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 714s - loss: 0.1427 - acc: 0.9503 - val_loss: 0.1503 - val_acc: 0.9491
 	# roc_auc_none 0.597105533848
 
-
 	# hinge loss
+	# It sucks.
+
+	# l2 conve and mse,
+	# 01-22-23h17_pup_wing
+
+
 
 	# add gaussian noise of sgm=0.1 to input of every conv layer?
 
