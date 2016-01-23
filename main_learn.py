@@ -810,6 +810,7 @@ if __name__ == '__main__':
 	# 	update_setting_dict(TR_CONST)
 	# 	run_with_setting(TR_CONST, sys.argv)
 	TR_CONST['gn_sigma'] = 0.01
+	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
 	# mae as loss function?? and l1 vs l2 regulaisation?? .. more dropout for conv layers with more features?
