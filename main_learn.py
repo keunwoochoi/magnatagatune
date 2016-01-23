@@ -805,10 +805,12 @@ if __name__ == '__main__':
 
 
 	# add gaussian noise of sgm=0.1 to input of every conv layer?
-	for sigma in [0.05, 0.3, 1.0]:
-		TR_CONST['gn_sigma'] = sigma
-		update_setting_dict(TR_CONST)
-		run_with_setting(TR_CONST, sys.argv)
+	# for sigma in [0.05, 0.3, 1.0]:
+	# 	TR_CONST['gn_sigma'] = sigma
+	# 	update_setting_dict(TR_CONST)
+	# 	run_with_setting(TR_CONST, sys.argv)
+	TR_CONST['gn_sigma'] = 0.01
+	run_with_setting(TR_CONST, sys.argv)
 
 	# mae as loss function?? and l1 vs l2 regulaisation?? .. more dropout for conv layers with more features?
 
