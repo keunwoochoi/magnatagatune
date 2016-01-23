@@ -135,16 +135,8 @@ def run_with_setting(hyperparams, argv=None):
 	early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	if hyperparams["tf_type"] == 'cqt':
-		batch_size = 32
-	elif hyperparams["tf_type"] == 'stft':
-		batch_size = 32
-	elif hyperparams["tf_type"] == 'mfcc':
-		batch_size = 32
-	elif hyperparams["tf_type"] == 'melgram':
-		batch_size = 16
-	else:
-		raise RuntimeError('batch size for this? %s' % hyperparams["tf_type"])
+	batch_size = 16
+	
 	if hyperparams['model_type'] == 'vgg_original':
 		batch_size = (batch_size * 3)/5
 	# ready to run
@@ -160,6 +152,9 @@ def run_with_setting(hyperparams, argv=None):
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
 	total_history = {}
+	total_label_count = (train_y.shape[0]*train_y.shape[2]*train_y.shape[3])
+	print 'With predicting all zero, acc is %0.6f' % (total_label_count - np.sum(train_y))/float(total_label_count)
+
 	if hyperparams['resume'] != '':
 		if os.path.exists(PATH_RESULTS_W + 'w_' + hyperparams['resume']):
 			model.load_weights(PATH_RESULTS_W + 'w_' + hyperparams['resume'] + '/weights_best.hdf5')
@@ -357,7 +352,7 @@ if __name__ == '__main__':
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
-	TR_CONST["regulariser"] = [('l2', 0.0005)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
@@ -368,10 +363,10 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0), ('l2', 0.0)] 
+	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
-	TR_CONST["gaussian_noise"] = True
+	TR_CONST["gaussian_noise"] = False
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -800,11 +795,26 @@ if __name__ == '__main__':
 	# .. what?
 	# roc_auc_none 0.560626304588 : it's not bad. will resume more 
 	# e.g. one 4096 layers. 
-	TR_CONST['gn_sigma'] = 0.01
+	# TR_CONST['gn_sigma'] = 0.01
+
+	# with 0.01 noise and single 4096 layer
+	# memory error.
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	# vgg_modi_3x3: more deeper.
+	# vgg_modi_3x3: more deeper. with 0.01 noise. with l2 conv(shit, mistake), maxout. dropout only fc. All BN. 
+	# 01-23-17h21_doge_wing
+	# 
+
+
+	# no noise, no l2
+
+
+	# with noise, no l2.
+
+
+	
+
 
 	# and 3x3s2 mp? as sander did in plankton work.
 
