@@ -70,7 +70,7 @@ def append_history(total_history, local_history):
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
 
-def run_with_setting(hyperparams, argv=None):
+def run_with_setting(hyperparams, argv=None, batch_size=None):
 	f = open('will_stop.keunwoo', 'w')
 	f.close()
 	if os.path.exists('stop_asap.keunwoo'):
@@ -135,7 +135,8 @@ def run_with_setting(hyperparams, argv=None):
 	early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', 
 														patience=patience, 
 														verbose=0)
-	batch_size = 16
+	if batch_size == None:
+		batch_size = 16
 	
 	if hyperparams['model_type'] == 'vgg_original':
 		batch_size = (batch_size * 3)/5
@@ -332,7 +333,9 @@ if __name__ == '__main__':
 	parser.add_argument('-dnl', '--do_not_learn', type=str,
 										help='model name with date, without w_, to load.',
 										required=False )
-	
+	parser.add_argument('-bs', '--batch_size', type=int,
+										help='batch size',
+										required=False )
 	
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
@@ -433,6 +436,10 @@ if __name__ == '__main__':
 		TR_CONST["resume"] = ''
 	if args.do_not_learn:
 		TR_CONST["do_not_learn"] = args.do_not_learn
+	if args.batch_size:
+		batch_size = args.batch_size
+	else:
+		batch_size = 16
 
  	#----------------------------------------------------------#
 	# 1. vanilla setting: not learning. 
@@ -812,14 +819,14 @@ if __name__ == '__main__':
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 
 	# with noise, no l2.
 	TR_CONST["num_layers"] = 4
 	TR_CONST['gaussian_noise'] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 	
 
 	# more layers
@@ -827,8 +834,7 @@ if __name__ == '__main__':
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0001)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
-	
+	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 
 
 	# and 3x3s2 mp? as sander did in plankton work.
