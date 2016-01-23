@@ -798,17 +798,17 @@ if __name__ == '__main__':
 	# roc_auc_none 0.597105533848
 
 	# hinge loss
-	# It sucks.
+	# It sucks. Even pre-learned weights are getting worse. 
 
 	# l2 conve and mse,
 	# 01-22-23h17_pup_wing
 
 
-
 	# add gaussian noise of sgm=0.1 to input of every conv layer?
-
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, sys.argv)
+	for sigma in [0.05, 0.3, 1.0]:
+		TR_CONST['gn_sigma'] = sigma
+		update_setting_dict(TR_CONST)
+		run_with_setting(TR_CONST, sys.argv)
 
 	# mae as loss function?? and l1 vs l2 regulaisation?? .. more dropout for conv layers with more features?
 
