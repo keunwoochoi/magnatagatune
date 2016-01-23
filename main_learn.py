@@ -795,15 +795,16 @@ if __name__ == '__main__':
 	# 01-23-13h31_shark_toy sgm=0.01
 	# result: still overfit after 0.945x. 
 
+	# 01-23-13h31_shark_toy
 	# have very large fc layer - probably this is the bottleneck.
-	
+	# .. what?
+	# roc_auc_none 0.560626304588 : it's not bad. will resume more 
+	# e.g. one 4096 layers. 
 	TR_CONST['gn_sigma'] = 0.01
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	# mae as loss function?? and l1 vs l2 regulaisation?? .. more dropout for conv layers with more features?
-
-	# then small l1 weight decay on FC layers
+	# vgg_modi_3x3: more deeper.
 
 	# and 3x3s2 mp? as sander did in plankton work.
 
