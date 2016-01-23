@@ -799,20 +799,33 @@ if __name__ == '__main__':
 
 	# with 0.01 noise and single 4096 layer
 	# memory error.
+
+	# vgg_modi_3x3: more deeper. with 0.01 noise. with l2 conv(shit, mistake), maxout. dropout only fc. All BN. 
+	# 01-23-17h21_doge_wing	
+	# 27148/27148 [==============================] - 1101s - loss: 0.1546 - acc: 0.9480 - val_loss: 0.1704 - val_acc: 0.9401
+	# 27148/27148 [==============================] - 1101s - loss: 0.1429 - acc: 0.9503 - val_loss: 0.2163 - val_acc: 0.9319
+
+	# no noise, no l2
+	TR_CONST["num_layers"] = 4
+	TR_CONST['gaussian_noise'] = False
+	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
 	run_with_setting(TR_CONST, sys.argv)
 
-	# vgg_modi_3x3: more deeper. with 0.01 noise. with l2 conv(shit, mistake), maxout. dropout only fc. All BN. 
-	# 01-23-17h21_doge_wing
-	# 
-
-
-	# no noise, no l2
-
-
 	# with noise, no l2.
+	TR_CONST["num_layers"] = 4
+	TR_CONST['gaussian_noise'] = True
+	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
+	
 
-
+	# more layers
+	TR_CONST["num_layers"] = 4
+	TR_CONST['gaussian_noise'] = False
+	TR_CONST["regulariser"] = [('l2', 0.0001)]*TR_CONST["num_layers"] # use [None] not to use.
+	update_setting_dict(TR_CONST)
+	run_with_setting(TR_CONST, sys.argv)
 	
 
 
