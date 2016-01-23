@@ -152,7 +152,7 @@ def run_with_setting(hyperparams, argv=None):
 		callbacks = [weight_image_monitor, early_stopping, checkpointer]
 
 	total_history = {}
-	total_label_count = (train_y.shape[0]*train_y.shape[2]*train_y.shape[3])
+	total_label_count = (train_y.shape[0]*train_y.shape[1])
 	print 'With predicting all zero, acc is %0.6f' % (total_label_count - np.sum(train_y))/float(total_label_count)
 
 	if hyperparams['resume'] != '':
@@ -804,6 +804,8 @@ if __name__ == '__main__':
 	# 01-23-17h21_doge_wing	
 	# 27148/27148 [==============================] - 1101s - loss: 0.1546 - acc: 0.9480 - val_loss: 0.1704 - val_acc: 0.9401
 	# 27148/27148 [==============================] - 1101s - loss: 0.1429 - acc: 0.9503 - val_loss: 0.2163 - val_acc: 0.9319
+	# roc_auc_none 0.599799698513
+
 
 	# no noise, no l2
 	TR_CONST["num_layers"] = 4
