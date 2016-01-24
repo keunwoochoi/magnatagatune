@@ -836,7 +836,7 @@ if __name__ == '__main__':
 	TR_CONST["num_layers"] = 4
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	TR_CONST['nums_units_fc_layers'] = 4096
+	TR_CONST['nums_units_fc_layers'] = [4096]
 	TR_CONST['num_fc_layers'] = 2
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
