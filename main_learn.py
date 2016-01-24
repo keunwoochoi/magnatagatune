@@ -169,6 +169,15 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											normalize='global', 
 											mono=True)
 	 	# run
+	 	print 'TEST FLIGHT'
+	 	history=model.fit(train_x[-256:], train_y[-256:], validation_data=(valid_x[:128], valid_y[:128]), 
+															batch_size=batch_size, 
+															nb_epoch=1, 
+															show_accuracy=hyperparams['isClass'], 
+															verbose=1, 
+															callbacks=callbacks,
+															shuffle=shuffle)
+	 	print 'TEST FLIGHT DONE'
 		while True:	
 			for sub_epoch_idx in range(num_sub_epoch):
 				if os.path.exists('stop_asap.keunwoo'):
