@@ -830,6 +830,10 @@ if __name__ == '__main__':
 	# 01-24-00h31_red_pig
 	# 27148/27148 [==============================] - 1102s - loss: 0.1528 - acc: 0.9482 - val_loss: 0.1450 - val_acc: 0.9484
 	# 27148/27148 [==============================] - 1099s - loss: 0.1460 - acc: 0.9495 - val_loss: 0.1415 - val_acc: 0.9486
+	# 27148/27148 [==============================] - 1098s - loss: 0.1415 - acc: 0.9505 - val_loss: 0.1373 - val_acc: 0.9490
+	# 27148/27148 [==============================] - 1099s - loss: 0.1389 - acc: 0.9510 - val_loss: 0.1356 - val_acc: 0.9501
+	# roc_auc_macro 0.615940685831 --> best?
+
 	results = []
 	nl = 5
 	TR_CONST["num_layers"] = nl
@@ -879,10 +883,12 @@ if __name__ == '__main__':
 		results.append(acc)
 		print ' ***** results:', results
 
+
+	# TODO : major voting to evaluate more accurately.
+
 	# and 3x3s2 mp? as sander did in plankton work.
 
 	# Shit I want to use Lincoln's gpu. 
-
 	# Rule of thumb:
 	# batch_size = 32 or 64
 	# dropout = True for only fc_layers.
