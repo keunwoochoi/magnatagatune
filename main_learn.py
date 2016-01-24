@@ -336,6 +336,13 @@ if __name__ == '__main__':
 	parser.add_argument('-bs', '--batch_size', type=int,
 										help='batch size',
 										required=False )
+	parser.add_argument('-gn', '--gaussian_noise', type=string,
+										help='add noise? true or false',
+										required=False )
+	parser.add_argument('-gn_sigma', '--gn_sigma', type=float,
+										help='sigma of gaussian noise',
+										required=False )
+	
 	
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
@@ -370,6 +377,7 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
+	TR_CONST["gaussian_noise"] = 0.01
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -440,6 +448,10 @@ if __name__ == '__main__':
 		batch_size = args.batch_size
 	else:
 		batch_size = 16
+	if args.gaussian_noise:
+		TR_CONST["gaussian_noise"] = str2bool(args.gaussian_noise)
+	if args.gn_sigma:
+		TR_CONST["gn_sigma"] = args.gn_sigma
 
  	#----------------------------------------------------------#
 	# 1. vanilla setting: not learning. 
