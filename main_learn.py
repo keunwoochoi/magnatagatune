@@ -827,27 +827,57 @@ if __name__ == '__main__':
 
 
 	# no noise, no l2
-	TR_CONST["num_layers"] = 4
+	# 01-24-00h31_red_pig
+	# 27148/27148 [==============================] - 1102s - loss: 0.1528 - acc: 0.9482 - val_loss: 0.1450 - val_acc: 0.9484
+	# 27148/27148 [==============================] - 1099s - loss: 0.1460 - acc: 0.9495 - val_loss: 0.1415 - val_acc: 0.9486
+	results = []
+	nl = 5
+	TR_CONST["num_layers"] = nl
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+	results.append(acc)
+	print ' ***** results:', results
 
-	# with noise, no l2.
-	TR_CONST["num_layers"] = 4
-	TR_CONST['gaussian_noise'] = True
-	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-	
+	for nl in [4]
+		if nl == 5:
+			TR_CONST["num_layers"] = nl
+			TR_CONST['gaussian_noise'] = False
+			TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+			update_setting_dict(TR_CONST)
+			acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+			results.append(acc)
+			print ' ***** results:', results
 
-	# more layers
-	TR_CONST["num_layers"] = 4
-	TR_CONST['gaussian_noise'] = False
-	TR_CONST["regulariser"] = [('l2', 0.0001)]*TR_CONST["num_layers"] # use [None] not to use.
-	update_setting_dict(TR_CONST)
-	run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+		# with noise, no l2.
+		TR_CONST["num_layers"] = nl
+		TR_CONST['gaussian_noise'] = True
+		TR_CONST['gn_sigma'] = 0.005
+		TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+		update_setting_dict(TR_CONST)
+		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+		results.append(acc)
+		print ' ***** results:', results
+		
+		# dropout on conv
+		TR_CONST["num_layers"] = nl
+		TR_CONST['gaussian_noise'] = False
+		TR_CONST['dropouts'] = 0.2
+		update_setting_dict(TR_CONST)
+		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+		results.append(acc)
+		print ' ***** results:', results
 
+		# l2 on conv
+		TR_CONST['dropouts'] = 0.0
+		TR_CONST["num_layers"] = nl
+		TR_CONST['gaussian_noise'] = False
+		TR_CONST["regulariser"] = [('l2', 0.0001)]*TR_CONST["num_layers"] # use [None] not to use.
+		update_setting_dict(TR_CONST)
+		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+		results.append(acc)
+		print ' ***** results:', results
 
 	# and 3x3s2 mp? as sander did in plankton work.
 
