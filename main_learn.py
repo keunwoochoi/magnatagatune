@@ -347,7 +347,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
 	TR_CONST["dim_labels"] = 50
-	TR_CONST["num_layers"] = 3
+	TR_CONST["num_layers"] = 4
 
 	TR_CONST['isClass'] = True
 	TR_CONST['isRegre'] = False
@@ -363,7 +363,7 @@ if __name__ == '__main__':
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	TR_CONST["model_type"] = 'vgg_modi_1x1'
+	TR_CONST["model_type"] = 'vgg_modi_3x3'
 	TR_CONST["tf_type"] = 'melgram'
 
 	TR_CONST["num_fc_layers"] = 3
@@ -371,7 +371,7 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [256]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l2', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
@@ -844,7 +844,7 @@ if __name__ == '__main__':
 	results.append(acc)
 	print ' ***** results:', results
 
-	for nl in [4]
+	for nl in [4]:
 		if nl == 5:
 			TR_CONST["num_layers"] = nl
 			TR_CONST['gaussian_noise'] = False
