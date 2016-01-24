@@ -4,6 +4,7 @@ import os
 import time
 import h5py
 import argparse
+import pprint
 from sklearn import metrics
 import pdb
 import keras
@@ -12,6 +13,7 @@ import cPickle as cP
 import my_input_output as io
 from environments import *
 from constants import *
+
 
 sys.path.append(PATH_EMBEDDING)
 from training_settings import *
@@ -336,7 +338,7 @@ if __name__ == '__main__':
 	parser.add_argument('-bs', '--batch_size', type=int,
 										help='batch size',
 										required=False )
-	parser.add_argument('-gn', '--gaussian_noise', type=string,
+	parser.add_argument('-gn', '--gaussian_noise', type=str,
 										help='add noise? true or false',
 										required=False )
 	parser.add_argument('-gn_sigma', '--gn_sigma', type=float,
@@ -834,15 +836,16 @@ if __name__ == '__main__':
 	# 27148/27148 [==============================] - 1099s - loss: 0.1389 - acc: 0.9510 - val_loss: 0.1356 - val_acc: 0.9501
 	# roc_auc_macro 0.615940685831 --> best?
 
-	results = []
+	results = {}
 	nl = 5
+	TR_CONST["!memo"] = '5 layer with any hassle == red_pig + 1 more layer'
 	TR_CONST["num_layers"] = nl
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-	results.append(acc)
-	print ' ***** results:', results
+	results[TR_CONST["!memo"]] = acc
+	pprint.pprint(results)
 
 	for nl in [4]:
 		if nl == 5:
@@ -851,37 +854,40 @@ if __name__ == '__main__':
 			TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 			update_setting_dict(TR_CONST)
 			acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-			results.append(acc)
-			print ' ***** results:', results
+			
+			
 
 		# with noise, no l2.
+		TR_CONST["!memo"] = '4 layer, small noise, 0.005'
 		TR_CONST["num_layers"] = nl
 		TR_CONST['gaussian_noise'] = True
 		TR_CONST['gn_sigma'] = 0.005
 		TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 		update_setting_dict(TR_CONST)
 		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-		results.append(acc)
-		print ' ***** results:', results
+		results[TR_CONST["!memo"]] = acc
+		pprint.pprint(results)
 		
 		# dropout on conv
+		TR_CONST["!memo"] = '4 layer, 0.2 dropout on conv as well'
 		TR_CONST["num_layers"] = nl
 		TR_CONST['gaussian_noise'] = False
 		TR_CONST['dropouts'] = 0.2
 		update_setting_dict(TR_CONST)
 		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-		results.append(acc)
-		print ' ***** results:', results
+		results[TR_CONST["!memo"]] = acc
+		
 
 		# l2 on conv
+		TR_CONST["!memo"] = '4 layer, l2 reg.'
 		TR_CONST['dropouts'] = 0.0
 		TR_CONST["num_layers"] = nl
 		TR_CONST['gaussian_noise'] = False
 		TR_CONST["regulariser"] = [('l2', 0.0001)]*TR_CONST["num_layers"] # use [None] not to use.
 		update_setting_dict(TR_CONST)
 		acc=run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-		results.append(acc)
-		print ' ***** results:', results
+		results[TR_CONST["!memo"]] = acc
+		pprint.pprint(results)
 
 
 	# TODO : major voting to evaluate more accurately.
