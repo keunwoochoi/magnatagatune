@@ -18,6 +18,7 @@ from constants import *
 sys.path.append(PATH_EMBEDDING)
 from training_settings import *
 import my_utils
+
 import my_keras_models
 import my_keras_utils
 import my_plots
@@ -25,13 +26,6 @@ import hyperparams_manager
 
 def evaluate_result(y_true, y_pred):
 	ret = {}
-	ret['log_loss_before'] = metrics.log_loss(y_true, y_pred)
-	y_pred = np.round(y_pred)
-	ret['precision'] = metrics.average_precision_score(y_true, y_pred)
-	ret['f1_binary'] = metrics.f1_score(y_true, y_pred, average='binary')
-	ret['f1_micro'] = metrics.f1_score(y_true, y_pred, average='micro')
-	ret['f1_macro'] = metrics.f1_score(y_true, y_pred, average='macro')
-	ret['log_loss_after'] = metrics.log_loss(y_true, y_pred)
 	ret['roc_auc_micro'] = metrics.roc_auc_score(y_true, y_pred, average='micro')
 	ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
 	ret['roc_auc_none'] = metrics.roc_auc_score(y_true, y_pred)
@@ -838,14 +832,20 @@ if __name__ == '__main__':
 
 	results = {}
 	nl = 5
-	TR_CONST["!memo"] = '5 layer with any hassle == red_pig + 1 more layer'
-	TR_CONST["num_layers"] = nl
+	TR_CONST["!memo"] = '4 layers, 4096 fc, 2 fc layers'
+	TR_CONST["num_layers"] = 4
 	TR_CONST['gaussian_noise'] = False
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
+	TR_CONST['nums_units_fc_layers'] = 4096
+	TR_CONST['num_fc_layers'] = 2
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 	results[TR_CONST["!memo"]] = acc
 	pprint.pprint(results)
+
+
+
+	sys.exit(0)
 
 	for nl in [4]:
 		if nl == 5:
