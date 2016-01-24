@@ -74,7 +74,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
-	num_sub_epoch = 5
+	num_sub_epoch = 8
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -170,7 +170,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											mono=True)
 	 	# run
 	 	print 'TEST FLIGHT'
-	 	history=model.fit(train_x[-256:], train_y[-256:], validation_data=(valid_x[:128], valid_y[:128]), 
+	 	history=model.fit(train_x[-256:], train_y[-256:], validation_data=(valid_x[:512], valid_y[:512]), 
 															batch_size=batch_size, 
 															nb_epoch=1, 
 															show_accuracy=hyperparams['isClass'], 
@@ -847,6 +847,12 @@ if __name__ == '__main__':
 	# TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	# TR_CONST['nums_units_fc_layers'] = [4096]
 	# TR_CONST['num_fc_layers'] = 2
+
+
+	# 01-24-19h43_cyan_puma
+	# 2x4096,..
+	# with 3 layers: acc<0.9.
+
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 	results[TR_CONST["!memo"]] = acc
