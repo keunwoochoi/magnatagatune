@@ -382,7 +382,6 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
-	TR_CONST["gaussian_noise"] = 0.01
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -864,12 +863,15 @@ if __name__ == '__main__':
 	# large MP size on low layer may go wrong.
 	# even it's not working well. so this new feature map width is not working? or problem is on MP?
 
+	# 01-25-02h23_sharp_shep
+	# give up 'almost fully convolutioanal', go back to red_pig.
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
 	results[TR_CONST["!memo"]] = acc
 	pprint.pprint(results)
 
-
+	# 01-25-04h55_tiny_dobie (bit richer than red_pig, because in red_pig intermediat 3x3 conv feature map width was accidently set to 32 for all.)
+	# + 2x1024 isntead of 3x512
 
 	sys.exit(0)
 
