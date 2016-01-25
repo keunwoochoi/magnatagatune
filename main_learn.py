@@ -74,7 +74,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
-	num_sub_epoch = 8
+	num_sub_epoch = 5
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -190,7 +190,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					valid_data = (valid_x, valid_y)
 				else:
 					valid_data = (valid_x[:512], valid_y[:512])
-
+				# early_stop should watch overall AUC rather than val_loss or val_acc
 				batch_size_applied = batch_size
 				history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
 															batch_size=batch_size_applied, 
@@ -849,9 +849,20 @@ if __name__ == '__main__':
 	# TR_CONST['num_fc_layers'] = 2
 
 
+	#-----
+	# from here, I change MaxPooling size, increased it overall so that final image would be very small (4x2 or 4x3)
+
 	# 01-24-19h43_cyan_puma
+	# 01-24-21h09_wet_cat
+	# 16968/16968 [==============================] - 1690s - loss: 0.1652 - acc: 0.9465 - val_loss: 0.2980 - val_acc: 0.9034
 	# 2x4096,..
 	# with 3 layers: acc<0.9.
+	# very bad. and very very slow. (over 2k sec under 5-sub-epoch sysrtem)
+
+	# 01-24-22h38_rage_gryph
+	# 3x512 wth new setting of MP units. 
+	# large MP size on low layer may go wrong.
+	# even it's not working well. so this new feature map width is not working? or problem is on MP?
 
 	update_setting_dict(TR_CONST)
 	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
