@@ -28,7 +28,7 @@ def evaluate_result(y_true, y_pred):
 	ret = {}
 	ret['roc_auc_micro'] = metrics.roc_auc_score(y_true, y_pred, average='micro')
 	ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
-	ret['roc_auc_none'] = metrics.roc_auc_score(y_true, y_pred)
+	
 	print '.'*60
 	for key in ret:
 		print key, ret[key]
@@ -84,10 +84,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		num_data_in_test = 256
 		train_x = train_x[:num_data_in_test]
 		valid_x = valid_x[:num_data_in_test]
-		test_x = test_x[:num_data_in_test]
+		test_x  = test_x[:num_data_in_test]
 		train_y = train_y[:num_data_in_test]
 		valid_y = valid_y[:num_data_in_test]
-		test_y = test_y[:num_data_in_test]
+		test_y  = test_y[:num_data_in_test]
 		shuffle = False
 		num_sub_epoch = 1
 		
@@ -121,9 +121,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
  	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 	# prepare callbacks
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
-	checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
-													verbose=1, 
-								             		save_best_only=True)
+	# checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
+	# 												 monitor='val_acc',
+	# 												verbose=1, 
+	# 							             		save_best_only=True)
 	weight_image_monitor = my_keras_utils.Weight_Image_Saver(PATH_RESULTS + model_name_dir + 'images/')
 	patience = 100
 	if hyperparams["is_test"] is True:
@@ -143,10 +144,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
-	if hyperparams['is_test']:
-		callbacks = [weight_image_monitor]
-	else:
-		callbacks = [weight_image_monitor, early_stopping, checkpointer]
+	
+	callbacks = [weight_image_monitor]
 
 	total_history = {}
 	total_label_count = train_y.shape[0]*train_y.shape[1]
@@ -189,29 +188,34 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				if sub_epoch_idx == (num_sub_epoch-1):
 					valid_data = (valid_x, valid_y)
 				else:
-					valid_data = (valid_x[:512], valid_y[:512])
+					valid_data = (valid_x[:2048], valid_y[:2048])
 				# early_stop should watch overall AUC rather than val_loss or val_acc
 				batch_size_applied = batch_size
-				history=model.fit(train_x_here, train_y_here, validation_data=valid_data, 
+				model.fit(train_x_here, train_y_here, validation_data=None, 
 															batch_size=batch_size_applied, 
 															nb_epoch=1, 
 															show_accuracy=hyperparams['isClass'], 
 															verbose=1, 
 															callbacks=callbacks,
 															shuffle=shuffle)
+				# check with AUC
+				predicted = model.predict(valid_x, batch_size=batch_size)
+				val_result = evaluate_result(valid_y, predicted)
+				history['auc'] = val_result['roc_auc_macro']
 				append_history(total_history, history.history)
 
-			print '%d-th of %d epoch is complete' % (total_epoch, num_epoch)
+			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
 
 			if os.path.exists('stop_asap.keunwoo'):
 				os.remove('stop_asap.keunwoo')
-				loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+				# loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+
 				break
 			
 			if os.path.exists('will_stop.keunwoo'):	
 				if total_epoch > num_epoch:
-					loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
+					# loss_testset = model.evaluate(test_x, test_y, show_accuracy=True, batch_size=batch_size)
 					break
 				else:
 					print ' *** will go for %d epochs' % (num_epoch - total_epoch)
@@ -232,34 +236,35 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	
 	#save results
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
-	np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
+	# np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted[:len(test_y)], test_y[:len(test_y)]])
 	np.save(PATH_RESULTS + model_name_dir + 'weights_changes.npy', np.array(weight_image_monitor.weights_changes))
 
 	# ADD weight change saving code
 	if total_history != {}:
 		
-		my_plots.export_history(total_history['loss'], total_history['val_loss'], 
-													acc=total_history['acc'], 
-													val_acc=total_history['val_acc'], 
-													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png' )
+		# my_plots.export_history(total_history['loss'], total_history['val_loss'], 
+		# 											acc=total_history['acc'], 
+		# 											val_acc=total_history['val_acc'], 
+		# 											out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 		
-		min_loss = np.max(total_history['val_acc'])
-		best_batch = np.argmax(total_history['val_acc'])+1
-		num_run_epoch = len(total_history['val_acc'])
-		oneline_result = '%6.4f, acc %d_of_%d, %s' % (min_loss, best_batch, num_run_epoch, model_name)
+		max_auc = np.max(total_history['auc'])
+		best_batch = np.argmax(total_history['mac_auc'])+1
+		num_run_epoch = len(total_history['mac_auc'])
+		oneline_result = '%6.4f, acc %d_of_%d, %s' % (max_auc, best_batch, num_run_epoch, model_name)
 		with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 			pass
 		f = open( (PATH_RESULTS + '%s_%s_acc_%06.4f_at_(%d_of_%d)_%s'  % \
-			(timename, hyperparams["loss_function"], min_loss, best_batch, num_run_epoch, nickname)), 'w')
+			(timename, hyperparams["loss_function"], max_auc, best_batch, num_run_epoch, nickname)), 'w')
 		f.close()
 		with open('one_line_log.txt', 'a') as f:
 			f.write(oneline_result)
 			f.write(' ' + ' '.join(argv) + '\n')
 	else:
-		min_loss = 999		
+		max_auc = 0.0
 	print '========== DONE: %s ==========' % model_name
-	return min_loss
+	return max_auc
 
 	
 if __name__ == '__main__':
@@ -872,6 +877,10 @@ if __name__ == '__main__':
 
 	# 01-25-04h55_tiny_dobie (bit richer than red_pig, because in red_pig intermediat 3x3 conv feature map width was accidently set to 32 for all.)
 	# + 2x1024 isntead of 3x512
+	# OMG there was noise!! for the whole day !!! from 01-24- except red_pig!
+
+	# again without noise
+
 
 	sys.exit(0)
 
