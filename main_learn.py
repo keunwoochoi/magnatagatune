@@ -248,7 +248,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# ADD weight change saving code
 	if total_history != {}:
 		
-		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png' )
+		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png', title='AUC' )
 		# my_plots.export_history(total_history['loss'], total_history['val_loss'], 
 		# 											acc=total_history['acc'], 
 		# 											val_acc=total_history['val_acc'], 
@@ -257,10 +257,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		max_auc = np.max(total_history['auc'])
 		best_batch = np.argmax(total_history['auc'])+1
 		num_run_epoch = len(total_history['auc'])
-		oneline_result = '%6.4f, acc %d_of_%d, %s' % (max_auc, best_batch, num_run_epoch, model_name)
+		oneline_result = '%6.4f, auc %d_of_%d, %s' % (max_auc, best_batch, num_run_epoch, model_name)
 		with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 			pass
-		f = open( (PATH_RESULTS + '%s_%s_acc_%06.4f_at_(%d_of_%d)_%s'  % \
+		f = open( (PATH_RESULTS + '%s_%s_auc_%06.4f_at_(%d_of_%d)_%s'  % \
 			(timename, hyperparams["loss_function"], max_auc, best_batch, num_run_epoch, nickname)), 'w')
 		f.close()
 		with open('one_line_log.txt', 'a') as f:
