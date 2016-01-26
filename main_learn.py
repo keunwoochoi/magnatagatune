@@ -75,6 +75,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	dim_labels = hyperparams['dim_labels']	
 	shuffle = 'batch'
 	num_sub_epoch = 5
+	best_auc = 0.0
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
@@ -203,10 +204,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
-				# print 'history[auc]'
-				# print history['auc']
-				# print 'total_history'
-				# print total_history
+				if val_result['roc_auc_macro'] > best_auc:
+					best_auc = val_result['roc_auc_macro']
+					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
+										overwrite=True)
 				append_history(total_history, history)
 
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
@@ -876,8 +877,8 @@ if __name__ == '__main__':
 	# 01-25-02h23_sharp_shep
 	# give up 'almost fully convolutioanal', go back to red_pig.
 	update_setting_dict(TR_CONST)
-	acc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-	results[TR_CONST["!memo"]] = acc
+	auc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
+	results[TR_CONST["!memo"]] = auc
 	pprint.pprint(results)
 
 	# 01-25-04h55_tiny_dobie (bit richer than red_pig, because in red_pig intermediat 3x3 conv feature map width was accidently set to 32 for all.)
