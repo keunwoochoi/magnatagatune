@@ -201,6 +201,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				# check with AUC
 				predicted = model.predict(valid_x, batch_size=batch_size)
 				val_result = evaluate_result(valid_y, predicted)
+				history = {}
 				history['auc'] = val_result['roc_auc_macro']
 				append_history(total_history, history)
 
