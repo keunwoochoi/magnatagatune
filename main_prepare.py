@@ -29,12 +29,44 @@ def check_if_done(path):
 		if os.path.getsize(path) != 0: 
 			return True
 	return False
+
+def get_conventional_set():
+	''' Get conventional 12:1:3 validation setting as other did.
+	'''
+	if os.path.exists(PATH_DATA + FILE_DICT['conventional_set_idxs']):
+		return np.load(PATH_DATA + FILE_DICT['conventional_set_idxs'])
+	print 'Will create conventional set'
+	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
+	train_idxs = []
+	valid_idxs = []
+	test_idxs = []
+	train_pres = [str(ele) for ele in range(10)] + ['a', 'b']
+	valid_pres = ['c']
+	test_pres = ['d','e','f']
+	for path_idx, path in fm.paths:
+		if path[0] in train_pres:
+			train_idxs.append(path_idx)
+		elif path[0] in valid_pres:
+			valid_idxs.append(path_idx)
+		elif path[0] in test_pres:
+			test_idxs.append(path_idx)
+		else:
+			raise RuntimeError('Path seems strange: %d, %s' % (path_idx, path))
+	np.save(PATH_DATA + FILE_DICT['conventional_set_idxs'], [train_idx, valid_idx, test_idx])
+	print 'done done done.'
+	return [train_idx, valid_idx, test_idx]
+
 #------------------------------------------#
 
-def create_hdf():
-	'''create hdf file that has cqt, stft, mfcc, melgram of train/valid/test set.'''
+def create_hdf(set_indices=None):
+	'''create hdf file that has cqt, stft, mfcc, melgram of train/valid/test set.
+	For my original 6:1:1 (8-fold) cross-validation, input arg == None.
+	Otherwise, specify indices, [list_of_train_id, list_of_val_id, list_of_test_id]
+	'''
+	
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	set_indices = fm.shuffle(n_fold=8) # train, valid, test indices
+	if set_indices == None:
+		set_indices = fm.shuffle(n_fold=8) # train, valid, test indices
 	set_name = ['train', 'valid', 'test']
 	dataset_names = ['stft', 'melgram', 'cqt', 'mfcc']
 	print '='*60
@@ -300,6 +332,7 @@ if __name__ == '__main__':
 	'''
 	# prepare_y()
 	# prepare_x()
-	# create_hdf()
-	standardise()
+	list_of_list = get_conventional_set()
+	create_hdf(list_of_list)
+	# standardise()
 	
