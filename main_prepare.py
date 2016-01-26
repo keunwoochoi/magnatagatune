@@ -52,9 +52,9 @@ def get_conventional_set():
 			test_idxs.append(path_idx)
 		else:
 			raise RuntimeError('Path seems strange: %d, %s' % (path_idx, path))
-	np.save(PATH_DATA + FILE_DICT['conventional_set_idxs'], [train_idx, valid_idx, test_idx])
+	np.save(PATH_DATA + FILE_DICT['conventional_set_idxs'], [train_idxs, valid_idxs, test_idxs])
 	print 'done done done.'
-	return [train_idx, valid_idx, test_idx]
+	return [train_idxs, valid_idxs, test_idxs]
 
 #------------------------------------------#
 
