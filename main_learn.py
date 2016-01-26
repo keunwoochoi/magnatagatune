@@ -204,7 +204,9 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
+				print 'AUC: %f' % val_result['roc_auc_macro']
 				if val_result['roc_auc_macro'] > best_auc:
+					print ', which is new record! it was %f btw.' % best_auc
 					best_auc = val_result['roc_auc_macro']
 					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
 										overwrite=True)
@@ -878,8 +880,8 @@ if __name__ == '__main__':
 	# give up 'almost fully convolutioanal', go back to red_pig.
 	update_setting_dict(TR_CONST)
 	auc = run_with_setting(TR_CONST, argv=sys.argv, batch_size=batch_size)	
-	results[TR_CONST["!memo"]] = auc
-	pprint.pprint(results)
+	# results[TR_CONST["!memo"]] = auc
+	# pprint.pprint(results)
 
 	# 01-25-04h55_tiny_dobie (bit richer than red_pig, because in red_pig intermediat 3x3 conv feature map width was accidently set to 32 for all.)
 	# + 2x1024 isntead of 3x512
