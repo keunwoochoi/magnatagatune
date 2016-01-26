@@ -169,7 +169,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											mono=True)
 	 	# run
 	 	print 'TEST FLIGHT'
-	 	history=model.fit(train_x[-256:], train_y[-256:], validation_data=(valid_x[:512], valid_y[:512]), 
+	 	model.fit(train_x[-256:], train_y[-256:], validation_data=(valid_x[:512], valid_y[:512]), 
 															batch_size=batch_size, 
 															nb_epoch=1, 
 															show_accuracy=hyperparams['isClass'], 
@@ -202,7 +202,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				predicted = model.predict(valid_x, batch_size=batch_size)
 				val_result = evaluate_result(valid_y, predicted)
 				history['auc'] = val_result['roc_auc_macro']
-				append_history(total_history, history.history)
+				append_history(total_history, history)
 
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
@@ -250,8 +250,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		# 											out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
 		
 		max_auc = np.max(total_history['auc'])
-		best_batch = np.argmax(total_history['mac_auc'])+1
-		num_run_epoch = len(total_history['mac_auc'])
+		best_batch = np.argmax(total_history['auc'])+1
+		num_run_epoch = len(total_history['auc'])
 		oneline_result = '%6.4f, acc %d_of_%d, %s' % (max_auc, best_batch, num_run_epoch, model_name)
 		with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
 			pass
