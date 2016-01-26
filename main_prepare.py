@@ -43,7 +43,7 @@ def get_conventional_set():
 	train_pres = [str(ele) for ele in range(10)] + ['a', 'b']
 	valid_pres = ['c']
 	test_pres = ['d','e','f']
-	for path_idx, path in fm.paths:
+	for path_idx, path in enumerate(fm.paths):
 		if path[0] in train_pres:
 			train_idxs.append(path_idx)
 		elif path[0] in valid_pres:
