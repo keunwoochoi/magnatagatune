@@ -203,10 +203,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
-				print 'history[auc]'
-				print history['auc']
-				print 'total_history'
-				print total_history
+				# print 'history[auc]'
+				# print history['auc']
+				# print 'total_history'
+				# print total_history
 				append_history(total_history, history)
 
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
