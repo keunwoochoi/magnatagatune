@@ -316,7 +316,7 @@ if __name__ == '__main__':
 	'''
 	# prepare_y()
 	# prepare_x()
-	list_of_list = get_conventional_set()
+
 	create_hdf(list_of_list)
-	# standardise()
+	
 	
