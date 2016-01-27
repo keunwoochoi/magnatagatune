@@ -317,6 +317,6 @@ if __name__ == '__main__':
 	# prepare_y()
 	# prepare_x()
 
-	create_hdf(list_of_list)
+	create_hdf()
 	
 	
