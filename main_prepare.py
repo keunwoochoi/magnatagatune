@@ -93,7 +93,7 @@ def create_hdf():
 		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
 			if not dataset_name in file_write:
 				test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
-				tf_height, tf_widt = test_tf.shape
+				tf_height, tf_width = test_tf.shape
 				file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
 		for dataset_label_name in dataset_label_names:
 			if not dataset_label_name in file_write:
