@@ -106,10 +106,13 @@ def create_hdf():
 		paths_in = [path for path in fm.paths if path[0] == folder_names[set_name_idx]]
 		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
 		shuffle(clip_ids)
-		
+		print '  paths_in: %s' % paths_in
+		print '  len clip_ids: %d' % len(clip_ids)
 		# for data
 		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+			print '    process %s' % dataset_name
 			data_to_store = file_write[dataset_name]
+			print '    size: ', data_to_store.shape
 			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
 				clip_idx = fm.id_to_idx[str(clip_id)]
 				for seg_idx in range(NUM_SEG):
@@ -118,9 +121,13 @@ def create_hdf():
 		
 		# for labels
 		for dataset_label_name in dataset_label_names:
+			print '    process %s' % dataset_label_name
 			data_to_store = file_write[dataset_label_name]
-			for seg_idx in range(NUM_SEG):
-				data_to_store[write_idx + seg_idx*len(indices)] = label_matrices[dataset_label_name][clip_idx,:]
+			print '    size: ', data_to_store.shape
+			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
+				clip_idx = fm.id_to_idx[str(clip_id)]
+				for seg_idx in range(NUM_SEG):
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
 
 		print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
 	
