@@ -53,7 +53,26 @@ def load_x_hdf5matrix(tf_type=None):
 	
 	return train_x, valid_x, test_x
 
+def load_x(tf_type):
+	print 'Load x will load a standardised %s' % tf_type
+	ret = []
+	for i in range(15):
+		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[tf_type])
+	
+	return ret
 
+def load_y(top_n=50, merged=True):
+	print 'Load y will load top-%d labels. is it merged? %s' % (top_n, str(merged))
+	if merged:
+		name = 'y_merged'
+	else:
+		name = 'y_original'
+	ret = []
+	for i in range(15):
+		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[name])
+		
+	return ret
+"""
 def load_x(tf_type):
 	print 'Load x will load a standardised %s' % tf_type
 	train_x = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf')[tf_type]
@@ -69,4 +88,4 @@ def load_y(top_n=50):
 	test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
 
 	return train_y, valid_y, test_y
-
+"""

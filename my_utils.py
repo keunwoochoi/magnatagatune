@@ -57,7 +57,7 @@ def refine_label_matrix():
 	for new_idx, tag_idx in enumerate(tag_args):
 		sorted_whole_label_matrix[:, new_idx] = whole_label_matrix[:, tag_idx]
 	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_whole_label_matrix)
-	
+
 	# cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_tags'], 'w'))
 
 	#
@@ -103,6 +103,7 @@ def refine_label_matrix():
 	np.save(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'], sorted_merged_label_matrix)
 	cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_merged_tags'], 'w'))
 	return
+
 
 
 
