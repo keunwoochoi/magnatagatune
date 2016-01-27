@@ -887,7 +887,10 @@ if __name__ == '__main__':
 	# + 2x1024 isntead of 3x512
 	# OMG there was noise!! for the whole day !!! from 01-24- except red_pig!
 
-	# again without noise
+	# 01-26-11h44_pink_roo
+	# 4 layers, adam (as always), 2x2048. BN BN, dropout(n,y)
+	
+
 
 
 	sys.exit(0)
