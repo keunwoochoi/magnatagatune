@@ -104,36 +104,38 @@ def create_hdf():
 	
 	for file_write_idx, file_write in enumerate(file_write_ptrs):
 		if file_write_idx in range(10):
+			print 'skip.'
 			continue
-		folder_name = folder_names[file_write_idx]
-		#paths_in = [path for path in fm.paths if path[0] == folder_name]
-		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
-		shuffle(clip_ids)
-		print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
-		print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
-		print '  len clip_ids: %d' % len(clip_ids)
-		# for data
-		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
-			print '    process %s' % dataset_name
-			data_to_store = file_write[dataset_name]
-			print '    size: ', data_to_store.shape
-			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
-				clip_idx = fm.id_to_idx[str(clip_id)]
-				for seg_idx in range(NUM_SEG):
-					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
-		
-		# for labels
-		for dataset_label_name in dataset_label_names:
-			print '    process %s' % dataset_label_name
-			data_to_store = file_write[dataset_label_name]
-			print '    size: ', data_to_store.shape
-			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
-				clip_idx = fm.id_to_idx[str(clip_id)]
-				for seg_idx in range(NUM_SEG):
-					data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
+		else:
+			folder_name = folder_names[file_write_idx]
+			#paths_in = [path for path in fm.paths if path[0] == folder_name]
+			clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+			shuffle(clip_ids)
+			print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
+			print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
+			print '  len clip_ids: %d' % len(clip_ids)
+			# for data
+			for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+				print '    process %s' % dataset_name
+				data_to_store = file_write[dataset_name]
+				print '    size: ', data_to_store.shape
+				for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
+					clip_idx = fm.id_to_idx[str(clip_id)]
+					for seg_idx in range(NUM_SEG):
+						tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+						data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+			
+			# for labels
+			for dataset_label_name in dataset_label_names:
+				print '    process %s' % dataset_label_name
+				data_to_store = file_write[dataset_label_name]
+				print '    size: ', data_to_store.shape
+				for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
+					clip_idx = fm.id_to_idx[str(clip_id)]
+					for seg_idx in range(NUM_SEG):
+						data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
 
-		print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
+			print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
 	
 	print 'ALL DONE.'
 	print 'Now copy it from %s to c4dm server.' % PATH_HDF_LOCAL
