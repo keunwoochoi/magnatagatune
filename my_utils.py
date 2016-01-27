@@ -51,9 +51,14 @@ def refine_label_matrix():
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	# original matrix.
 	whole_label_matrix = fm.load_label_matrix()
-	tags_to_data = {}
-	for tag_idx, tag in enumerate(fm.tags): # for 188 tags,
-		tags_to_data[tag] = whole_label_matrix[:, tag_idx]
+	sorted_whole_label_matrix = np.zeros(whole_label_matrix.shape)
+	total_counts = np.sum(whole_label_matrix, axis=0)
+	tag_args = total_counts.argsort()[::-1]
+	for new_idx, tag_idx in enumerate(tag_args):
+		sorted_whole_label_matrix[:, new_idx] = whole_label_matrix[:, tag_idx]
+	
+	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_whole_label_matrix)
+	# cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_tags'], 'w'))
 
 	new_tags_to_data = {}
 	# Will merge synonyms 
@@ -90,7 +95,7 @@ def refine_label_matrix():
 	# Will remove those.
 
 	np.save(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'], sorted_merged_label_matrix)
-	cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_tags'], 'w'))
+	cP.dump(sorted_tags, open(PATH_DATA + FILE_DICT['sorted_merged_tags'], 'w'))
 	return
 
 

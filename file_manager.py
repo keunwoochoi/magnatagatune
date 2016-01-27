@@ -17,7 +17,7 @@ class File_Manager():
 		self.id_permutation = []
 		self.id_to_paths = {}
 		self.feat_to_paths = {} # string : list, e.g. 'cqt' : blah..
-		self.id_to_idx = {}
+		self.id_to_idx = {} # string:integer
 		# self.np_whole_label_matrix = None # will be numpy array
 		self.num_songs = 0
 		self.num_tags = 0

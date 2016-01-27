@@ -14,8 +14,12 @@ N_CQT_BINS = NUM_OCTAVE*BINS_PER_OCTAVE
 FILE_DICT = {}
 FILE_DICT['label_matrix'] = 'label_matrix.npy'
 FILE_DICT['file_manager'] = 'file_manager.cP'
-FILE_DICT['sorted_merged_label_matrix'] = 'sorted_merged_label_matrix.npy'
+
+FILE_DICT['sorted_label_matrix'] = 'sorted_label_matrix.npy'
 FILE_DICT['sorted_tags'] = 'sorted_tags.cP'
+
+FILE_DICT['sorted_merged_label_matrix'] = 'sorted_merged_label_matrix.npy'
+FILE_DICT['sorted_merged_tags'] = 'sorted_merged_tags.cP'
 FILE_DICT['conventional_set_idxs'] = 'conventional_set_idxs.npy'
 FILE_DICT["hyperparam_manager"] = "hyperparam_manager.cP"
 

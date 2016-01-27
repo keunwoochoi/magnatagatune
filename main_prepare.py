@@ -18,6 +18,7 @@ import librosa
 import time
 from multiprocessing import Pool
 import h5py
+from random import shuffle
 
 from environments import *
 from constants import *
@@ -58,20 +59,69 @@ def get_conventional_set():
 
 #------------------------------------------#
 
-def create_hdf(set_indices=None):
-	'''create hdf file that has cqt, stft, mfcc, melgram of train/valid/test set.
-	For my original 6:1:1 (8-fold) cross-validation, input arg == None.
-	Otherwise, specify indices, [list_of_train_id, list_of_val_id, list_of_test_id]
+def create_hdf():
+	'''create hdf file that has cqt, stft, mfcc, melgram of 16 sets in MagnaTatATune.
+	This function includes standardisation of tf values.
 	'''
-	
+
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
-	if set_indices == None:
-		set_indices = fm.shuffle(n_fold=8) # train, valid, test indices
-	set_name = ['train', 'valid', 'test']
+	label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
+
+	set_names = [str(ele) for ele in range(16)] # ['0','1','2','3',..'15']
+	folder_names = set_names[:10] + ['a','b','c','d','e','f']
 	dataset_names = ['stft', 'melgram', 'cqt', 'mfcc']
 	print '='*60
 	print '====== create_hdf ======'
 	print '='*60
+	means = {'cqt':-69.8194, 'melgram':-15.5739, 'stft':-24.2885, 'mfcc':1.14238}
+	stds  = {'cqt':16.7193,  'melgram':21.1379,  'stft':20.6936, 'mfcc':18.7942}
+	#create or load 16 hdf files.
+	file_write_ptrs = []
+	for set_name_idx, set_name in enumerate(set_names):
+		filename = 'magna_%s.hdf' % set_name
+		if os.path.exists(PATH_HDF_LOCAL + filename):
+			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
+		else:
+			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
+
+		num_datapoints = NUM_SEG*len([path for path in fm.paths if path[0] == folder_names[set_name_idx]])
+		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+			if not dataset_name in file_write:
+				test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
+				tf_height, tf_weight = test_tf.shape
+				file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
+			if not 'y' in file_write:
+				file_write.create_dataset('y', (num_datapoints, label_matrix.shape[1]))
+			if not 'y_original' in file_write:
+				file_write.create_dataset('y_original', (num_datapoints, label_matrix.shape[1]))
+		file_write_ptrs.append(file_write) # 16 h5py file pointers
+	
+	# load files and put them into corresponding hdf files.
+	for file_write_idx, file_write in enumerate(file_write_ptrs):
+		folder_name = folder_names[file_write_idx]
+		paths_in = [path for path in fm.paths if path[0] == folder_names[set_name_idx]]
+		clip_ids = [clip_id in fm.clip_ids if fm.id_to_path[str(clip_id)][0] == folder_name] # [2,6,...
+		clip_ids = shuffle(clip_ids)
+		# create dataset
+		
+		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+		
+			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
+				clip_idx = fm.id_to_idx[str(clip_id)]
+				for seg_idx in range(NUM_SEG):
+					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+		
+		data_to_store = file_write.create_dataset('y', (num_datapoints, label_matrix.shape[1]))
+		for seg_idx in range(NUM_SEG):
+			data_to_store[write_idx + seg_idx*len(indices)] = label_matrix[clip_idx,:]
+
+
+
+
+
+
+	
 	for set_name_idx, indices in enumerate(set_indices): # e.g. For Train set, it's (0, [random indices])
 		# dataset file
 		filename = 'magna_'+set_name[set_name_idx] + '.hdf'
