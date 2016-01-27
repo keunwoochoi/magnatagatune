@@ -104,7 +104,7 @@ def create_hdf():
 	for file_write_idx, file_write in enumerate(file_write_ptrs):
 		folder_name = folder_names[file_write_idx]
 		paths_in = [path for path in fm.paths if path[0] == folder_names[set_name_idx]]
-		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_path[str(clip_id)][0] == folder_name] # [2,6,...
+		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
 		clip_ids = shuffle(clip_ids)
 		
 		# for data
