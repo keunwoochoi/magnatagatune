@@ -103,10 +103,11 @@ def create_hdf():
 	# load files and put them into corresponding hdf files.
 	for file_write_idx, file_write in enumerate(file_write_ptrs):
 		folder_name = folder_names[file_write_idx]
-		paths_in = [path for path in fm.paths if path[0] == folder_names[set_name_idx]]
+		#paths_in = [path for path in fm.paths if path[0] == folder_name]
 		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
 		shuffle(clip_ids)
-		print '  paths_in: %s' % paths_in
+		print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
+		print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
 		print '  len clip_ids: %d' % len(clip_ids)
 		# for data
 		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
