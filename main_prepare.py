@@ -273,49 +273,6 @@ def prepare_x():
 	p.map(process_all_features, args)
 
 	return
-#------------------------------------------#
-def standardise():
-	'''load all hdf file and standardise them'''
-
-	tfs = ['cqt', 'melgram', 'stft', 'mfcc']
-	nb_subset = NUM_SEG
-	f_train = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf','r')
-	f_valid = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf','r')
-	f_test = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf','r')
-
-	f_train_std = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf','w')
-	f_valid_std = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf','w')
-	f_test_std = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf','w')	
-
-	for tf in tfs:
-		raw_data = f_train[tf][:30000]
-		mean = np.mean(raw_data)
-		std = np.std(raw_data)
-		mean = np.mean([mean, np.mean(f_train[tf][30000:60000])])
-		std = np.mean([std, np.std(f_train[tf][30000:60000])])
-		
-		print '%s, mean %f, std %f' % (tf, mean, std)
-		
-		write_train = f_train_std.create_dataset(tf, f_train[tf].shape)
-		write_valid = f_valid_std.create_dataset(tf, f_valid[tf].shape)
-		write_test = f_test_std.create_dataset(tf, f_test[tf].shape)
-		
-		for idx, sp in enumerate(f_train[tf]):
-			write_train[idx] = (sp - mean) / std
-		for idx, sp in enumerate(f_valid[tf]):
-			write_valid[idx] = (sp - mean) / std
-		for idx, sp in enumerate(f_test[tf]):
-			write_test[idx] = (sp - mean) / std
-
-	f_train.close()
-	f_valid.close()
-	f_test.close()
-
-	f_train_std.close()
-	f_valid_std.close()
-	f_test_std.close()
-
-	print 'standaridse - done.'
 
 
 if __name__ == '__main__':

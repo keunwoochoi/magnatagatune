@@ -34,7 +34,9 @@ def evaluate_result(y_true, y_pred):
 		print key, ret[key]
 	print '.'*60
 	return ret
-
+랜덤랜덤.
+hdf파일 저장한거 셔플하고 그 어레이 저장해놓고, data랑 y 전부 셔플해야됨... 시발 ㅜㅜ 미친놈들아 ㅜㅜ
+hdf 16개 파일 내부 순서를 전부 셔플해야할듯.
 
 def update_setting_dict(setting_dict):
 
@@ -201,7 +203,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											verbose=1, 
 											callbacks=callbacks,
 											shuffle=shuffle)
-				if not sub_epoch_idx == (len(hdf_train_xs)-1):
+				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
 					valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 					predicted = model.predict(valid_x, batch_size=batch_size)
 				else:
