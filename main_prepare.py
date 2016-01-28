@@ -280,7 +280,7 @@ def shuffle_hdf_process(set_idx):
 	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc','y_merged', 'y_original']
 	filename_hdf = 'magna_%d.hdf' % set_idx
 
-	f = h5py.File(filename_hdf, 'r')
+	f = h5py.File(PATH_HDF_LOCAL+filename_hdf, 'r')
 	num_datapoints = f['cqt'].shape[0]
 	num_clips = num_datapoints / NUM_SEG
 
