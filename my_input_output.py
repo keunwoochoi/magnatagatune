@@ -69,8 +69,8 @@ def load_y(top_n=50, merged=True):
 		name = 'y_original'
 	ret = []
 	for i in range(15):
-		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[name])
-		
+		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[name][:, :top_n])
+
 	return ret
 """
 def load_x(tf_type):
