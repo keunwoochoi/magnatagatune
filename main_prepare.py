@@ -288,7 +288,7 @@ def shuffle_hdf_process(set_idx):
 	permutation_file = 'permutation_%d_%d.npy' % (set_idx, num_clips)
 	
 	if os.path.exists(PATH_DATA + permutation_file):
-		permutation_list = np.load(PATH_DATA+permutation_file)
+		permutation_list = np.load(PATH_DATlsA+permutation_file)
 	else:
 		permutation_list = np.random.permutation(num_clips)
 		np.save(PATH_DATA+permutation_file, permutation_list)
@@ -309,7 +309,6 @@ def shuffle_hdf_process(set_idx):
 			temp_shuffled = temp_shuffled + shuffled_minibatch
 		temp_shuffled = np.array(temp_shuffled)
 		print 'shuffling done; ', f[dataset_name].shape, temp_shuffled.shape
-		pdb.set_trace()
 		f[dataset_name] = temp_shuffled
 	f.attrs['shuffled'] = True
 	f.close()
@@ -320,8 +319,7 @@ def shuffle_hdfs():
 	shuffle magna_0.hdf - magna_15.hdf
 	and save the permutation.
 	'''
-	shuffle_hdf_process(0)
-	pdb.set_trace()
+	
 
 	p = Pool(16)
 	p.map(shuffle_hdf_process, range(16))
