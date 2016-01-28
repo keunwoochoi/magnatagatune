@@ -298,8 +298,8 @@ def shuffle_hdf_process(set_idx):
 			print "it is already shuffled, %d set" % set_idx
 			return
 	else:
-		f.attrs.create('shuffled', 0.0, dtype=np.bool)	
-	f.attrs.create('permutation_list', permutation_list)
+		f.attrs.create(name='shuffled', data=0.0, dtype=np.bool)	
+	f.attrs.create(name='permutation_list', data=permutation_list)
 
 	for dataset_name in dataset_names:
 		temp_shuffled = []
