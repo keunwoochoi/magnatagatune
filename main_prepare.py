@@ -321,8 +321,9 @@ def shuffle_hdfs():
 	'''
 	
 
-	p = Pool(16)
-	p.map(shuffle_hdf_process, range(16))
+	for i in range(16):
+		shuffle_hdf_process(i)
+		print 'shuffle done for %d' % i
 	return
 
 
