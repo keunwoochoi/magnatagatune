@@ -301,7 +301,7 @@ def shuffle_hdf_process(set_idx):
 		f.attrs.create('shuffled', 0.0, dtype=np.bool)	
 	f.attrs.create('permutation_list', permutation_list)
 
-	for dataset_name in dataset_names
+	for dataset_name in dataset_names:
 		temp_shuffled = []
 		for seg_idx in range(NUM_SEG):
 			shuffled_minibatch = [f[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
