@@ -345,7 +345,7 @@ def merge_shuffle_train_hdfs():
 	
 	# do the work.
 	for dataset_name in dataset_names:
-		shape_write = (num_datapoints,) +  file_read_ptrs[0].[dataset_name].shape[1:]
+		shape_write = (num_datapoints,) +  file_read_ptrs[0][dataset_name].shape[1:]
 		temp_before_shuffled = np.zeros(shape_here)
 		write_idx = 0
 		for seg_idx in range(NUM_SEG):
