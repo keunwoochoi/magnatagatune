@@ -331,6 +331,7 @@ def merge_shuffle_train_hdfs():
 	train_filenames = ['magna_%d.hdf'%idx for idx in range(12)]
 	file_read_ptrs = [h5py.File(PATH_HDF_LOCAL+train_filenames[i], 'r') for i in range(12)]
 	file_write = h5py.File(PATH_HDF_LOCAL+'magna_train_12set.hdf', 'w')
+	file_temp = h5py.File(PATH_HDF_LOCAL+'magna_train_12set_temporary.hdf', 'w')
 	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc','y_merged', 'y_original']
 
 	num_datapoints = sum([f['cqt'].shape[0] for f in file_read_ptrs])
@@ -347,7 +348,8 @@ def merge_shuffle_train_hdfs():
 	for dataset_name in dataset_names:
 		print '  dataset name: %s' % dataset_name
 		shape_write = (num_datapoints,) +  file_read_ptrs[0][dataset_name].shape[1:]
-		temp_before_shuffled = np.zeros(shape_write)
+		file_temp.create_dataset(dataset_name, shape_write)
+		# temp_before_shuffled = np.zeros(shape_write)
 		write_idx = 0
 		for seg_idx in range(NUM_SEG):
 			print '    seg index: %d/7' % seg_idx
@@ -357,7 +359,7 @@ def merge_shuffle_train_hdfs():
 				data_from = num_clips_to_add*seg_idx
 				data_to   = num_clips_to_add*(seg_idx+1)
 
-				temp_before_shuffled[write_idx:write_idx+num_clips_to_add] = file_read[dataset_name][data_from:data_to]
+				file_temp[dataset_name][write_idx:write_idx+num_clips_to_add] = file_read[dataset_name][data_from:data_to]
 				write_idx += num_clips_to_add
 		# in temp_before_shuffled is concatenated of all data, but sorted by segments 
 		# [songs of segment 0][songs of segment 1]....[songs of segment 6]
@@ -365,9 +367,10 @@ def merge_shuffle_train_hdfs():
 		print '  shuffle it.'
 		temp_shuffled = []
 		for seg_idx in range(NUM_SEG):
-			shuffled_minibatch = [temp_before_shuffled[seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
+			shuffled_minibatch = [file_temp[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
 			temp_shuffled = temp_shuffled + shuffled_minibatch
 		temp_shuffled = np.array(temp_shuffled)
+		print '  shuffle done.'
 		# write it.
 		file_write.create_dataset(dataset_name, shape_write)
 		file_write[dataset_name] = temp_shuffled
