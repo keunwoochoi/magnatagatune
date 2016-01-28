@@ -298,7 +298,8 @@ def shuffle_hdf_process(set_idx):
 			print "it is already shuffled, %d set" % set_idx
 			return
 	else:
-		f.attrs.create(name='shuffled', data=0.0, dtype=np.bool)	
+		f.attrs.create(name='shuffled', data=0.0, dtype=np.bool)
+		print 'create shuffled value'	
 	f.attrs.create(name='permutation_list', data=permutation_list)
 
 	for dataset_name in dataset_names:
@@ -308,6 +309,7 @@ def shuffle_hdf_process(set_idx):
 			temp_shuffled = temp_shuffled + shuffled_minibatch
 		temp_shuffled = np.array(temp_shuffled)
 		print 'shuffling done; ', f[dataset_name].shape, temp_shuffled.shape
+		pdb.set_trace()
 		f[dataset_name] = temp_shuffled
 	f.attrs['shuffled'] = True
 	f.close()
@@ -318,7 +320,9 @@ def shuffle_hdfs():
 	shuffle magna_0.hdf - magna_15.hdf
 	and save the permutation.
 	'''
-	
+	shuffle_hdf_process(0)
+	pdb.set_trace()
+
 	p = Pool(16)
 	p.map(shuffle_hdf_process, range(16))
 	return
