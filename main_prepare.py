@@ -274,6 +274,55 @@ def prepare_x():
 
 	return
 
+def shuffle_hdf_process(set_idx):
+	''''''
+	print 'Start shuffle hdf process: %d' % set_idx
+	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc','y_merged', 'y_original']
+	filename_hdf = 'magna_%d.hdf' % set_idx
+
+	f = h5py.File(filename_hdf, 'r')
+	num_datapoints = f['cqt'].shape[0]
+	num_clips = num_datapoints / NUM_SEG
+
+	print '%d. total data point:%d, num_clip:%d. and this should zero.-->%d' % (set_idx, num_datapoints, num_clips, num_datapoints%num_clips)
+	permutation_file = 'permutation_%d_%d.npy' % (set_idx, num_clips)
+	
+	if os.path.exists(PATH_DATA + permutation_file):
+		permutation_list = np.load(permutation_file)
+	else:
+		permutation_list = np.random.permutation(num_clips)
+		np.save(PATH_DATA+permutation_file, permutation_list)
+
+	if 'shuffled' in f.attrs:
+		if f.attrs['shuffled'] == True:
+			print "it is already shuffled."
+			continue		
+	else:
+		f.attrs.create('shuffled', 0.0, dtype=np.bool)	
+	f.attrs.create('permutation_list', permutation_list)
+
+	for dataset_name in dataset_names
+		temp_shuffled = []
+		for seg_idx in range(NUM_SEG):
+			shuffled_minibatch = [f[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
+			temp_shuffled = temp_shuffled + shuffled_minibatch
+		temp_shuffled = np.array(temp_shuffled)
+		print 'shuffling done; ', f[dataset_name].shape, temp_shuffled.shape
+		f[dataset_name] = temp_shuffled
+	f.attrs['shuffled'] = True
+	f.close()
+	return
+
+def shuffle_hdfs():
+	'''
+	shuffle magna_0.hdf - magna_15.hdf
+	and save the permutation.
+	'''
+	
+	p = Pool(16)
+	p.map(shuffle_hdf_process, range(16))
+	return
+
 
 if __name__ == '__main__':
 	'''
@@ -287,6 +336,7 @@ if __name__ == '__main__':
 	# prepare_y()
 	# prepare_x()
 
-	create_hdf()
+	# create_hdf()
+	shuffle_hdfs()
 	
 	

@@ -14,7 +14,6 @@ import my_input_output as io
 from environments import *
 from constants import *
 
-
 sys.path.append(PATH_EMBEDDING)
 from training_settings import *
 import my_utils
@@ -34,9 +33,6 @@ def evaluate_result(y_true, y_pred):
 		print key, ret[key]
 	print '.'*60
 	return ret
-랜덤랜덤.
-hdf파일 저장한거 셔플하고 그 어레이 저장해놓고, data랑 y 전부 셔플해야됨... 시발 ㅜㅜ 미친놈들아 ㅜㅜ
-hdf 16개 파일 내부 순서를 전부 셔플해야할듯.
 
 def update_setting_dict(setting_dict):
 
@@ -75,7 +71,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		os.remove('stop_asap.keunwoo')
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
-	shuffle = 'batch'
+	
 	
 	best_auc = 0.0
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
@@ -188,8 +184,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				nb_epoch=1, 
 				show_accuracy=hyperparams['isClass'], 
 				verbose=1, 
-				callbacks=callbacks,
-				shuffle=shuffle)
+				callbacks=callbacks)
 	 	print 'TEST FLIGHT DONE'
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
@@ -201,8 +196,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											nb_epoch=1, 
 											show_accuracy=hyperparams['isClass'], 
 											verbose=1, 
-											callbacks=callbacks,
-											shuffle=shuffle)
+											callbacks=callbacks)
 				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
 					valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 					predicted = model.predict(valid_x, batch_size=batch_size)
