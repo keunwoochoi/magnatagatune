@@ -184,7 +184,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				nb_epoch=1, 
 				show_accuracy=hyperparams['isClass'], 
 				verbose=1, 
-				callbacks=callbacks)
+				callbacks=callbacks,
+				shuffle='batch')
 	 	print 'TEST FLIGHT DONE'
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
@@ -196,7 +197,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											nb_epoch=1, 
 											show_accuracy=hyperparams['isClass'], 
 											verbose=1, 
-											callbacks=callbacks)
+											callbacks=callbacks,
+											shuffle='batch')
 				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
 					valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 					predicted = model.predict(valid_x, batch_size=batch_size)

@@ -321,7 +321,7 @@ def shuffle_hdfs():
 	'''
 	
 
-	for i in range(2,16):
+	for i in range(16):
 		shuffle_hdf_process(i)
 		print 'shuffle done for %d' % i
 	return
