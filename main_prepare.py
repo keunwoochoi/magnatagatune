@@ -309,7 +309,7 @@ def shuffle_hdf_process(set_idx):
 			temp_shuffled = temp_shuffled + shuffled_minibatch
 		temp_shuffled = np.array(temp_shuffled)
 		print 'shuffling done; ', f[dataset_name].shape, temp_shuffled.shape
-		f[dataset_name] = temp_shuffled
+		f[dataset_name][:] = temp_shuffled
 	f.attrs['shuffled'] = True
 	f.close()
 	return
