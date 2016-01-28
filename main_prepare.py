@@ -319,12 +319,59 @@ def shuffle_hdfs():
 	shuffle magna_0.hdf - magna_15.hdf
 	and save the permutation.
 	'''
-	
-
 	for i in range(16):
 		shuffle_hdf_process(i)
 		print 'shuffle done for %d' % i
 	return
+
+def merge_shuffle_train_hdfs():
+	'''
+	train set: 0-11 (12 sets)
+	'''
+	train_filenames = ['magna_%d.hdf'%idx for idx in range(12)]
+	file_read_ptrs = [h5py.File(PATH_HDF_LOCAL+train_filenames[i], 'r') for i in range(12)]
+	file_write = h5py.File('magna_train_12set.hdf')
+	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc','y_merged', 'y_original']
+
+	num_datapoints = sum([f['cqt'].shape[0] for f in file_read_ptrs])
+	num_clips = num_datapoints/NUM_SEG
+	# get permutation
+	permutation_file = 'permutation_for_all_%d.npy' % num_clips
+	if os.path.exists(PATH_DATA + permutation_file):
+		permutation_list = np.load(PATH_DATA+permutation_file)
+	else:
+		permutation_list = np.random.permutation(num_clips)
+		np.save(PATH_DATA+permutation_file, permutation_list)
+	
+	# do the work.
+	for dataset_name in dataset_names:
+		shape_write = (num_datapoints,) +  file_read_ptrs[0].[dataset_name].shape[1:]
+		temp_before_shuffled = np.zeros(shape_here)
+		write_idx = 0
+		for seg_idx in range(NUM_SEG):
+			for file_read in file_read_ptrs:
+				num_clips_to_add = file_read[dataset_name].shape[0]/7
+
+				data_from = num_clips_to_add*seg_idx
+				data_to   = num_clips_to_add*(seg_idx+1)
+
+				temp_before_shuffled[write_idx:write_idx+num_clips_to_add] = file_read[dataset_name][data_from:data_to]
+				write_idx += num_clips_to_add
+		# in temp_before_shuffled is concatenated of all data, but sorted by segments 
+		# [songs of segment 0][songs of segment 1]....[songs of segment 6]
+		# now it's in the temp_before_shuffled
+		temp_shuffled = []
+		for seg_idx in range(NUM_SEG):
+			shuffled_minibatch = [temp_before_shuffled[seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
+			temp_shuffled = temp_shuffled + shuffled_minibatch
+		temp_shuffled = np.array(temp_shuffled)
+		# write it.
+		file_write.create_dataset(dataset_name, shape_write)
+		file_write[dataset_name] = temp_shuffled
+		print 'merge Done: %s' % dataset_name
+	print 'All done.'
+
+
 
 
 if __name__ == '__main__':
@@ -340,6 +387,7 @@ if __name__ == '__main__':
 	# prepare_x()
 
 	# create_hdf()
-	shuffle_hdfs()
+	# shuffle_hdfs()
+	merge_shuffle_train_hdfs()
 	
 	
