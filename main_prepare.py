@@ -295,8 +295,8 @@ def shuffle_hdf_process(set_idx):
 
 	if 'shuffled' in f.attrs:
 		if f.attrs['shuffled'] == True:
-			print "it is already shuffled."
-			continue		
+			print "it is already shuffled, %d set" % set_idx
+			return
 	else:
 		f.attrs.create('shuffled', 0.0, dtype=np.bool)	
 	f.attrs.create('permutation_list', permutation_list)
