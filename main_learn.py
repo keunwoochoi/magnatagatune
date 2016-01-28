@@ -406,7 +406,7 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l1', 0.005)] *TR_CONST["num_fc_layers"]
+	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
