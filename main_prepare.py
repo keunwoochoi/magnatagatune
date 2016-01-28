@@ -288,7 +288,7 @@ def shuffle_hdf_process(set_idx):
 	permutation_file = 'permutation_%d_%d.npy' % (set_idx, num_clips)
 	
 	if os.path.exists(PATH_DATA + permutation_file):
-		permutation_list = np.load(permutation_file)
+		permutation_list = np.load(PATH_DATA+permutation_file)
 	else:
 		permutation_list = np.random.permutation(num_clips)
 		np.save(PATH_DATA+permutation_file, permutation_list)
