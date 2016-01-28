@@ -330,7 +330,7 @@ def merge_shuffle_train_hdfs():
 	'''
 	train_filenames = ['magna_%d.hdf'%idx for idx in range(12)]
 	file_read_ptrs = [h5py.File(PATH_HDF_LOCAL+train_filenames[i], 'r') for i in range(12)]
-	file_write = h5py.File('magna_train_12set.hdf')
+	file_write = h5py.File(PATH_HDF_LOCAL+'magna_train_12set.hdf', 'r')
 	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc','y_merged', 'y_original']
 
 	num_datapoints = sum([f['cqt'].shape[0] for f in file_read_ptrs])
