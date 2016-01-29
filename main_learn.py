@@ -88,12 +88,12 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# label_matrix = label_matrix[:, :dim_labels]
 	hdf_xs = io.load_x(hyperparams['tf_type'])
 	hdf_ys = io.load_y(dim_labels)
-	hdf_train_xs = hdf_xs[:12]
-	hdf_valid_xs = hdf_xs[12:13]
-	hdf_test_xs = hdf_xs[13:]
-	hdf_train_ys = hdf_ys[:12]
-	hdf_valid_ys = hdf_ys[12:13]
-	hdf_test_ys = hdf_ys[13:]
+	hdf_train_xs = hdf_xs[0:1]
+	hdf_valid_xs = hdf_xs[1:4]
+	hdf_test_xs = hdf_xs[4:]
+	hdf_train_ys = hdf_ys[0:1]
+	hdf_valid_ys = hdf_ys[1:4]
+	hdf_test_ys = hdf_ys[4:]
 
 	# train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
 	# train_y, valid_y, test_y = io.load_y(dim_labels)
@@ -192,6 +192,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 	if hyperparams['model_type'] in ['multi_task']:
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
+ 			
  			model.fit(fit_dict,
  					batch_size=batch_size,
  					nb_epoch=1)

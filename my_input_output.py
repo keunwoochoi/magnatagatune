@@ -56,7 +56,8 @@ def load_x_hdf5matrix(tf_type=None):
 def load_x(tf_type):
 	print 'Load x will load a standardised %s' % tf_type
 	ret = []
-	for i in range(15):
+	ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_train_12set.hdf')[tf_type])
+	for i in range(12,16):
 		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[tf_type])
 	
 	return ret
@@ -68,10 +69,12 @@ def load_y(top_n=50, merged=True):
 	else:
 		name = 'y_original'
 	ret = []
-	for i in range(15):
+	ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_train_12set.hdf')[name][:, :top_n])
+	for i in range(16):
 		ret.append(h5py.File(PATH_HDF_LOCAL + 'magna_%d.hdf' % i)[name][:, :top_n])
 
 	return ret
+
 """
 def load_x(tf_type):
 	print 'Load x will load a standardised %s' % tf_type
