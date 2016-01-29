@@ -34,6 +34,16 @@ def evaluate_result(y_true, y_pred):
 	print '.'*60
 	return ret
 
+def get_fit_dict(train_x, train_y):
+	fit_dict = {}
+	fit_dict['input'] = train_x
+	for dense_idx in xrange(hyperparams['dim_labels']):
+		output_node_name = 'output_%d' % dense_idx
+		fit_dict[output_node_name] = train_y[:, dense_idx]
+
+	return fit_dict
+ 					
+
 def update_setting_dict(setting_dict):
 
 	setting_dict["num_feat_maps"] = [setting_dict["num_feat_maps"][0]]*setting_dict["num_layers"]
@@ -167,6 +177,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 			previous_history = cP.load(open(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP', 'r'))
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 			append_history(total_history, previous_history)
+	
 	if not hyperparams['do_not_learn']:
 		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
 											filename_prefix='local_INIT', 
@@ -178,21 +189,33 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											mono=True)
 	 	# run
 	 	print 'TEST FLIGHT'
-	 	model.fit(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], 
-		 		validation_data=(hdf_valid_xs[0][:512], hdf_valid_ys[0][:512]), 
-				batch_size=batch_size, 
-				nb_epoch=1, 
-				show_accuracy=hyperparams['isClass'], 
-				verbose=1, 
-				callbacks=callbacks,
-				shuffle='batch')
+	 	if hyperparams['model_type'] in ['multi_task']:
+	 		
+	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:])
+ 			model.fit(fit_dict,
+ 					batch_size=batch_size
+ 					nb_epoch=1)
+	 	else:
+	 		model.fit(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], 
+			 		validation_data=(hdf_valid_xs[0][:512], hdf_valid_ys[0][:512]), 
+					batch_size=batch_size, 
+					nb_epoch=1, 
+					show_accuracy=hyperparams['isClass'], 
+					callbacks=callbacks,
+					shuffle='batch')
 	 	print 'TEST FLIGHT DONE'
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
 				if os.path.exists('stop_asap.keunwoo'):
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
-				model.fit(train_x, train_y, validation_data=None, 
+			 	if hyperparams['model_type'] in ['multi_task']:
+ 					fit_dict = get_fit_dict(train_x, train_y)
+ 					model.fit(fit_dict,
+ 							batch_size=batch_size
+ 							nb_epoch=1)
+			 	else:
+					model.fit(train_x, train_y, validation_data=None, 
 											batch_size=batch_size,
 											nb_epoch=1, 
 											show_accuracy=hyperparams['isClass'], 
@@ -200,8 +223,12 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											callbacks=callbacks,
 											shuffle='batch')
 				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
-					valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
-					predicted = model.predict(valid_x, batch_size=batch_size)
+					if hyperparams['model_type'] in ['multi_task']:
+						fit_dict = get_fit_dict(hdf_valid_xs[-1][-256:], hdf_valid_ys[-1][-256:])
+						predicted = model.predict(fit_dict, batch_size=batch_size)
+					else:
+						valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
+						predicted = model.predict(valid_x, batch_size=batch_size)
 				else:
 					predicted = np.zeros((0, dim_labels))
 					valid_y = np.zeros((0, dim_labels))
