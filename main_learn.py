@@ -165,7 +165,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	
 	callbacks = [weight_image_monitor]
 
-	total_history = {}
+	total_history = {'loss':[], 'val_loss':[], 'acc':[], 'val_acc':[]}
+
 	# total_label_count = np.sum([hdf_train.shape[0]*hdf_train.shape[1] for hdf_train in hdf_train_ys]) 
 	# total_zeros = 
 	# print 'With predicting all zero, acc is %0.6f' % ((total_label_count - np.sum(train_y))/float(total_label_count))
@@ -217,7 +218,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
  							batch_size=batch_size,
  							nb_epoch=1)
 			 	else:
-					model.fit(train_x, train_y, validation_data=None, 
+					loss_history = model.fit(train_x, train_y, validation_data=(hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048]), 
 											batch_size=batch_size,
 											nb_epoch=1, 
 											show_accuracy=hyperparams['isClass'], 
@@ -258,6 +259,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				else:
 					print 'Keep old auc record, %f' % best_auc
 				append_history(total_history, history)
+				append_history(total_history, loss_history)
 
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
@@ -305,11 +307,11 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# ADD weight change saving code
 	if total_history != {}:
 		
-		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png', title='AUC' )
-		# my_plots.export_history(total_history['loss'], total_history['val_loss'], 
-		# 											acc=total_history['acc'], 
-		# 											val_acc=total_history['val_acc'], 
-		# 											out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plots.png')
+		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title='AUC' )
+		my_plots.export_history(total_history['loss'], total_history['val_loss'], 
+													acc=total_history['acc'], 
+													val_acc=total_history['val_acc'], 
+													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'loss_plots.png')
 		
 		max_auc = np.max(total_history['auc'])
 		best_batch = np.argmax(total_history['auc'])+1
