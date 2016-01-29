@@ -226,6 +226,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											shuffle='batch')
 				# [validation]
 				if not sub_epoch_idx in [0, 6]: # validation with subset
+					print ' * Compute AUC with full validation data.'
 					if hyperparams['model_type'] in ['multi_task']:
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][-2048:], hdf_valid_ys[-1][-2048:], hyperparams['dim_labels'])
 						predicted = model.predict(fit_dict, batch_size=batch_size)
@@ -351,6 +352,8 @@ if __name__ == '__main__':
 									   required=False)
 	parser.add_argument('-act', '--activations', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
 									   required=False)
+	parser.add_argument('-act_fc', '--activations_fc', help='activations - relu, lrelu, prelu, elu \ndefault=relu', 
+									   required=False)
 	parser.add_argument('-cps', '--clips_per_song', type=int,
 													help='set #clips/song, \ndefault=3',
 													required=False)
@@ -432,6 +435,7 @@ if __name__ == '__main__':
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
+
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
 	TR_CONST["model_type"] = 'vgg_modi_3x3'
@@ -466,7 +470,8 @@ if __name__ == '__main__':
 		TR_CONST["model_type"] = args.model
 	if args.activations:
 		TR_CONST["activations"] = [args.activations] * TR_CONST["num_layers"]
-		TR_CONST["activations_fc_layers"] = [args.activations] * TR_CONST["num_fc_layers"]
+	if args.activations_fc:
+		TR_CONST["activations_fc_layers"] = [args.activations_fc] * TR_CONST["num_fc_layers"]
 	if args.task:
 		if args.task in['class', 'cla', 'c', 'classification']:
 			TR_CONST["isClass"] = True
