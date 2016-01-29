@@ -64,9 +64,9 @@ def load_x(tf_type, is_test=False):
 			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
 	else:
 		for i in range(12):
-			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[tf_type])
 		for i in range(12,16):
-			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type])
 	
 	return ret
 
