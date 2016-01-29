@@ -53,27 +53,41 @@ def load_x_hdf5matrix(tf_type=None):
 	
 	return train_x, valid_x, test_x
 
-def load_x(tf_type):
+def load_x(tf_type, is_test=False):
 	print 'Load x will load a standardised %s' % tf_type
 	ret = []
-	for i in range(12):
-		ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[tf_type])
-	for i in range(12,16):
-		ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type])
+	if is_test:
+		num_test_subset = 2048
+		for i in range(12):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
+		for i in range(12,16):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
+	else:
+		for i in range(12):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
+		for i in range(12,16):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[tf_type][:num_test_subset])
 	
 	return ret
 
-def load_y(top_n=50, merged=True):
+def load_y(top_n=50, merged=True, is_test=False):
 	print 'Load y will load top-%d labels. is it merged? %s' % (top_n, str(merged))
 	if merged:
 		name = 'y_merged'
 	else:
 		name = 'y_original'
 	ret = []
-	for i in range(12):
-		ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[name][:, :top_n])
-	for i in range(12, 16):
-		ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[name][:, :top_n])
+	if is_test:
+		num_test_subset = 2048
+		for i in range(12):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[name][:num_test_subset, :top_n])
+		for i in range(12, 16):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[name][:num_test_subset, :top_n])
+	else:
+		for i in range(12):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % i), 'r')[name][:, :top_n])
+		for i in range(12, 16):
+			ret.append(h5py.File((PATH_HDF_LOCAL + 'magna_%d.hdf' % i), 'r')[name][:, :top_n])
 
 	return ret
 

@@ -86,8 +86,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	best_auc = 0.0
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
-	hdf_xs = io.load_x(hyperparams['tf_type'])
-	hdf_ys = io.load_y(dim_labels)
+	hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
+	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'])
 	hdf_train_xs = hdf_xs[:12]
 	hdf_valid_xs = hdf_xs[12:13]
 	hdf_test_xs = hdf_xs[13:]
@@ -210,6 +210,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				if os.path.exists('stop_asap.keunwoo'):
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
+				# [run]
 			 	if hyperparams['model_type'] in ['multi_task']:
  					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
  					model.fit(fit_dict,
@@ -223,20 +224,27 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											verbose=1, 
 											callbacks=callbacks,
 											shuffle='batch')
-				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
+				# [validation]
+				if not sub_epoch_idx in [0, 6]: # validation with subset
 					if hyperparams['model_type'] in ['multi_task']:
-						fit_dict = get_fit_dict(hdf_valid_xs[-1][-256:], hdf_valid_ys[-1][-256:], hyperparams['dim_labels'])
+						fit_dict = get_fit_dict(hdf_valid_xs[-1][-2048:], hdf_valid_ys[-1][-2048:], hyperparams['dim_labels'])
 						predicted = model.predict(fit_dict, batch_size=batch_size)
 					else:
 						valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 						predicted = model.predict(valid_x, batch_size=batch_size)
-				else:
-					predicted = np.zeros((0, dim_labels))
-					valid_y = np.zeros((0, dim_labels))
-					for valid_x_partial, valid_y_partial in zip(hdf_valid_xs, hdf_valid_ys):
-						predicted = np.vstack((predicted, model.predict(valid_x_partial)))
-						valid_y = np.vstack((valid_y, valid_y_partial))
+				else: # validation with all
+					if hyperparams['model_type'] in ['multi_task']:
+						valid_y = hdf_valid_ys[0][:] # I know I'm using only one set for validation.
+						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
+						predicted = model.predict(fit_dict, batch_size=batch_size)
+					else:
+						predicted = np.zeros((0, dim_labels))
+						valid_y = np.zeros((0, dim_labels))
+						for valid_x_partial, valid_y_partial in zip(hdf_valid_xs, hdf_valid_ys):
+							predicted = np.vstack((predicted, model.predict(valid_x_partial)))
+							valid_y = np.vstack((valid_y, valid_y_partial))
 
+				# [check if should stop]
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
@@ -264,18 +272,22 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 			else:
 				print ' *** will go for another one epoch. '
 				print ' *** $ touch will_stop.keunwoo to stop at the end of this, otherwise it will be endless.'
-	
+	# [summarise]
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
 	if not hyperparams['is_test']:
-		model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
+		if not best_auc == val_result['roc_auc_macro']: # load weights only it's necessary
+			model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	
-
 	predicted = np.zeros((0, dim_labels))
 	test_y = np.zeros((0, dim_labels))
 
 	for test_x_partial, test_y_partial in zip(hdf_test_xs, hdf_test_ys):
-		predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
+		if hyperparams['model_type'] in ['multi_task']:
+			fit_dict = get_fit_dict(test_x_partial[:], test_y_partial[-1][:], hyperparams['dim_labels'])
+			predicted = np.vstack((predicted, model_predict(fit_dict, bath_size=batch_size)))
+		else:
+			predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
 		test_y = np.vstack((test_y, test_y_partial))
 	eval_result_final = evaluate_result(test_y, predicted)
 	print '.'*60
