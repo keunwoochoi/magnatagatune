@@ -416,5 +416,5 @@ if __name__ == '__main__':
 	# create_hdf()
 	# shuffle_hdfs()
 	# merge_shuffle_train_hdfs()
-	divide_merge_shuffle_train_again():
+	divide_merge_shuffle_train_again()
 	
