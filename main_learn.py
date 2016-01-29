@@ -82,7 +82,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	
-	
+	num_sub_epoch = 5
 	best_auc = 0.0
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
@@ -94,6 +94,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	hdf_train_ys = hdf_ys[0:1]
 	hdf_valid_ys = hdf_ys[1:4]
 	hdf_test_ys = hdf_ys[4:]
+
+	hdf_train_x = hdf_train_xs[0]
+	hdf_train_y = hdf_train_ys[0]
+	num_train_data = hdf_train_x[hyperparams['tf_type']].shape[0]
 
 	# train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
 	# train_y, valid_y, test_y = io.load_y(dim_labels)
@@ -206,7 +210,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					shuffle='batch')
 	 	print 'TEST FLIGHT DONE'
 		while True:
-			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
+			for sub_epoch_idx in range(num_sub_epoch):
+			# for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
 				if os.path.exists('stop_asap.keunwoo'):
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
