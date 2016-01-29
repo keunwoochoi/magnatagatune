@@ -364,17 +364,21 @@ def merge_shuffle_train_hdfs():
 		# in temp_before_shuffled is concatenated of all data, but sorted by segments 
 		# [songs of segment 0][songs of segment 1]....[songs of segment 6]
 		# now it's in the temp_before_shuffled
-		print '  shuffle it.'
-		temp_shuffled = []
-		for seg_idx in range(NUM_SEG):
-			shuffled_minibatch = [file_temp[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
-			temp_shuffled = temp_shuffled + shuffled_minibatch
-		temp_shuffled = np.array(temp_shuffled)
-		print '  shuffle done.'
+		
 		# write it.
 		file_write.create_dataset(dataset_name, shape_write)
+		
+		print '  shuffle it - and write it per segment.'
+		write_idx = 0
+		for seg_idx in range(NUM_SEG):
+			shuffled_minibatch = [file_temp[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
+			num_data_added = len(shuffled_minibatch)
+			file_write[dataset_name][write_idx:write_idx+num_data_added] = np.array(shuffled_minibatch)
+			write_idx += num_data_added
+		print '  shuffle done.'
 		file_write[dataset_name] = temp_shuffled
 		print '  merge Done: %s' % dataset_name
+	file_write.close()
 	print 'All done.'
 
 
