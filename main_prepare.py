@@ -376,7 +376,7 @@ def merge_shuffle_train_hdfs():
 			file_write[dataset_name][write_idx:write_idx+num_data_added] = np.array(shuffled_minibatch)
 			write_idx += num_data_added
 		print '  shuffle done.'
-		file_write[dataset_name] = temp_shuffled
+		
 		print '  merge Done: %s' % dataset_name
 	file_write.close()
 	print 'All done.'
