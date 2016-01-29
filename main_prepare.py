@@ -383,15 +383,17 @@ def merge_shuffle_train_hdfs():
 
 def divide_merge_shuffle_train_again():
 	file_read = h5py.File(PATH_HDF_LOCAL+'magna_train_12set.hdf', 'r')
-	train_filenames = ['magna_divided_%d.hdf'%idx for idx in range(12)]
+	train_filenames = ['magna_shuffled_%d.hdf'%idx for idx in range(12)]
 	
 	for i in xrange(12):
 		for dataset_name in file_read:
 			num_datapoints_total = file_read[dataset_name].shape[0]
 			num_datapoints_each = num_datapoints_total/12
 			shape_write = (num_datapoints_each,) +  file_read[dataset_name].shape[1:]
-			
-			file_write = h5py.File(PATH_HDF_LOCAL + train_filenames[i], 'w')
+			try:
+				file_write = h5py.File(PATH_HDF_LOCAL + train_filenames[i], 'w')
+			except IOError:
+				file_write = h5py.File(PATH_HDF_LOCAL + train_filenames[i], 'r+')
 			file_write.create_dataset(dataset_name, shape_write)
 			file_write[dataset_name][:] = file_read[dataset_name][i*num_datapoints_each: (i+1)*num_datapoints_each]
 
