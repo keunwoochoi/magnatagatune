@@ -193,7 +193,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:])
  			model.fit(fit_dict,
- 					batch_size=batch_size
+ 					batch_size=batch_size,
  					nb_epoch=1)
 	 	else:
 	 		model.fit(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], 
@@ -212,7 +212,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 			 	if hyperparams['model_type'] in ['multi_task']:
  					fit_dict = get_fit_dict(train_x, train_y)
  					model.fit(fit_dict,
- 							batch_size=batch_size
+ 							batch_size=batch_size,
  							nb_epoch=1)
 			 	else:
 					model.fit(train_x, train_y, validation_data=None, 
