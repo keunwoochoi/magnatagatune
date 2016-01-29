@@ -34,10 +34,10 @@ def evaluate_result(y_true, y_pred):
 	print '.'*60
 	return ret
 
-def get_fit_dict(train_x, train_y):
+def get_fit_dict(train_x, train_y, dim_labels):
 	fit_dict = {}
 	fit_dict['input'] = train_x
-	for dense_idx in xrange(hyperparams['dim_labels']):
+	for dense_idx in xrange(dim_labels):
 		output_node_name = 'output_%d' % dense_idx
 		fit_dict[output_node_name] = train_y[:, dense_idx]
 
@@ -191,7 +191,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 	print 'TEST FLIGHT'
 	 	if hyperparams['model_type'] in ['multi_task']:
 	 		
-	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:])
+	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
  			model.fit(fit_dict,
  					batch_size=batch_size,
  					nb_epoch=1)
@@ -210,7 +210,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
 			 	if hyperparams['model_type'] in ['multi_task']:
- 					fit_dict = get_fit_dict(train_x, train_y)
+ 					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
  					model.fit(fit_dict,
  							batch_size=batch_size,
  							nb_epoch=1)
@@ -224,7 +224,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											shuffle='batch')
 				if not sub_epoch_idx in [0, len(hdf_train_xs)-1] :
 					if hyperparams['model_type'] in ['multi_task']:
-						fit_dict = get_fit_dict(hdf_valid_xs[-1][-256:], hdf_valid_ys[-1][-256:])
+						fit_dict = get_fit_dict(hdf_valid_xs[-1][-256:], hdf_valid_ys[-1][-256:], hyperparams['dim_labels'])
 						predicted = model.predict(fit_dict, batch_size=batch_size)
 					else:
 						valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
