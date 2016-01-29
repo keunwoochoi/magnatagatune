@@ -259,7 +259,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				else:
 					print 'Keep old auc record, %f' % best_auc
 				append_history(total_history, history)
-				append_history(total_history, loss_history)
+				append_history(total_history, loss_history.history)
 
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
