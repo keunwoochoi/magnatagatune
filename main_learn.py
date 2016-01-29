@@ -192,7 +192,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 	if hyperparams['model_type'] in ['multi_task']:
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
- 			
+ 			pdb.set_trace()
  			model.fit(fit_dict,
  					batch_size=batch_size,
  					nb_epoch=1)
@@ -241,7 +241,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						predicted = np.zeros((0, dim_labels))
 						valid_y = np.zeros((0, dim_labels))
 						for valid_x_partial, valid_y_partial in zip(hdf_valid_xs, hdf_valid_ys):
-							predicted = np.vstack((predicted, model.predict(valid_x_partial)))
+							predicted = np.vstack((predicted, model.predict(valid_x_partial, batch_size=batch_size)))
 							valid_y = np.vstack((valid_y, valid_y_partial))
 
 				# [check if should stop]
