@@ -393,7 +393,7 @@ def divide_merge_shuffle_train_again():
 			
 			file_write = h5py.File(PATH_HDF_LOCAL + train_filenames[i], 'w')
 			file_write.create_dataset(dataset_name, shape_write)
-			file_write[dataset_name] = file_read[i*num_datapoints_each: (i+1)*num_datapoints_each]
+			file_write[dataset_name][:] = file_read[dataset_name][i*num_datapoints_each: (i+1)*num_datapoints_each]
 
 		print 'done:%d, %s' % (i, dataset_name)
 
