@@ -227,7 +227,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											shuffle='batch')
 				# [validation]
 				if not sub_epoch_idx in [0, 6]: # validation with subset
-					print ' * Compute AUC with full validation data.'
+					
 					if hyperparams['model_type'] in ['multi_task']:
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][-2048:], hdf_valid_ys[-1][-2048:], hyperparams['dim_labels'])
 						predicted = model.predict(fit_dict, batch_size=batch_size)
@@ -235,6 +235,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 						predicted = model.predict(valid_x, batch_size=batch_size)
 				else: # validation with all
+					print ' * Compute AUC with full validation data.'
 					if hyperparams['model_type'] in ['multi_task']:
 						valid_y = hdf_valid_ys[0][:] # I know I'm using only one set for validation.
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
