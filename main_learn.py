@@ -262,6 +262,13 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				append_history(total_history, history)
 				append_history(total_history, loss_history.history)
 
+				my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title='AUC' )
+				my_plots.export_history(total_history['loss'], total_history['val_loss'], 
+													acc=total_history['acc'], 
+													val_acc=total_history['val_acc'], 
+													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'loss_plots.png')
+		
+
 			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
 
@@ -307,12 +314,6 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 
 	# ADD weight change saving code
 	if total_history != {}:
-		
-		my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title='AUC' )
-		my_plots.export_history(total_history['loss'], total_history['val_loss'], 
-													acc=total_history['acc'], 
-													val_acc=total_history['val_acc'], 
-													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'loss_plots.png')
 		
 		max_auc = np.max(total_history['auc'])
 		best_batch = np.argmax(total_history['auc'])+1
