@@ -189,7 +189,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											normalize='global', 
 											mono=True)
 	 	# run
-	 	print 'TEST FLIGHT'
+	 	print '--TEST FLIGHT--'
 	 	if hyperparams['model_type'] in ['multi_task']:
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
@@ -205,7 +205,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					show_accuracy=hyperparams['isClass'], 
 					callbacks=callbacks,
 					shuffle='batch')
-	 	print 'TEST FLIGHT DONE'
+	 	print '--TEST FLIGHT DONE--'
 	 	total_epoch_count = 0
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
@@ -437,22 +437,22 @@ if __name__ == '__main__':
 	TR_CONST['learning_rate'] = 1e-2
 	TR_CONST["output_activation"] = 'sigmoid'
 
-	TR_CONST["num_epoch"] = 3
+	TR_CONST["num_epoch"] = 1
 	TR_CONST["dropouts"] = [0.0]*TR_CONST["num_layers"]
 	TR_CONST["num_feat_maps"] = [32]*TR_CONST["num_layers"]
 	TR_CONST["activations"] = ['elu']*TR_CONST["num_layers"]
 
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	TR_CONST["model_type"] = 'vgg_modi_3x3'
+	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 3
+	TR_CONST["num_fc_layers"] = 2
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True

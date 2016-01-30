@@ -1,14 +1,14 @@
 SR = 16000
-N_FFT = 512
+N_FFT = 512 # 257 freq bin for stft
 WIN_LEN = 512
 HOP_LEN = 256 # 11 sec --> 512 frames
 FRAMES_PER_SEC = float(SR) / HOP_LEN
 
 NUM_SEG = 7 # segment per clip
-LEN_SEG = 4.0
+LEN_SEG = 4.0 
 
 BINS_PER_OCTAVE = 36
-NUM_OCTAVE = 7
+NUM_OCTAVE = 7 # 252 freq bins for cqt
 N_CQT_BINS = NUM_OCTAVE*BINS_PER_OCTAVE
 
 FILE_DICT = {}
