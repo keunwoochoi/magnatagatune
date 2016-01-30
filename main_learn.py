@@ -206,8 +206,10 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					callbacks=callbacks,
 					shuffle='batch')
 	 	print 'TEST FLIGHT DONE'
+	 	total_epoch_count = 0
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
+				total_epoch_count += 1
 				if os.path.exists('stop_asap.keunwoo'):
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
@@ -251,7 +253,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
-				print 'AUC: %f' % val_result['roc_auc_macro']
+				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
 				if val_result['roc_auc_macro'] > best_auc:
 					print ', which is new record! it was %f btw.' % best_auc
 					best_auc = val_result['roc_auc_macro']
@@ -269,7 +271,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'loss_plots.png')
 		
 
-			print '%d-th of %d epoch is complete, auc:%f' % (total_epoch, num_epoch, val_result['roc_auc_macro'])
+			print '[%d], %d-th of %d epoch is complete, auc:%f' % (total_epoch_count, total_epoch, num_epoch, val_result['roc_auc_macro'])
 			total_epoch += 1
 
 			if os.path.exists('stop_asap.keunwoo'):
