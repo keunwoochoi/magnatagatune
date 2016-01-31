@@ -449,12 +449,12 @@ if __name__ == '__main__':
 	TR_CONST["model_type"] = 'vgg_modi_1x1'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 2
+	TR_CONST["num_fc_layers"] = 3
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
 
-	TR_CONST["nums_units_fc_layers"] = [1024]*TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
 	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
