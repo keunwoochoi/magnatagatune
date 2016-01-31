@@ -89,7 +89,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
-	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'])
+	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'], merged=hyperparams['merged'])
 	hdf_train_xs = hdf_xs[:12]
 	hdf_valid_xs = hdf_xs[12:13]
 	hdf_test_xs = hdf_xs[13:]
@@ -424,7 +424,12 @@ if __name__ == '__main__':
 	parser.add_argument('-gn_sigma', '--gn_sigma', type=float,
 										help='sigma of gaussian noise',
 										required=False )
-	
+	parser.add_argument('-merged', '--merged', type=str,
+										help='merged labels (synonyms) or not',
+										required=False )
+	parser.add_argument('-num_mo', '--num_maxout_feature', type=int,
+										help='number of maxout features',
+										required=False )
 	
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
@@ -460,6 +465,8 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
+	TR_CONST['merged'] = False
+	TR_CONST['nb_maxout_feature'] = 4
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
@@ -535,7 +542,10 @@ if __name__ == '__main__':
 		TR_CONST["gaussian_noise"] = str2bool(args.gaussian_noise)
 	if args.gn_sigma:
 		TR_CONST["gn_sigma"] = args.gn_sigma
-
+	if args.merged:
+		TR_CONST["merged"] = str2bool(args.merged)
+	if args.num_maxout_feature:
+		TR_CONST['nb_maxout_feature'] = args.num_maxout_feature
  	#----------------------------------------------------------#
 	
 	update_setting_dict(TR_CONST)

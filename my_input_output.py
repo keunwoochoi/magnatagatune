@@ -77,6 +77,8 @@ def load_y(top_n=50, merged=True, is_test=False):
 	else:
 		name = 'y_original'
 	ret = []
+	top_n = min(top_n, h5py.File(PATH_HDF_LOCAL + 'magna_shuffled_0.hdf', 'r')[name].shape[1])
+	print 'load_y: top_n: %d' % top_n
 	if is_test:
 		num_test_subset = 2048
 		for i in range(12):
