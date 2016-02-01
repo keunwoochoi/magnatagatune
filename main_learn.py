@@ -311,6 +311,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	print '.'*60
 	
 	#save results
+	
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	# np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted, test_y])
