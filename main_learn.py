@@ -311,7 +311,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	print '.'*60
 	
 	#save results
-	
+
 	cP.dump(total_history, open(PATH_RESULTS + model_name_dir + 'total_history.cP', 'w'))
 	# np.save(PATH_RESULTS + model_name_dir + 'loss_testset.npy', loss_testset)
 	np.save(PATH_RESULTS + model_name_dir + 'predicted_and_truths_result.npy', [predicted, test_y])
@@ -462,12 +462,13 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
+	TR_CONST["regulariser_fc_layers"] = [('activity_l1', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
 	TR_CONST['merged'] = False
 	TR_CONST['nb_maxout_feature'] = 4
+	TR_CONST['activation_regulariser'] = [()]
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
