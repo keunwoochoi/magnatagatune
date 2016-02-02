@@ -57,6 +57,7 @@ def update_setting_dict(setting_dict):
 	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
 	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	setting_dict["act_regulariser_fc_layers"] = [setting_dict["act_regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
 
 	return
 
