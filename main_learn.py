@@ -431,6 +431,9 @@ if __name__ == '__main__':
 	parser.add_argument('-num_mo', '--num_maxout_feature', type=int,
 										help='number of maxout features',
 										required=False )
+	parser.add_argument('-act_reg_fc', '--act_regulariser_fc', type=float,
+										help='activity regulariser',
+										required=False)
 	
 	args = parser.parse_args()
 	#------------------- default setting --------------------------------#
@@ -462,7 +465,8 @@ if __name__ == '__main__':
 
 	TR_CONST["nums_units_fc_layers"] = [512]*TR_CONST["num_fc_layers"]
 	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('activity_l1l2', 0.0)] *TR_CONST["num_fc_layers"]
+	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
+	TR_CONST["act_regulariser_fc_layres"] = [('activity_l1l2', 0.0)] *TR_CONST["num_fc_layers"]
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
@@ -517,6 +521,8 @@ if __name__ == '__main__':
 		TR_CONST["regulariser"] = [(TR_CONST["regulariser"][0][0], args.regulariser)]*TR_CONST["num_layers"]
 	if not args.regulariser_fc == 0.0:
 		TR_CONST["regulariser_fc_layers"] = [(TR_CONST["regulariser_fc_layers"][0][0], args.regulariser_fc)]*TR_CONST["num_fc_layers"]
+	if not arg.act_regulariser_fc == 0.0
+		TR_CONST["act_regulariser_fc_layres"] = [(TR_CONST["act_regulariser_fc_layers"][0][0], args.act_regulariser_fc)]*TR_CONST["num_fc_layers"]
 	if args.batch_normalization:
 		TR_CONST["BN"] = str2bool(args.batch_normalization)
 	if args.batch_normalization_fc:
