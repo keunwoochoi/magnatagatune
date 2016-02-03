@@ -131,15 +131,15 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	model_weight_name_dir = 'w_' + model_name + '/'
 	fileout = model_name + '_results'
 	
-	if not os.path.exists(PATH_RESULTS + model_name_dir):
+ 	# build model
+ 	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
+ 	if not os.path.exists(PATH_RESULTS + model_name_dir):
 		os.mkdir(PATH_RESULTS + model_name_dir)
 		os.mkdir(PATH_RESULTS + model_name_dir + 'images/')
 		os.mkdir(PATH_RESULTS + model_name_dir + 'plots/')
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
 	hp_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
  	hp_manager.print_setting(hyperparams)
- 	# build model
- 	model = my_keras_models.build_convnet_model(setting_dict=hyperparams)
 	# prepare callbacks
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	# checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
@@ -267,7 +267,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				append_history(total_history, history)
 				append_history(total_history, loss_history.history)
 
-				my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title='AUC' )
+				my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title=model_name + '_AUC' )
 				my_plots.export_history(total_history['loss'], total_history['val_loss'], 
 													acc=total_history['acc'], 
 													val_acc=total_history['val_acc'], 
