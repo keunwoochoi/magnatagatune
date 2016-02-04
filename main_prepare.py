@@ -261,14 +261,6 @@ def prepare_x():
 	paths_to_process = fm.paths
 
 	args = zip(clip_ids_to_process, paths_to_process)
-	# print '%d file clips will be done' % len(clip_ids_to_process)
-	# print 'process idx is %d' % process_idx
-	# for idx, arg in enumerate(args):
-	# 	if idx % 16 == process_idx:
-	# 		process_all_features(arg)
-	# 	else:
-	# 		pass
-	
 	p = Pool(48)
 	p.map(process_all_features, args)
 
@@ -308,7 +300,7 @@ def shuffle_hdf_process(set_idx):
 			shuffled_minibatch = [f[dataset_name][seg_idx*num_clips + permutation_list[i]] for i in xrange(num_clips)]
 			temp_shuffled = temp_shuffled + shuffled_minibatch
 		temp_shuffled = np.array(temp_shuffled)
-		print 'shuffling done; ', f[dataset_name].shape, temp_shuffled.shape
+		print 'shuffling done; ', f[dataset_name].shape, temp_before_shuffleded.shape
 		f[dataset_name][:] = temp_shuffled
 	f.attrs['shuffled'] = True
 	f.close()
@@ -327,6 +319,7 @@ def shuffle_hdfs():
 def merge_shuffle_train_hdfs():
 	'''
 	train set: 0-11 (12 sets)
+	shuffle within a folder.
 	'''
 	train_filenames = ['magna_%d.hdf'%idx for idx in range(12)]
 	file_read_ptrs = [h5py.File(PATH_HDF_LOCAL+train_filenames[i], 'r') for i in range(12)]
@@ -382,6 +375,8 @@ def merge_shuffle_train_hdfs():
 	print 'All done.'
 
 def divide_merge_shuffle_train_again():
+	'''shuffling within folder was not enough,
+	so shuffle it again across folders'''
 	file_read = h5py.File(PATH_HDF_LOCAL+'magna_train_12set.hdf', 'r')
 	train_filenames = ['magna_shuffled_%d.hdf'%idx for idx in range(12)]
 	

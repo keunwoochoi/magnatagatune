@@ -32,7 +32,7 @@ elif device_name.startswith('keunwoo'):
 		isMacbook = False
 		isDT1 = True
 		isDT2 = False
-	elif device_name == "keunwoo-dt2":
+	elif device_name == "keunwoo-DT2":
 		isMacbook= False
 		isDT1 = False
 		isDT2 = True
@@ -76,11 +76,22 @@ if isMacbook:
 	PATH_EMBEDDING = PATH_HOME + "embedding_tag/"
 else:
 	PATH_EMBEDDING = PATH_HOME + "embedding/"
+
 	
 PATH_WORK = PATH_HOME + "magnatagatune/"
 PATH_DATA = PATH_WORK + 'data/'
-PATH_RESULTS= PATH_WORK + 'results/'
-PATH_RESULTS_W= PATH_WORK + 'results_w/'
+
+if isMacbook or isDT1:
+	if isMacbook:
+		PATH_RESULTS_DROPBOX = '/Users/gnu/Dropbox/experiment_results/magnatagatune/'
+	elif isDT1:
+		PATH_RESULTS_DROPBOX = '/home/keunwoo/Dropbox/experiment_results/magnatagatune/'
+
+	PATH_RESULTS   = PATH_RESULTS_DROPBOX + 'results'
+	PATH_RESULTS_W = PATH_RESULTS_DROPBOX + 'results_w/'
+else:
+	PATH_RESULTS= PATH_WORK + 'results/'
+	PATH_RESULTS_W= PATH_WORK + 'results_w/'
 
 PATH_MAGNA = PATH_IMPORT + 'c4dm-datasets/MagnaTagATune/'
 
