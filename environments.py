@@ -54,7 +54,7 @@ elif isServer:
 	PATH_IMPORT = '/import/'	
 	PATH_HOME = "/homes/kc306/"
 
-elif isDT1:
+elif isDT1 or isDT2:
 	print "You are using Ubuntu Desktop"
 	PATH_IMPORT = '/mnt/c4dm/'
 	PATH_HOME   = '/mnt/kc306home/'
@@ -81,14 +81,15 @@ else:
 PATH_WORK = PATH_HOME + "magnatagatune/"
 PATH_DATA = PATH_WORK + 'data/'
 
-if isMacbook or isDT1:
-	if isMacbook:
-		PATH_RESULTS_DROPBOX = '/Users/gnu/Dropbox/experiment_results/magnatagatune/'
-	elif isDT1:
-		PATH_RESULTS_DROPBOX = '/home/keunwoo/Dropbox/experiment_results/magnatagatune/'
+if False:
+# if isMacbook or isDT1 or isDT2:
+# 	if isMacbook:
+# 		PATH_RESULTS_DROPBOX = '/Users/gnu/Dropbox/experiment_results/magnatagatune/'
+# 	elif isDT1:
+# 		PATH_RESULTS_DROPBOX = '/home/keunwoo/Dropbox/experiment_results/magnatagatune/'
 
-	PATH_RESULTS   = PATH_RESULTS_DROPBOX + 'results'
-	PATH_RESULTS_W = PATH_RESULTS_DROPBOX + 'results_w/'
+# 	PATH_RESULTS   = PATH_RESULTS_DROPBOX + 'results'
+# 	PATH_RESULTS_W = PATH_RESULTS_DROPBOX + 'results_w/'
 else:
 	PATH_RESULTS= PATH_WORK + 'results/'
 	PATH_RESULTS_W= PATH_WORK + 'results_w/'
