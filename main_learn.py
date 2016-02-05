@@ -124,6 +124,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		model_name = 'test_' + nickname
 	else:
 		model_name = timename + '_' + nickname
+	if hyperparams['resume'] != '':
+		model_name = model_name + '_from_' + hyperparams['resume']
 	hp_manager.save_new_setting(hyperparams)
 	print '-'*60
 	print 'model name: %s' % model_name
@@ -267,7 +269,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				append_history(total_history, history)
 				append_history(total_history, loss_history.history)
 
-				my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title=model_name + '_AUC' )
+				my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'auc_plots.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
 				my_plots.export_history(total_history['loss'], total_history['val_loss'], 
 													acc=total_history['acc'], 
 													val_acc=total_history['val_acc'], 
