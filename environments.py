@@ -65,7 +65,7 @@ elif isMacbook:
 
 if isMacPro:
 	PATH_HDF_LOCAL = '/Users/keunwoo/data/hdf_magna/'
-elif isDT1:
+elif isDT1 or isDT2:
 	PATH_HDF_LOCAL = '/home/keunwoo/data/hdf_magna/'
 elif isServer:
 	PATH_HDF_LOCAL = '/import/c4dm-04/keunwoo/magnatagatune/hdf/'
