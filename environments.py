@@ -82,6 +82,7 @@ PATH_WORK = PATH_HOME + "magnatagatune/"
 PATH_DATA = PATH_WORK + 'data/'
 
 if False:
+	pass
 # if isMacbook or isDT1 or isDT2:
 # 	if isMacbook:
 # 		PATH_RESULTS_DROPBOX = '/Users/gnu/Dropbox/experiment_results/magnatagatune/'
