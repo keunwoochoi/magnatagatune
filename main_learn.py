@@ -50,7 +50,7 @@ def merge_multi_outputs(predicted_dict):
 	num_data = predicted_dict[predicted_dict.keys()[0]].shape[0]
 	predicted = np.zeros((num_data, dim_label))
 	for i in range(dim_label):
-		predicted[:, i] = predicted_dict['output_%d'%i]
+		predicted[:, i] = predicted_dict['output_%d'%i][:, 0]
 	return predicted
 
 def update_setting_dict(setting_dict):
