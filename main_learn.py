@@ -226,7 +226,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				# [run]
 			 	if hyperparams['model_type'] in ['multi_task']:
  					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
- 					model.fit(fit_dict,
+ 					loss_history = model.fit(fit_dict,
  							batch_size=batch_size,
  							nb_epoch=1,
  							shuffle='batch')
