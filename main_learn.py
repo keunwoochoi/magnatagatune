@@ -314,7 +314,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	for test_x_partial, test_y_partial in zip(hdf_test_xs, hdf_test_ys):
 		if hyperparams['model_type'] in ['multi_task']:
 			fit_dict = get_fit_dict(test_x_partial[:], test_y_partial[:], hyperparams['dim_labels'])
-			predicted_dict = model_predict(fit_dict, bath_size=batch_size)
+			predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 			predicted = np.vstack((predicted, merge_multi_outputs(predicted_dict)))
 		else:
 			predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
