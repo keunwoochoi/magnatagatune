@@ -149,6 +149,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		os.mkdir(PATH_RESULTS_W + model_weight_name_dir)
 	hp_manager.write_setting_as_texts(PATH_RESULTS + model_name_dir, hyperparams)
  	hp_manager.print_setting(hyperparams)
+ 	model.summary()
 	# prepare callbacks
 	keras_plot(model, to_file=PATH_RESULTS + model_name_dir + 'images/'+'graph_of_model_'+hyperparams["!memo"]+'.png')
 	# checkpointer = keras.callbacks.ModelCheckpoint(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
@@ -225,7 +226,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				# early_stop should watch overall AUC rather than val_loss or val_acc
 				# [run]
 			 	if hyperparams['model_type'] in ['multi_task']:
- 					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
+ 					fit_dict = get_fit_dict(train_x[:512], train_y[:512], hyperparams['dim_labels'])
  					loss_history = model.fit(fit_dict,
  							batch_size=batch_size,
  							nb_epoch=1,
