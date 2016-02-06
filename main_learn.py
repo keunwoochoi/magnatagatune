@@ -198,8 +198,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 	if hyperparams['model_type'] in ['multi_task']:
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
- 			pdb.set_trace()
- 			model.fit(fit_dict,	batch_size=batch_size,	nb_epoch=1)
+ 			# pdb.set_trace()
+ 			model.fit(fit_dict,	batch_size=batch_size,	nb_epoch=1, shuffle='batch')
 	 	else:
 	 		model.fit(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], 
 			 		validation_data=(hdf_valid_xs[0][:512], hdf_valid_ys[0][:512]), 
@@ -221,7 +221,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
  					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
  					model.fit(fit_dict,
  							batch_size=batch_size,
- 							nb_epoch=1)
+ 							nb_epoch=1,
+ 							shuffle='batch')
 			 	else:
 					loss_history = model.fit(train_x, train_y, validation_data=(hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048]), 
 											batch_size=batch_size,
