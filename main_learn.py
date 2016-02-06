@@ -41,7 +41,7 @@ def get_fit_dict(train_x, train_y, dim_labels):
 	fit_dict['input'] = train_x
 	for dense_idx in xrange(dim_labels):
 		output_node_name = 'output_%d' % dense_idx
-		fit_dict[output_node_name] = train_y[:, dense_idx]
+		fit_dict[output_node_name] = train_y[:, dense_idx:dense_idx+1]
 
 	return fit_dict
  					
@@ -199,9 +199,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 		
 	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
  			pdb.set_trace()
- 			model.fit(fit_dict,
- 					batch_size=batch_size,
- 					nb_epoch=1)
+ 			model.fit(fit_dict,	batch_size=batch_size,	nb_epoch=1)
 	 	else:
 	 		model.fit(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], 
 			 		validation_data=(hdf_valid_xs[0][:512], hdf_valid_ys[0][:512]), 
