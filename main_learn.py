@@ -220,7 +220,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
 				total_epoch_count += 1
-				if os.path.exists('stop_asap.keunwoo'):
+				if os.path.exists('stop_asap.keunwoo') and total_epoch_count > 1:
 					break
 				# early_stop should watch overall AUC rather than val_loss or val_acc
 				# [run]
