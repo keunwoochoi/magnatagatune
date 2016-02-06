@@ -44,7 +44,14 @@ def get_fit_dict(train_x, train_y, dim_labels):
 		fit_dict[output_node_name] = train_y[:, dense_idx:dense_idx+1]
 
 	return fit_dict
- 					
+
+def merge_multi_outputs(predicted_dict):
+	dim_label = len(predicted_dict.keys())
+	num_data = predicted_dict[predicted_dict.keys()[0]].shape[0]
+	predicted = np.zeros((num_data, dim_label))
+	for i in range(dim_label):
+		predicted[:, i] = predicted_dict['output_%d'%i]
+	return predicted
 
 def update_setting_dict(setting_dict):
 
@@ -163,7 +170,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# ready to run
 	if hyperparams['debug'] == True:
 		pdb.set_trace()
-	print '--- train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % hyperparams["num_epoch"]
+	print '--- %s train starts. Remove will_stop.keunwoo to continue learning after %d epochs ---' % (model_name, hyperparams["num_epoch"])
 	
 	num_epoch = hyperparams["num_epoch"]
 	total_epoch = 0
@@ -208,7 +215,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					show_accuracy=hyperparams['isClass'], 
 					callbacks=callbacks,
 					shuffle='batch')
-	 	print '--TEST FLIGHT DONE--'
+	 	print '--TEST FLIGHT DONE: %s--' % model_name
 	 	total_epoch_count = 0
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
@@ -236,16 +243,18 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					
 					if hyperparams['model_type'] in ['multi_task']:
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][-2048:], hdf_valid_ys[-1][-2048:], hyperparams['dim_labels'])
-						predicted = model.predict(fit_dict, batch_size=batch_size)
+						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
+						predicted = merge_multi_outputs(predicted_dict)
 					else:
 						valid_x, valid_y = (hdf_valid_xs[0][:2048], hdf_valid_ys[0][:2048])
 						predicted = model.predict(valid_x, batch_size=batch_size)
 				else: # validation with all
-					print ' * Compute AUC with full validation data.'
+					print ' * Compute AUC with full validation data for model: %s.' % model_name
 					if hyperparams['model_type'] in ['multi_task']:
 						valid_y = hdf_valid_ys[0][:] # I know I'm using only one set for validation.
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
-						predicted = model.predict(fit_dict, batch_size=batch_size)
+						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
+						predicted = merge_multi_outputs(predicted_dict)
 					else:
 						predicted = np.zeros((0, dim_labels))
 						valid_y = np.zeros((0, dim_labels))
@@ -259,7 +268,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				history['auc'] = [val_result['roc_auc_macro']]
 				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
 				if val_result['roc_auc_macro'] > best_auc:
-					print ', which is new record! it was %f btw.' % best_auc
+					print ', which is new record! it was %f btw (%s)' % (best_auc, model_name)
 					best_auc = val_result['roc_auc_macro']
 					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
 										overwrite=True)
@@ -302,7 +311,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	for test_x_partial, test_y_partial in zip(hdf_test_xs, hdf_test_ys):
 		if hyperparams['model_type'] in ['multi_task']:
 			fit_dict = get_fit_dict(test_x_partial[:], test_y_partial[-1][:], hyperparams['dim_labels'])
-			predicted = np.vstack((predicted, model_predict(fit_dict, bath_size=batch_size)))
+			predicted_dict = model_predict(fit_dict, bath_size=batch_size)
+			predicted = np.vstack((predicted, merge_multi_outputs(predicted_dict)))
 		else:
 			predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
 		test_y = np.vstack((test_y, test_y_partial))
