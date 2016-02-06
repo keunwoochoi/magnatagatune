@@ -242,7 +242,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				if not sub_epoch_idx in [0, 6]: # validation with subset
 					
 					if hyperparams['model_type'] in ['multi_task']:
-						fit_dict = get_fit_dict(hdf_valid_xs[-1][-2048:], hdf_valid_ys[-1][-2048:], hyperparams['dim_labels'])
+						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
 					else:
