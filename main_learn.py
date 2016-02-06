@@ -255,6 +255,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
+						val_loss_here = model.evaluate(fit_dict, batch_size=batch_size)
 					else:
 						predicted = np.zeros((0, dim_labels))
 						valid_y = np.zeros((0, dim_labels))
@@ -266,6 +267,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
+				if hyperparams['model_type'] in ['multi_task']:
+					history['val_loss'] = [val_loss_here]
 				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
 				if val_result['roc_auc_macro'] > best_auc:
 					print ', which is new record! it was %f btw (%s)' % (best_auc, model_name)
