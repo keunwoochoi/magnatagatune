@@ -246,12 +246,13 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
+						val_loss_here = model.evaluate(fit_dict, batch_size=batch_size)
+						print 'val_loss:%f' % val_loss_here
 					else:
 						valid_x, valid_y = (hdf_valid_xs[0][:8092], hdf_valid_ys[0][:8092])
 						predicted_dict = model.predict(valid_x, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
-						val_loss_here = model.evaluate(fit_dict, batch_size=batch_size)
-						print 'val_loss:%f' % val_loss_here
+						
 				else: # validation with all
 					print ' * Compute AUC with full validation data for model: %s.' % model_name
 					if hyperparams['model_type'] in ['multi_task']:
