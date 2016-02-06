@@ -93,7 +93,10 @@ if False:
 # 	PATH_RESULTS_W = PATH_RESULTS_DROPBOX + 'results_w/'
 else:
 	PATH_RESULTS= PATH_WORK + 'results/'
-	PATH_RESULTS_W= PATH_WORK + 'results_w/'
+	if isDT1 or isDT2:
+		PATH_RESULTS_W = '/home/keunwoo/data/hdf_results_w/'
+	else:
+		PATH_RESULTS_W= PATH_WORK + 'results_w/'
 
 PATH_MAGNA = PATH_IMPORT + 'c4dm-datasets/MagnaTagATune/'
 
