@@ -59,12 +59,19 @@ def update_setting_dict(setting_dict):
 	setting_dict["activations"] = [setting_dict["activations"][0]] *setting_dict["num_layers"]
 	setting_dict["dropouts"] = [setting_dict["dropouts"][0]]*setting_dict["num_layers"]
 	setting_dict["regulariser"] = [setting_dict["regulariser"][0]]*setting_dict["num_layers"]
-
-	setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
-	setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
-	setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
-	setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
-	setting_dict["act_regulariser_fc_layers"] = [setting_dict["act_regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
+	
+	if setting_dict['num_fc_layers'] == 0:
+		setting_dict["dropouts_fc_layers"] = []
+		setting_dict["nums_units_fc_layers"] = []
+		setting_dict["activations_fc_layers"] = []
+		setting_dict["regulariser_fc_layers"] = []
+		setting_dict["act_regulariser_fc_layers"] = []
+	else:
+		setting_dict["dropouts_fc_layers"] = [setting_dict["dropouts_fc_layers"][0]]*setting_dict["num_fc_layers"]
+		setting_dict["nums_units_fc_layers"] = [setting_dict["nums_units_fc_layers"][0]]*setting_dict["num_fc_layers"]
+		setting_dict["activations_fc_layers"] = [setting_dict["activations_fc_layers"][0]]*setting_dict["num_fc_layers"]
+		setting_dict["regulariser_fc_layers"] = [setting_dict["regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
+		setting_dict["act_regulariser_fc_layers"] = [setting_dict["act_regulariser_fc_layers"][0]]*setting_dict["num_fc_layers"]
 
 	return
 
