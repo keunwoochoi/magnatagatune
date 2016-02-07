@@ -198,6 +198,8 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 			previous_history = cP.load(open(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP', 'r'))
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 			append_history(total_history, previous_history)
+			if 'auc' in total_history:
+				best_auc = min(total_history['auc'])
 	
 	if not hyperparams['do_not_learn']:
 		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -318,6 +320,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		pdb.set_trace()
 	if not hyperparams['is_test']:
 		if not best_auc == val_result['roc_auc_macro']: # load weights only it's necessary
+			print 'Load best weight for test sets'
 			model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	
 	predicted = np.zeros((0, dim_labels))
