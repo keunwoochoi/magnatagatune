@@ -257,8 +257,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						print 'val_loss:%f' % val_loss_here
 					else:
 						valid_x, valid_y = (hdf_valid_xs[0][:8092], hdf_valid_ys[0][:8092])
-						predicted_dict = model.predict(valid_x, batch_size=batch_size)
-						predicted = merge_multi_outputs(predicted_dict)
+						predicted = model.predict(valid_x, batch_size=batch_size)
 						
 				else: # validation with all
 					print ' * Compute AUC with full validation data for model: %s.' % model_name
