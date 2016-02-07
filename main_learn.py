@@ -493,6 +493,10 @@ if __name__ == '__main__':
 	TR_CONST["gaussian_noise"] = False
 	TR_CONST['merged'] = False
 	TR_CONST['nb_maxout_feature'] = 4
+
+	TR_CONST['num_sparse_layer'] = 3
+	TR_CONST['maxout_sparse_layer'] = True
+	TR_CONST['num_sparse_units'] = 128
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
