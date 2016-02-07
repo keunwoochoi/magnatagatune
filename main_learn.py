@@ -483,18 +483,18 @@ if __name__ == '__main__':
 
 	TR_CONST["BN"] = True
 	TR_CONST["regulariser"] = [('l2', 0.0)]*TR_CONST["num_layers"] # use [None] not to use.
-	TR_CONST["model_type"] = 'vgg_modi_1x1'
+	TR_CONST["model_type"] = 'vgg_modi_3x3'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 0
+	TR_CONST["num_fc_layers"] = 2
 
 	TR_CONST["BN_fc_layers"] = True
-	TR_CONST["dropouts_fc_layers"] = [0.5]*TR_CONST["num_fc_layers"]
+	TR_CONST["dropouts_fc_layers"] = [0.5]*max(TR_CONST["num_fc_layers"], 1)
 
-	TR_CONST["nums_units_fc_layers"] = [2048]*TR_CONST["num_fc_layers"]
-	TR_CONST["activations_fc_layers"] = ['elu']*TR_CONST["num_fc_layers"]
-	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *TR_CONST["num_fc_layers"]
-	TR_CONST["act_regulariser_fc_layers"] = [('activity_l1l2', 0.0)] *TR_CONST["num_fc_layers"]
+	TR_CONST["nums_units_fc_layers"] = [2048]*max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["activations_fc_layers"] = ['elu']*max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["act_regulariser_fc_layers"] = [('activity_l1l2', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["maxout"] = True
 	TR_CONST["gaussian_noise"] = False
