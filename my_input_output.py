@@ -105,9 +105,9 @@ def load_x(tf_type):
 
 def load_y(top_n=50, merged=True):
 	if merged:
-		train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
-		valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
-		test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
+		train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train_stdd.hdf')['y'][:, :top_n]
+		valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid_stdd.hdf')['y'][:, :top_n]
+		test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test_stdd.hdf')['y'][:, :top_n]
 	else:
 		raise RuntimeError('not_merged is not prepared')
 
