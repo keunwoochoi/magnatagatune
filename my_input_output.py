@@ -52,7 +52,7 @@ def load_x_hdf5matrix(tf_type=None):
 	test_x  = hdf5matrix.HDF5Matrix(PATH_HDF_LOCAL + 'magna_test.hdf',  tf_type, None, None, normalizer=normalizer)
 	
 	return train_x, valid_x, test_x
-
+"""
 def load_x(tf_type, is_test=False):
 	print 'Load x will load a standardised %s' % tf_type
 	ret = []
@@ -103,10 +103,13 @@ def load_x(tf_type):
 	return train_x, valid_x, test_x
 
 
-def load_y(top_n=50):
-	train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
-	valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
-	test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
+def load_y(top_n=50, merged=True):
+	if merged:
+		train_y = h5py.File(PATH_HDF_LOCAL + 'magna_train.hdf')['y'][:, :top_n]
+		valid_y = h5py.File(PATH_HDF_LOCAL + 'magna_valid.hdf')['y'][:, :top_n]
+		test_y  = h5py.File(PATH_HDF_LOCAL + 'magna_test.hdf')['y'][:, :top_n]
+	else:
+		raise RuntimeError('not_merged is not prepared')
 
 	return train_y, valid_y, test_y
-"""
+

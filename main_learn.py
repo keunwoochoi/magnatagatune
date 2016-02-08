@@ -103,17 +103,28 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	best_auc = 0.0
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
-	hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
-	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'], merged=hyperparams['merged'])
-	hdf_train_xs = hdf_xs[:12]
-	hdf_valid_xs = hdf_xs[12:13]
-	hdf_test_xs = hdf_xs[13:]
-	hdf_train_ys = hdf_ys[:12]
-	hdf_valid_ys = hdf_ys[12:13]
-	hdf_test_ys = hdf_ys[13:]
 
-	# train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
-	# train_y, valid_y, test_y = io.load_y(dim_labels)
+
+	# hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
+	# hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'], merged=hyperparams['merged'])
+	# hdf_train_xs = hdf_xs[:12]
+	# hdf_valid_xs = hdf_xs[12:13]
+	# hdf_test_xs = hdf_xs[13:]
+	# hdf_train_ys = hdf_ys[:12]
+	# hdf_valid_ys = hdf_ys[12:13]
+	# hdf_test_ys = hdf_ys[13:]
+
+	print "--- I'm using 8:1:1 my set with 'merged' option. ---"
+	hyperparams['merged'] = True
+	train_x, valid_x, test_x = io.load_x(hyperparams['tf_type'])
+	train_y, valid_y, test_y = io.load_y(dim_labels)
+	hdf_train_xs = [train_x]
+	hdf_valid_xs = [valid_x]
+	hdf_test_xs = [test_x]
+	hdf_train_ys = [train_y]
+	hdf_valid_ys = [valid_y]
+	hdf_test_ys = [test_y]
+
 	if hyperparams['is_test']:
 		pdb.set_trace()
 		# num_data_in_test = 256
