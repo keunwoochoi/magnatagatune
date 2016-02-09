@@ -510,7 +510,11 @@ if __name__ == '__main__':
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
 	if args.num_fc_layers:
-		TR_CONST["num_fc_layers"] = args.num_fc_layers
+		if args.num_fc_layers == -1:
+			TR_CONST["num_fc_layers"] = 0
+			print '-1 means 0 fc layers'
+		else:
+			TR_CONST["num_fc_layers"] = args.num_fc_layers
 	if args.n_epoch:
 		TR_CONST["num_epoch"] = args.n_epoch
 	if args.tf:
