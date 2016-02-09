@@ -488,7 +488,7 @@ if __name__ == '__main__':
 	TR_CONST["model_type"] = 'vgg_modi_3x3'
 	TR_CONST["tf_type"] = 'melgram'
 
-	TR_CONST["num_fc_layers"] = 2
+	# TR_CONST["num_fc_layers"] = 2 
 
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*max(TR_CONST["num_fc_layers"], 1)
