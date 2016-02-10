@@ -421,9 +421,9 @@ def freq_normalise_all():
 	hdf_paths = [PATH_HDF_LOCAL + filename for filename in hdf_files if filename.split('.')[-1] == 'hdf']
 	print 'paths are:'
 	pprint.pprint(hdf_paths)
-	
+
 	for hdf_path in hdf_paths:
-		freq_normalise_dataset(hdf_paths)
+		freq_normalise_dataset(hdf_path)
 
 	print 'ALL DONE'
 	return
