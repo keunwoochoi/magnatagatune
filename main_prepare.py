@@ -18,6 +18,7 @@ import librosa
 import time
 from multiprocessing import Pool
 import h5py
+import pprint
 from random import shuffle
 
 from environments import *
@@ -396,8 +397,36 @@ def divide_merge_shuffle_train_again():
 
 	return
 
+def freq_normalise_dataset(hdf_path):
+	'''load hdf path, which has datasets, and do the work - normalize for each frequency.'''
+	f = h5py.File(hdf_path, 'r+')
+	dataset_names = ['melgram', 'stft', 'cqt', 'mfcc']
+	print '-'*40
+	print 'start normalise for %s ' % hdf_path
+	for dataset_name in dataset_names:
+		if dataset_name not in f:
+			continue
+		dataset = f[dataset_name]
+		freq_mean = np.mean(np.mean(np.mean(dataset, axis=0), axis=0), axis=1)
+		freq_mean = freq_mean.reshape((1,1,-1,1))
 
+		freq_var  = np.mean(np.mean(np.var(dataset, axis=0), axis=0), axis=1)
+		freq_var  = freq_var.reshape((1,1,-1,1))
+		dataset = (dataset - freq_mean) / freq_var
+		print '%s, %s: done.' % (hdf_path, dataset_name)
+	return
 
+def freq_normalise_all():
+	hdf_files = os.listdir(PATH_HDF_LOCAL)
+	hdf_paths = [PATH_HDF_LOCAL + filename for filename in hdf_files if filename.split('.')[-1] == 'hdf']
+	print 'paths are:'
+	pprint.pprint(hdf_paths)
+	
+	for hdf_path in hdf_paths:
+		freq_normalise_dataset(hdf_paths)
+
+	print 'ALL DONE'
+	return
 
 if __name__ == '__main__':
 	'''
