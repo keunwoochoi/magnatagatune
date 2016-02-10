@@ -412,7 +412,7 @@ def freq_normalise_dataset(hdf_path):
 
 		freq_var  = np.mean(np.mean(np.var(f[dataset_name], axis=0), axis=0), axis=1)
 		freq_var  = freq_var.reshape((1,1,-1,1))
-		f[dataset_name] = (f[dataset_name] - freq_mean) / np.sqrt(freq_var)
+		f[dataset_name][:] = (f[dataset_name] - freq_mean) / np.sqrt(freq_var)
 		print '%s, %s: done.' % (hdf_path, dataset_name)
 	return
 
