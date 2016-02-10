@@ -507,7 +507,7 @@ if __name__ == '__main__':
 	TR_CONST['maxout_sparse_layer'] = True
 	TR_CONST['num_sparse_units'] = 128
 
-	TR_CONST['input_normalisation'] = True
+	# TR_CONST['input_normalisation'] = True
 	#--------------------------------------------------------#
 	if args.layers:
 		TR_CONST["num_layers"] = args.layers
