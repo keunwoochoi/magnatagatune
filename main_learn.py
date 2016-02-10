@@ -493,7 +493,7 @@ if __name__ == '__main__':
 	TR_CONST["BN_fc_layers"] = True
 	TR_CONST["dropouts_fc_layers"] = [0.5]*max(TR_CONST["num_fc_layers"], 1)
 
-	TR_CONST["nums_units_fc_layers"] = [2048]*max(TR_CONST["num_fc_layers"], 1)
+	TR_CONST["nums_units_fc_layers"] = [4096]*max(TR_CONST["num_fc_layers"], 1)
 	TR_CONST["activations_fc_layers"] = ['elu']*max(TR_CONST["num_fc_layers"], 1)
 	TR_CONST["regulariser_fc_layers"] = [('l1', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
 	TR_CONST["act_regulariser_fc_layers"] = [('activity_l1l2', 0.0)] *max(TR_CONST["num_fc_layers"], 1)
