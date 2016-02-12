@@ -51,7 +51,7 @@ def get_start_end_points(seg_idx, sp_per_seg):
 		''''''
 		if seg_idx < 7:
 			return seg_idx*sp_per_seg, (seg_idx+1)*sp_per_seg
-		elif:
+		else:
 			return int((seg_idx-6.5)*sp_per_seg), int((seg_idx-5.5)*sp_per_seg)
 
 def get_conventional_set():
