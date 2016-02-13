@@ -306,7 +306,7 @@ def process_all_features(args):
 			if check_if_done(full_filepath_out):
 				print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)
 				continue
-			SRC_full = get_tf_representation()
+			SRC_full = get_tf_representation(src_full, tf_type)
 			fr_from, fr_to = get_start_end_points(seg_idx, int(FRAMES_PER_SEC))
 			np.save(full_filepath_out, SRC_full[:, fr_from:fr_to])
 			
