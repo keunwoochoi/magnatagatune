@@ -48,7 +48,11 @@ def check_if_done(path):
 	return False
 
 def get_start_end_points(seg_idx, sp_per_seg):
-		''''''
+		'''
+		adding +1 is heuristic to make it equal if it's done by frame...
+		so if it's about sample, use it.
+		if it's about TF frames, add +1 at the 'frame_to' value.
+		'''
 		if seg_idx < 7:
 			return seg_idx*sp_per_seg, (seg_idx+1)*sp_per_seg
 		else:
@@ -103,62 +107,60 @@ def prepare_hdf():
 	print '='*60
 	means = {'cqt':-69.8194, 'melgram':-15.5739, 'stft':-24.2885, 'mfcc':1.14238}
 	stds  = {'cqt':16.7193,  'melgram':21.1379,  'stft':20.6936, 'mfcc':18.7942}
-	#create or load 16 hdf files.
+	#create or load 16 hdf files to write.
 	file_write_ptrs = []
-	for set_name_idx, set_name in enumerate(set_names):
-		filename = 'magna_%s.hdf' % set_name
-		if os.path.exists(PATH_HDF_LOCAL + filename):
+	for set_name_idx, set_name in enumerate(set_names): # for every folder,
+		filename = 'magna_%s.hdf' % set_name 
+		if os.path.exists(PATH_HDF_LOCAL + filename): # read+ or create hdf file.
 			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
 		else:
 			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
 
+		# x: get number of data by file_manager path imformation.
 		num_datapoints = NUM_SEG*len([path for path in fm.paths if path[0] == folder_names[set_name_idx]])
 		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
-			if not dataset_name in file_write:
+			if not dataset_name in file_write: # create dataset 
 				test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
 				tf_height, tf_width = test_tf.shape
 				file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
+		# y: get number of data by file_manager path imformation.
 		for dataset_label_name in dataset_label_names:
 			if not dataset_label_name in file_write:
 				file_write.create_dataset(dataset_label_name, (num_datapoints, label_matrices[dataset_label_name].shape[1]))
 		file_write_ptrs.append(file_write) # 16 h5py file pointers
 	
-	# load files and put them into corresponding hdf files.
 	
+	# load files and put them into corresponding hdf files.
 	for file_write_idx, file_write in enumerate(file_write_ptrs):
-		if file_write_idx in range(10):
-			print 'skip.'
-			continue
-		else:
-			folder_name = folder_names[file_write_idx]
-			#paths_in = [path for path in fm.paths if path[0] == folder_name]
-			clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
-			shuffle(clip_ids)
-			print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
-			print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
-			print '  len clip_ids: %d' % len(clip_ids)
-			# for data
-			for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
-				print '    process %s' % dataset_name
-				data_to_store = file_write[dataset_name]
-				print '    size: ', data_to_store.shape
-				for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
-					clip_idx = fm.id_to_idx[str(clip_id)]
-					for seg_idx in range(NUM_SEG):
-						tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-						data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
-			
-			# for labels
-			for dataset_label_name in dataset_label_names:
-				print '    process %s' % dataset_label_name
-				data_to_store = file_write[dataset_label_name]
-				print '    size: ', data_to_store.shape
-				for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.
-					clip_idx = fm.id_to_idx[str(clip_id)]
-					for seg_idx in range(NUM_SEG):
-						data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
+		folder_name = folder_names[file_write_idx]
+		#paths_in = [path for path in fm.paths if path[0] == folder_name]
+		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+		shuffle(clip_ids)
+		print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
+		print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
+		print '  len clip_ids: %d' % len(clip_ids)
+		# for data (x)
+		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+			print '    process %s' % dataset_name
+			data_to_store = file_write[dataset_name]
+			print '    size of dataset: ', data_to_store.shape
+			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, it's not..?
+				clip_idx = fm.id_to_idx[str(clip_id)]
+				for seg_idx in range(NUM_SEG):
+					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+		
+		# for labels (y)
+		for dataset_label_name in dataset_label_names:
+			print '    process %s' % dataset_label_name
+			data_to_store = file_write[dataset_label_name]
+			print '    size: ', data_to_store.shape
+			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, too. 
+				clip_idx = fm.id_to_idx[str(clip_id)]
+				for seg_idx in range(NUM_SEG):
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
 
-			print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
+		print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
 	
 	print 'ALL DONE.'
 	print 'Now shuffle and copy it from %s to c4dm server.' % PATH_HDF_LOCAL
@@ -303,11 +305,14 @@ def process_all_features(args):
 
 		for seg_idx in range(NUM_SEG):
 			full_filepath_out = '%s%d_%d.npy'%(path,clip_id,seg_idx)
+
 			if check_if_done(full_filepath_out):
-				print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)
+				print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)	
 				continue
 			SRC_full = get_tf_representation(src_full, tf_type)
-			fr_from, fr_to = get_start_end_points(seg_idx, int(FRAMES_PER_SEC))
+			fr_from, fr_to = get_start_end_points(seg_idx, int(4*FRAMES_PER_SEC))
+			fr_to = fr_to + 1 # to make it 251 rathe rthan 250. 
+
 			np.save(full_filepath_out, SRC_full[:, fr_from:fr_to])
 			
 	print '  -- ALL done : clip_id:%d' % (clip_id)
