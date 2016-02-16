@@ -301,7 +301,10 @@ def process_all_features(args):
 		if check_if_they_are_done(clip_id, path):
 			print '  clip_id:%d, everything is done for %s' % (clip_id, tf_type)
 			continue
-		src_full, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
+		try:
+			src_full, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
+		except audioread.NoBackendError:
+			print 'AudioRead error', path, tf_type, clip_id
 
 		for seg_idx in range(NUM_SEG):
 			full_filepath_out = '%s%d_%d.npy'%(path,clip_id,seg_idx)
