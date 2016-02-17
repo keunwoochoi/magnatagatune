@@ -303,14 +303,15 @@ def process_all_features(args):
 			continue
 		try:
 			src_full, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
-		except audioread.NoBackendError:
-			print 'AudioRead error', path, tf_type, clip_id
+		except:
+			print 'AudioRead error', path, tf_type, mp3_path, clip_id
+			raise RuntimeError("STOP!")
 
 		for seg_idx in range(NUM_SEG):
 			full_filepath_out = '%s%d_%d.npy'%(path,clip_id,seg_idx)
 
 			if check_if_done(full_filepath_out):
-				print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)	
+				# print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)	
 				continue
 			SRC_full = get_tf_representation(src_full, tf_type)
 			fr_from, fr_to = get_start_end_points(seg_idx, int(4*FRAMES_PER_SEC))
