@@ -359,16 +359,24 @@ def process_all_features(args):
 	return
 	'''
 
-def prepare_x():
+def prepare_x(num_pc=None, idx_pc=None):
 	'''It spawns process to generate all numpy files for all songs.
 	It does NOT do something with HDF.
+	num_pc : number of pc using
+	idx_pc : idx of pc
 	'''
+	if not num_pc and not idx_pc:
+		num_pc = 1
+		idx_pc = 0
+	print 'num_pc:%d, idx_pc:%d' % (num_pc, idx_px)
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
 	clip_ids_to_process = fm.clip_ids
 	paths_to_process = fm.paths
 
 	args = zip(clip_ids_to_process, paths_to_process)
+	args = [ele for idx,ele in enumerate(args) if idx%num_pc == idx_pc]
+
 	p = Pool(48)
 	p.map(process_all_features, args)
 
@@ -627,11 +635,21 @@ if __name__ == '__main__':
 	'''
 	First, remove things in data/ to restart. Then execute as follows:
 	
+	python main_prepare.py 2 0 # in pc 1
+	python main_prepare.py 2 1 # in pc 2
+
+
 	prepare_y()
 	prepare_x()
 	prepare_hdf()
 	standardise()
 	'''
+	if sys.argv <= 1:
+		prepare_x()
+	else:
+		num_pc = int(sys.argv[1])
+		idx_pc = int(sys.argv[2])
+		prepare_x(num_pc, idx_pc)
 	# prepare_y()
 	prepare_x()
 	prepare_hdf()
