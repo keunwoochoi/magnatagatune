@@ -368,7 +368,7 @@ def prepare_x(num_pc=None, idx_pc=None):
 	if not num_pc and not idx_pc:
 		num_pc = 1
 		idx_pc = 0
-	print 'num_pc:%d, idx_pc:%d' % (num_pc, idx_px)
+	print 'num_pc:%d, idx_pc:%d' % (num_pc, idx_pc)
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
 	clip_ids_to_process = fm.clip_ids
