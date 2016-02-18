@@ -660,7 +660,7 @@ if __name__ == '__main__':
 	# 	prepare_x(num_pc, idx_pc)
 	
 	# prepare_y()
-	prepare_x()
+	# prepare_x()
 	prepare_hdf()
 	prepare_divide_merge_shuffle_per_set()
 	
