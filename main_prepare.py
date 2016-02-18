@@ -86,11 +86,9 @@ def get_conventional_set():
 	return [train_idxs, valid_idxs, test_idxs]
 
 #------------------------------------------#
+def process_hdf(set_name_idx):
+	'''sub process that will be spawned'''
 
-def prepare_hdf():
-	'''create hdf file that has cqt, stft, mfcc, melgram of 16 sets in MagnaTatATune.
-	This function includes standardisation of tf values, but not shuffling.
-	'''
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
 	label_matrices = {}
@@ -103,67 +101,75 @@ def prepare_hdf():
 	dataset_label_names=['y_merged','y_original']
 
 	print '='*60
-	print '====== prepare_hdf ======'
+	print '====== prepare_hdf, %d ======' % set_name_idx
 	print '='*60
 	means = {'cqt':-69.8194, 'melgram':-15.5739, 'stft':-24.2885, 'mfcc':1.14238}
 	stds  = {'cqt':16.7193,  'melgram':21.1379,  'stft':20.6936, 'mfcc':18.7942}
-	#create or load 16 hdf files to write.
-	file_write_ptrs = []
-	for set_name_idx, set_name in enumerate(set_names): # for every folder,
-		filename = 'magna_%s.hdf' % set_name 
-		if os.path.exists(PATH_HDF_LOCAL + filename): # read+ or create hdf file.
-			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
-		else:
-			file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
 
-		# x: get number of data by file_manager path imformation.
-		num_datapoints = NUM_SEG*len([path for path in fm.paths if path[0] == folder_names[set_name_idx]])
-		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
-			if not dataset_name in file_write: # create dataset 
-				test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
-				tf_height, tf_width = test_tf.shape
-				file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
-		# y: get number of data by file_manager path imformation.
-		for dataset_label_name in dataset_label_names:
-			if not dataset_label_name in file_write:
-				file_write.create_dataset(dataset_label_name, (num_datapoints, label_matrices[dataset_label_name].shape[1]))
-		file_write_ptrs.append(file_write) # 16 h5py file pointers
+	filename = 'magna_%s.hdf' % set_name 
+	if os.path.exists(PATH_HDF_LOCAL + filename): # read+ or create hdf file.
+		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
+	else:
+		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'w')
+
+	# x: get number of data by file_manager path imformation.
+	num_datapoints = NUM_SEG*len([path for path in fm.paths if path[0] == folder_names[set_name_idx]])
+	for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+		if not dataset_name in file_write: # create dataset 
+			test_tf = fm.load_file(file_type=dataset_name, clip_idx=0, seg_idx=0)
+			tf_height, tf_width = test_tf.shape
+			file_write.create_dataset(dataset_name, (num_datapoints, 1, tf_height, tf_width))
+	# y: get number of data by file_manager path imformation.
+	for dataset_label_name in dataset_label_names:
+		if not dataset_label_name in file_write:
+			file_write.create_dataset(dataset_label_name, (num_datapoints, label_matrices[dataset_label_name].shape[1]))
 	
-	
+	file_write_idx = set_name_idx
+
 	# load files and put them into corresponding hdf files.
-	for file_write_idx, file_write in enumerate(file_write_ptrs):
-		folder_name = folder_names[file_write_idx]
-		#paths_in = [path for path in fm.paths if path[0] == folder_name]
-		clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
-		shuffle(clip_ids)
-		print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
-		print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
-		print '  len clip_ids: %d' % len(clip_ids)
-		# for data (x)
-		for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
-			print '    process %s' % dataset_name
-			data_to_store = file_write[dataset_name]
-			print '    size of dataset: ', data_to_store.shape
-			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, it's not..?
-				clip_idx = fm.id_to_idx[str(clip_id)]
-				for seg_idx in range(NUM_SEG):
-					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-					try:
-						data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
-					except TypeError:
-						raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
-		
-		# for labels (y)
-		for dataset_label_name in dataset_label_names:
-			print '    process %s' % dataset_label_name
-			data_to_store = file_write[dataset_label_name]
-			print '    size: ', data_to_store.shape
-			for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, too. 
-				clip_idx = fm.id_to_idx[str(clip_id)]
-				for seg_idx in range(NUM_SEG):
-					data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
+	folder_name = folder_names[file_write_idx]
+	#paths_in = [path for path in fm.paths if path[0] == folder_name]
+	clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+	shuffle(clip_ids)
+	print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
+	print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
+	print '  len clip_ids: %d' % len(clip_ids)
+	# for data (x)
+	for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
+		print '    process %s' % dataset_name
+		data_to_store = file_write[dataset_name]
+		print '    size of dataset: ', data_to_store.shape
+		for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, it's not..?
+			clip_idx = fm.id_to_idx[str(clip_id)]
+			for seg_idx in range(NUM_SEG):
+				tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+				try:
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+				except TypeError:
+					raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
+	
+	# for labels (y)
+	for dataset_label_name in dataset_label_names:
+		print '    process %s' % dataset_label_name
+		data_to_store = file_write[dataset_label_name]
+		print '    size: ', data_to_store.shape
+		for write_idx, clip_id in enumerate(clip_ids): # shuffled clip ids for this folder.--> no, too. 
+			clip_idx = fm.id_to_idx[str(clip_id)]
+			for seg_idx in range(NUM_SEG):
+				data_to_store[write_idx + seg_idx*len(clip_ids)] = label_matrices[dataset_label_name][clip_idx,:]
 
-		print 'Labels are done as well! for %d/%d' %(file_write_idx, len(file_write_ptrs)) 
+	print 'Labels are done as well! for %d/%d' %(file_write_idx, len(set_names)) 
+
+def prepare_hdf():
+	'''create hdf file that has cqt, stft, mfcc, melgram of 16 sets in MagnaTatATune.
+	This function includes standardisation of tf values, but not shuffling.
+	'''
+	
+	# for set_name_idx, set_name in enumerate(set_names): # for every folder,
+	# 	process_hdf(set_name_idx)
+	p = Pool(16)
+	set_name_indices = range(16)
+	p(process_hdf, set_name_indices[9:])
 	
 	print 'ALL DONE.'
 	print 'Now shuffle and copy it from %s to c4dm server.' % PATH_HDF_LOCAL
@@ -550,7 +556,6 @@ def merge_shuffle_train_hdfs():
 def prepare_divide_merge_shuffle_per_set():
 	'''shuffling within folder was not enough,
 	so shuffle it across folders, per sets (train, valid, test)'''
-	
 	# train_filenames = ['magna_shuffled_%d.hdf'%idx for idx in range(12)]
 	# dataset_names = h5py.File(PATH_HDF_LOCAL + 'magna_0.hdf', 'r').keys()
 
@@ -593,7 +598,7 @@ def prepare_divide_merge_shuffle_per_set():
 				file_write[dataset_name][:] = file_read[dataset_name][set_idx*num_datapoints_each: (set_idx+1)*num_datapoints_each]
 
 			print 'done:%d, %s' % (set_idx, dataset_name)
-	print 'ALL DONE'
+	print 'ALL DONE: shuffle and merge'
 
 	return
 
@@ -647,12 +652,13 @@ if __name__ == '__main__':
 	prepare_hdf()
 	standardise()
 	'''
-	if sys.argv <= 1:
-		prepare_x()
-	else:
-		num_pc = int(sys.argv[1])
-		idx_pc = int(sys.argv[2])
-		prepare_x(num_pc, idx_pc)
+	# if sys.argv < 3:
+	# 	prepare_x()
+	# else:
+	# 	num_pc = int(sys.argv[1])
+	# 	idx_pc = int(sys.argv[2])
+	# 	prepare_x(num_pc, idx_pc)
+	
 	# prepare_y()
 	prepare_x()
 	prepare_hdf()
