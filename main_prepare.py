@@ -219,7 +219,7 @@ def do_melgram(src, clip_id, seg_idx):
 				 								y=src, 
 												sr=SR, 
 												hop_length=HOP_LEN, 
-												)**2, 
+							 					)**2, 
 										ref_power=1.0))
 	return
 
@@ -476,7 +476,7 @@ def merge_shuffle_save_hdfs(file_read_ptrs, file_write):
 		for seg_idx in range(NUM_SEG):
 			print '    seg index: %d/%d' % (seg_idx, NUM_SEG)
 			for file_read in file_read_ptrs:
-				num_clips_to_add = file_read[dataset_name].shape[0]/7
+				num_clips_to_add = file_read[dataset_name].shape[0]/NUM_SEG
 
 				data_from = num_clips_to_add*seg_idx
 				data_to   = num_clips_to_add*(seg_idx+1)
