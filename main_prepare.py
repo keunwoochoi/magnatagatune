@@ -605,11 +605,12 @@ def prepare_divide_merge_shuffle_per_set():
 				print '  -- dataset_name:%s' % dataset_name
 				shape_write = (num_datapoints_each,) +  f_read_example[dataset_name].shape[1:]
 				f_write.create_dataset(dataset_name, shape_write)
-				file_write[dataset_name][:] = file_read[dataset_name][set_idx*num_datapoints_each: (set_idx+1)*num_datapoints_each]
+				file_write[dataset_name][:] = f_merged[dataset_name][set_idx*num_datapoints_each: (set_idx+1)*num_datapoints_each]
 
 			print 'done:%d, %s' % (set_idx, dataset_name)
 			f_write.close()
-			
+		os.remove(PATH_HDF_LOCAL + 'magna_temp_merged')
+
 	print 'ALL DONE: shuffle and merge'
 
 	return
