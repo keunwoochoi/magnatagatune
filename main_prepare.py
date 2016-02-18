@@ -169,7 +169,7 @@ def prepare_hdf():
 	# 	process_hdf(set_name_idx)
 	p = Pool(16)
 	set_name_indices = range(16)
-	p(process_hdf, set_name_indices[9:])
+	p.map(process_hdf, set_name_indices[9:])
 	
 	print 'ALL DONE.'
 	print 'Now shuffle and copy it from %s to c4dm server.' % PATH_HDF_LOCAL
