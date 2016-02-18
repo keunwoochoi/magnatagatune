@@ -105,7 +105,7 @@ def process_hdf(set_name_idx):
 	print '='*60
 	means = {'cqt':-69.8194, 'melgram':-15.5739, 'stft':-24.2885, 'mfcc':1.14238}
 	stds  = {'cqt':16.7193,  'melgram':21.1379,  'stft':20.6936, 'mfcc':18.7942}
-
+	set_name = set_names[set_name_idx]
 	filename = 'magna_%s.hdf' % set_name 
 	if os.path.exists(PATH_HDF_LOCAL + filename): # read+ or create hdf file.
 		file_write = h5py.File(PATH_HDF_LOCAL + filename, 'r+')
