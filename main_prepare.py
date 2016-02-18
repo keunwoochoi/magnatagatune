@@ -148,7 +148,10 @@ def prepare_hdf():
 				clip_idx = fm.id_to_idx[str(clip_id)]
 				for seg_idx in range(NUM_SEG):
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
-					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+					try:
+						data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+					except TypeError:
+						raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
 		
 		# for labels (y)
 		for dataset_label_name in dataset_label_names:
