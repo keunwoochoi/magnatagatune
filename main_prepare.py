@@ -598,8 +598,8 @@ def prepare_divide_merge_shuffle_per_set():
 		# put them into each, new (shuffled) set.
 		for set_idx, set_num in enumerate(set_nums): # each folder in this set.
 			f = h5py.File(PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % set_num, 'w')
-			print '  - write idx:%d' % set_write_idx
-			filename_out = 'magna_shuffled_%d.hdf' % set_write_idx
+			print '  - write idx:%d' % set_num
+			filename_out = 'magna_shuffled_%d.hdf' % set_num
 			f_write = h5py.File(PATH_HDF_LOCAL + filename_out, 'w')
 			for dataset_name in dataset_names:
 				print '  -- dataset_name:%s' % dataset_name
