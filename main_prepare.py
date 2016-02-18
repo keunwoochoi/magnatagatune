@@ -97,7 +97,7 @@ def process_hdf(set_name_idx):
 
 	set_names = [str(ele) for ele in range(16)] # ['0','1','2','3',..'15']
 	folder_names = set_names[:10] + ['a','b','c','d','e','f']
-	dataset_names = ['stft', 'melgram', 'cqt', 'mfcc']
+	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc']
 	dataset_label_names=['y_merged','y_original']
 
 	print '='*60
@@ -146,8 +146,11 @@ def process_hdf(set_name_idx):
 				try:
 					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
 				except TypeError:
-					raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
-	
+					process_all_features((clip_id, fm.paths(clip_idx), True))
+					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
+					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
+					# raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
+					
 	# for labels (y)
 	for dataset_label_name in dataset_label_names:
 		print '    process %s' % dataset_label_name
@@ -265,9 +268,12 @@ def do_mfcc(src, clip_id, seg_idx):
 	np.save('%s%d_%d.npy'%(PATH_MFCC,clip_id,seg_idx), get_mfcc(src))			 							
 										
 	return
+
 		
+
 def process_all_features(args):
-	''' args = (clip_id, mp3_path)
+	''' args = (clip_id, mp3_path, force)
+	force: boolean to force or not
 	'''
 	def get_tf_representation(src, tf_type):
 		if tf_type == 'cqt':
@@ -301,15 +307,16 @@ def process_all_features(args):
 		return ret
 	
 	''''''
-	clip_id, mp3_path = args # unpack
+	clip_id, mp3_path, force = args # unpack
 	if mp3_path == '':
 		return
 	tf_types = ['cqt', 'mfcc', 'melgram', 'stft']
 	paths = [PATH_CQT, PATH_MFCC, PATH_MELGRAM, PATH_STFT]
 	for tf_type, path in zip(tf_types, paths):
-		if check_if_they_are_done(clip_id, path):
-			print '  clip_id:%d, everything is done for %s' % (clip_id, tf_type)
-			continue
+		if not force:
+			if check_if_they_are_done(clip_id, path):
+				#  print '  clip_id:%d, everything is done for %s' % (clip_id, tf_type)
+				continue
 		try:
 			src_full, sr = librosa.load(PATH_MAGNA + 'audio/' + mp3_path, sr=SR)
 		except:
@@ -318,10 +325,11 @@ def process_all_features(args):
 
 		for seg_idx in range(NUM_SEG):
 			full_filepath_out = '%s%d_%d.npy'%(path,clip_id,seg_idx)
+			if not force:
+				if check_if_done(full_filepath_out):
+					# print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)	
+					continue
 
-			if check_if_done(full_filepath_out):
-				# print '  -- clip_id:%d, tf_type:%s, seg_idx:%d done already' % (clip_id, tf_type, seg_idx)	
-				continue
 			SRC_full = get_tf_representation(src_full, tf_type)
 			fr_from, fr_to = get_start_end_points(seg_idx, int(4*FRAMES_PER_SEC))
 			fr_to = fr_to + 1 # to make it 251 rathe rthan 250. 
@@ -384,7 +392,9 @@ def prepare_x(num_pc=None, idx_pc=None):
 	paths_to_process = fm.paths
 
 	args = zip(clip_ids_to_process, paths_to_process)
-	args = [ele for idx,ele in enumerate(args) if idx%num_pc == idx_pc]
+	force = False
+	args = [ele + (force,) for idx,ele in enumerate(args) if idx%num_pc == idx_pc]
+	
 
 	p = Pool(48)
 	p.map(process_all_features, args)
