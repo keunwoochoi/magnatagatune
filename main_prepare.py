@@ -29,7 +29,7 @@ import file_manager
 
 def get_permutation(num):
 	'''get list shuffled numbers. load from npy if exists '''
-	permutation_file = 'permutation_for_all_%d.npy' % num_clips
+	permutation_file = 'permutation_for_all_%d.npy' % num
 	if os.path.exists(PATH_DATA + permutation_file):
 		permutation_list = np.load(PATH_DATA+permutation_file)
 	else:
@@ -468,7 +468,7 @@ def merge_shuffle_save_hdfs(file_read_ptrs, file_write):
 	for dataset_name in dataset_names:
 		print '  dataset name: %s' % dataset_name
 		shape_write = (num_datapoints,) +  file_read_ptrs[0][dataset_name].shape[1:]
-		# create a temp hdf file
+		# create a single and BIG temp hdf file
 		file_temp = h5py.File(PATH_HDF_LOCAL + 'magna_temporary.hdf', 'w')
 		file_temp.create_dataset(dataset_name, shape_write)
 		# put everything into the temp hdf file.
@@ -585,12 +585,12 @@ def prepare_divide_merge_shuffle_per_set():
 		
 		num_datapoints_each = num_datapoints_total / len(set_nums)
 		f_read_example = f
-		shuffled_idx_list = get_permutation(num_datapoints_total)
+		shuffled_idx_list = get_permutation(num_datapoints_total / NUM_SEG)
 
 		dataset_names = f_read_example.keys()
 
 		# make a merged set for temporary. (also freq normalised)
-		f_merged = h5pt.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
+		f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
 		# shuffle everything into a temp file.
 		merge_shuffle_save_hdfs(file_read_ptrs, f_merged)
 		# freq-based normalisation..?
@@ -670,7 +670,7 @@ if __name__ == '__main__':
 	# 	prepare_x(num_pc, idx_pc)
 	
 	# prepare_y()
-	prepare_x()
-	prepare_hdf()
+	# prepare_x()
+	# prepare_hdf()
 	prepare_divide_merge_shuffle_per_set()
 	
