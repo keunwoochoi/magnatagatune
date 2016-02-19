@@ -33,7 +33,7 @@ def get_permutation(num):
 	if os.path.exists(PATH_DATA + permutation_file):
 		permutation_list = np.load(PATH_DATA+permutation_file)
 	else:
-		permutation_list = np.random.permutation(num_clips)
+		permutation_list = np.random.permutation(num)
 		np.save(PATH_DATA+permutation_file, permutation_list)
 	return permutation_list
 
