@@ -466,7 +466,7 @@ def merge_shuffle_save_hdfs(file_read_ptrs, file_write):
 	
 	# read and merge into a temp file
 	for dataset_name in dataset_names:
-		print '  dataset name: %s' % dataset_name
+		print '  dataset name: %s size of %d' % (dataset_name, num_datapoints)
 		shape_write = (num_datapoints,) +  file_read_ptrs[0][dataset_name].shape[1:]
 		# create a single and BIG temp hdf file
 		file_temp = h5py.File(PATH_HDF_LOCAL + 'magna_temporary.hdf', 'w')
@@ -500,7 +500,6 @@ def merge_shuffle_save_hdfs(file_read_ptrs, file_write):
 		file_temp.close()
 		os.remove(PATH_HDF_LOCAL + 'magna_temporary.hdf')
 		
-	file_write.close()
 	print 'All done.'
 
 """
@@ -618,7 +617,7 @@ def prepare_divide_merge_shuffle_per_set():
 				shape_write = (num_datapoints_each,) +  f_read_example[dataset_name].shape[1:]
 				f_write.create_dataset(dataset_name, shape_write)
 				print '    pick up data, [%d:%d] ' % (set_idx*num_datapoints_each, (set_idx+1)*num_datapoints_each)
-				pdb.set_trace()
+				
 				f_write[dataset_name][:] = f_merged[dataset_name][set_idx*num_datapoints_each: (set_idx+1)*num_datapoints_each]
 
 			print 'done:%d, %s' % (set_idx, dataset_name)
