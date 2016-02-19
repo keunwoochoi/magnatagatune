@@ -685,8 +685,8 @@ if __name__ == '__main__':
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
 	
-	# prepare_y()
-	# prepare_x()
-	# prepare_hdf()
-	prepare_divide_merge_shuffle_per_set()
+	prepare_y()
+	prepare_x()
+	prepare_hdf() # put numpy files into hdf without shuffling
+	prepare_divide_merge_shuffle_per_set() # shuffles within each set (training/valid/test)
 	
