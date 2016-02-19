@@ -617,7 +617,8 @@ def prepare_divide_merge_shuffle_per_set():
 				print '  -- dataset_name:%s' % dataset_name
 				shape_write = (num_datapoints_each,) +  f_read_example[dataset_name].shape[1:]
 				f_write.create_dataset(dataset_name, shape_write)
-				print '    pick up date from %d to %d ' % (set_idx*num_datapoints_each, (set_idx+1)*num_datapoints_each)
+				print '    pick up data, [%d:%d] ' % (set_idx*num_datapoints_each, (set_idx+1)*num_datapoints_each)
+				pdb.set_trace()
 				f_write[dataset_name][:] = f_merged[dataset_name][set_idx*num_datapoints_each: (set_idx+1)*num_datapoints_each]
 
 			print 'done:%d, %s' % (set_idx, dataset_name)
