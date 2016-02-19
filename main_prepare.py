@@ -571,6 +571,10 @@ def prepare_divide_merge_shuffle_per_set():
 
 	sets_numbers = [range(12), [12], [13,14,15]] # number of sets of train/valid/data.
 	for set_nums_idx, set_nums in enumerate(sets_numbers): # trains, valids, tests
+		
+		if set_nums_idx == 0: # because it;s done. 
+			continue
+
 		print '#'*50
 		print 'set nums:', set_nums
 		print '#'*50
@@ -591,8 +595,7 @@ def prepare_divide_merge_shuffle_per_set():
 		dataset_names = f_read_example.keys()
 
 		# make a merged set for temporary. (also freq normalised)
-		if set_nums_idx == 0: # because it;s done. 
-			continue
+		
 
 		f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
 
@@ -604,8 +607,10 @@ def prepare_divide_merge_shuffle_per_set():
 		# put them into each, new (shuffled) set.
 		for set_idx, set_num in enumerate(set_nums): # each folder in this set.
 			# f = h5py.File(PATH_HDF_LOCAL + 'magna_shuffled_%d.hdf' % set_num, 'w')
-			print '  - write idx:%d' % set_num
 			filename_out = 'magna_shuffled_%d.hdf' % set_num
+
+			print '  - write idx:%d, %s, datapoints_each:%d/%d' % (set_num, filename_out, num_datapoints_each, num_datapoints_total)
+			
 			f_write = h5py.File(PATH_HDF_LOCAL + filename_out, 'w')
 			
 			for dataset_name in dataset_names:
