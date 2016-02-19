@@ -615,7 +615,7 @@ def prepare_divide_merge_shuffle_per_set():
 
 			print 'done:%d, %s' % (set_idx, dataset_name)
 			f_write.close()
-		os.remove(PATH_HDF_LOCAL + 'magna_temp_merged')
+		os.remove(PATH_HDF_LOCAL + 'magna_temp_merged.hdf')
 
 	print 'ALL DONE: shuffle and merge'
 
