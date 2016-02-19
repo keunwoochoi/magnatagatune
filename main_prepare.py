@@ -593,6 +593,8 @@ def prepare_divide_merge_shuffle_per_set():
 		# make a merged set for temporary. (also freq normalised)
 		if set_nums_idx is not 0:
 			f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
+		else:
+			f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'r')
 		# shuffle everything into a temp file.
 		merge_shuffle_save_hdfs(file_read_ptrs, f_merged)
 		# freq-based normalisation..?
