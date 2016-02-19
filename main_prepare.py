@@ -570,7 +570,7 @@ def prepare_divide_merge_shuffle_per_set():
 	# dataset_names = h5py.File(PATH_HDF_LOCAL + 'magna_0.hdf', 'r').keys()
 
 	sets_numbers = [range(12), [12], [13,14,15]] # number of sets of train/valid/data.
-	for set_nums in sets_numbers: # trains, valids, tests
+	for set_nums_idx, set_nums in enumerate(sets_numbers): # trains, valids, tests
 		print '#'*50
 		print 'set nums:', set_nums
 		print '#'*50
@@ -584,14 +584,15 @@ def prepare_divide_merge_shuffle_per_set():
 			num_datapoints_sets.append(f['melgram'].shape[0])
 		
 		num_datapoints_each = num_datapoints_total / len(set_nums)
-		pdb.set_trace()
+		
 		f_read_example = f
 		shuffled_idx_list = get_permutation(num_datapoints_total / NUM_SEG)
 
 		dataset_names = f_read_example.keys()
 
 		# make a merged set for temporary. (also freq normalised)
-		f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
+		if set_nums_idx is not 0:
+			f_merged = h5py.File(PATH_HDF_LOCAL + 'magna_temp_merged.hdf', 'w')
 		# shuffle everything into a temp file.
 		merge_shuffle_save_hdfs(file_read_ptrs, f_merged)
 		# freq-based normalisation..?
@@ -602,6 +603,7 @@ def prepare_divide_merge_shuffle_per_set():
 			print '  - write idx:%d' % set_num
 			filename_out = 'magna_shuffled_%d.hdf' % set_num
 			f_write = h5py.File(PATH_HDF_LOCAL + filename_out, 'w')
+			pdb.set_trace()
 			for dataset_name in dataset_names:
 				print '  -- dataset_name:%s' % dataset_name
 				shape_write = (num_datapoints_each,) +  f_read_example[dataset_name].shape[1:]
