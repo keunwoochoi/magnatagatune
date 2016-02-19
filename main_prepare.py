@@ -584,6 +584,7 @@ def prepare_divide_merge_shuffle_per_set():
 			num_datapoints_sets.append(f['melgram'].shape[0])
 		
 		num_datapoints_each = num_datapoints_total / len(set_nums)
+		pdb.set_trace()
 		f_read_example = f
 		shuffled_idx_list = get_permutation(num_datapoints_total / NUM_SEG)
 
