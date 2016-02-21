@@ -36,9 +36,12 @@ def evaluate_result(y_true, y_pred):
 	print '.'*60
 	return ret
 
-def get_fit_dict(train_x, train_y, dim_labels):
+def get_fit_dict(train_x, train_y, dim_labels, name_x='input', mfcc_train_x=None, mfcc_name_x='mfcc_input'):
 	fit_dict = {}
-	fit_dict['input'] = train_x
+	fit_dict[name_x] = train_x
+	if mfcc_train_x is not None:
+		fit_dict[mfcc_name_x] = mfcc_train_x
+
 	for dense_idx in xrange(dim_labels):
 		output_node_name = 'output_%d' % dense_idx
 		fit_dict[output_node_name] = train_y[:, dense_idx:dense_idx+1]
@@ -92,8 +95,8 @@ def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
 
 def run_with_setting(hyperparams, argv=None, batch_size=None):
-	f = open('will_stop.keunwoo', 'w')
-	f.close()
+	# f = open('will_stop.keunwoo', 'w')
+	# f.close()
 	if os.path.exists('stop_asap.keunwoo'):
 		os.remove('stop_asap.keunwoo')
 	# pick top-N from label matrix
@@ -129,6 +132,15 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	hyperparams['height_image'] = hdf_train_xs[0].shape[2]
 	hyperparams["width_image"]  = hdf_train_xs[0].shape[3]
 	
+	if hyperparams['multi_input']:
+		mfcc_hdf_xs = io.load_x('mfcc', is_test=hyperparams['is_test'])
+		mfcc_hdf_train_xs = mfcc_hdf_xs[:12]
+		mfcc_hdf_valid_xs = mfcc_hdf_xs[12:13]
+		mfcc_hdf_test_xs  = mfcc_hdf_xs[13:]
+		hyperparams['mfcc_height_image'] = mfcc_hdf_train_xs[0].shape[2]
+		hyperparams['mfcc_width_image']  = mfcc_hdf_train_xs[0].shape[3]
+
+
 	hp_manager = hyperparams_manager.Hyperparams_Manager()
 
 	# name, path, ...
@@ -212,9 +224,11 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 											mono=True)
 	 	# run
 	 	print '--TEST FLIGHT--'
-	 	if hyperparams['model_type'] in ['multi_task']:
-	 		
-	 		fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
+	 	if hyperparams['model_type'] in ['multi_task', 'multi_input']: # multi_input assumes multi_task.
+	 		if hyperparams['model_type'] == 'multi_task:'
+	 			fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
+	 		else:
+	 			fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_train_xs[-1][-256:])
  			# pdb.set_trace()
  			model.fit(fit_dict,	batch_size=batch_size,	nb_epoch=1, shuffle='batch')
 	 	else:
@@ -230,12 +244,20 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		while True:
 			for sub_epoch_idx, (train_x, train_y) in enumerate(zip(hdf_train_xs, hdf_train_ys)):
 				total_epoch_count += 1
+				print '      --- I will check stop_asap.keunwoo'
 				if os.path.exists('stop_asap.keunwoo') and total_epoch_count > 1:
+					print '      --- stop_asap.keunwoo found. will stop now.'
 					break
+				print '      --- stop_asap.keunwoo NOT found. keep going on..'
+
+				if hyperparams['model_type'] == 'multi_task':
+					mfcc_train_x = mfcc_hdf_train_xs[sub_epoch_idx]
+				else:
+					mfcc_train_x = None
 				# early_stop should watch overall AUC rather than val_loss or val_acc
 				# [run]
-			 	if hyperparams['model_type'] in ['multi_task']:
- 					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'])
+			 	if hyperparams['model_type'] in ['multi_task', 'multi_input']:	
+					fit_dict = get_fit_dict(train_x, train_y, hyperparams['dim_labels'], mfcc_train_x=mfcc_train_x)
  					loss_history = model.fit(fit_dict,
  							batch_size=batch_size,
  							nb_epoch=1,
@@ -252,7 +274,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				if not sub_epoch_idx in [0, 6]: # validation with subset
 					
 					if hyperparams['model_type'] in ['multi_task']:
-						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
+						fit_dict = get_fit_dict(hdf_valid_xs[-1], hdf_valid_ys[-1], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_valid_xs[-1])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
 						val_loss_here = model.evaluate(fit_dict, batch_size=batch_size)
@@ -265,7 +287,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					print ' * Compute AUC with full validation data for model: %s.' % model_name
 					if hyperparams['model_type'] in ['multi_task']:
 						valid_y = hdf_valid_ys[0][:] # I know I'm using only one set for validation.
-						fit_dict = get_fit_dict(hdf_valid_xs[-1][:], hdf_valid_ys[-1][:], hyperparams['dim_labels'])
+						fit_dict = get_fit_dict(hdf_valid_xs[-1], hdf_valid_ys[-1], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_valid_xs[-1])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
 						val_loss_here = model.evaluate(fit_dict, batch_size=batch_size)
@@ -326,9 +348,13 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	predicted = np.zeros((0, dim_labels))
 	test_y = np.zeros((0, dim_labels))
 
-	for test_x_partial, test_y_partial in zip(hdf_test_xs, hdf_test_ys):
-		if hyperparams['model_type'] in ['multi_task']:
-			fit_dict = get_fit_dict(test_x_partial[:], test_y_partial[:], hyperparams['dim_labels'])
+	for test_idx, (test_x_partial, test_y_partial) in enumerate(zip(hdf_test_xs, hdf_test_ys)):
+		if hyperparams['model_type'] == 'multi_input':
+			mfcc_test_x_partial = mfcc_hdf_test_xs[test_idx]
+		else:
+			mfcc_test_x_partial = None
+		if hyperparams['model_type'] in ['multi_task', 'multi_input']:
+			fit_dict = get_fit_dict(test_x_partial, test_y_partial, hyperparams['dim_labels'], mfcc_train_x=mfcc_test_x_partial)
 			predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 			predicted = np.vstack((predicted, merge_multi_outputs(predicted_dict)))
 		else:
