@@ -250,7 +250,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					break
 				print '      --- stop_asap.keunwoo NOT found. keep going on..'
 
-				if hyperparams['model_type'] == 'multi_task':
+				if hyperparams['model_type'] == 'multi_input':
 					mfcc_train_x = mfcc_hdf_train_xs[sub_epoch_idx]
 				else:
 					mfcc_train_x = None
@@ -273,7 +273,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				# [validation]
 				if not sub_epoch_idx in [0, 6]: # validation with subset
 					
-					if hyperparams['model_type'] in ['multi_task']:
+					if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 						fit_dict = get_fit_dict(hdf_valid_xs[-1], hdf_valid_ys[-1], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_valid_xs[-1])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
 						predicted = merge_multi_outputs(predicted_dict)
@@ -285,7 +285,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 						
 				else: # validation with all
 					print ' * Compute AUC with full validation data for model: %s.' % model_name
-					if hyperparams['model_type'] in ['multi_task']:
+					if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 						valid_y = hdf_valid_ys[0][:] # I know I'm using only one set for validation.
 						fit_dict = get_fit_dict(hdf_valid_xs[-1], hdf_valid_ys[-1], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_valid_xs[-1])
 						predicted_dict = model.predict(fit_dict, batch_size=batch_size)
@@ -303,7 +303,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				val_result = evaluate_result(valid_y, predicted)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
-				if hyperparams['model_type'] in ['multi_task']:
+				if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 					history['val_loss'] = [val_loss_here]
 				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
 				if val_result['roc_auc_macro'] > best_auc:
@@ -407,7 +407,7 @@ if __name__ == '__main__':
 								 		help='set the number(s) of layers, \ndefault=[5], set like 4, 5, 6',
 										required=False)
 	parser.add_argument('-lfc', '--num_fc_layers', type=int,
-								 		help='set the number(s) of fc layers, \ndefault=[2], set like 1, 2, 3',
+								 		help='set the number(s) of fc layers, set -1 for 0 layers \ndefault=[2], set like 1, 2, 3',
 										required=False)
 	parser.add_argument('-t', '--task', help='classification or regression, \ndefault=regre', 
 									   required=False)
