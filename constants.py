@@ -5,7 +5,7 @@ WIN_LEN = 512
 HOP_LEN = 256 # 11 sec --> 512 frames
 FRAMES_PER_SEC = float(SR) / HOP_LEN
 
-NUM_SEG = 13 # segment per clip
+NUM_SEG = 7 # segment per clip
 LEN_SEG = 4.0
 
 BINS_PER_OCTAVE = 36
