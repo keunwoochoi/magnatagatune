@@ -225,7 +225,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	 	# run
 	 	print '--TEST FLIGHT--'
 	 	if hyperparams['model_type'] in ['multi_task', 'multi_input']: # multi_input assumes multi_task.
-	 		if hyperparams['model_type'] == 'multi_task:'
+	 		if hyperparams['model_type'] == 'multi_task':
 	 			fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'])
 	 		else:
 	 			fit_dict = get_fit_dict(hdf_train_xs[-1][-256:], hdf_train_ys[-1][-256:], hyperparams['dim_labels'], mfcc_train_x=mfcc_hdf_train_xs[-1][-256:])
