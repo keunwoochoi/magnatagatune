@@ -132,7 +132,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	hyperparams['height_image'] = hdf_train_xs[0].shape[2]
 	hyperparams["width_image"]  = hdf_train_xs[0].shape[3]
 	
-	if hyperparams['multi_input']:
+	if hyperparams['model_type'] == 'multi_input':
 		mfcc_hdf_xs = io.load_x('mfcc', is_test=hyperparams['is_test'])
 		mfcc_hdf_train_xs = mfcc_hdf_xs[:12]
 		mfcc_hdf_valid_xs = mfcc_hdf_xs[12:13]
@@ -532,6 +532,7 @@ if __name__ == '__main__':
 	TR_CONST['num_sparse_layer'] = 3
 	TR_CONST['maxout_sparse_layer'] = True
 	TR_CONST['num_sparse_units'] = 128
+	
 
 	# TR_CONST['input_normalisation'] = True
 	#--------------------------------------------------------#
