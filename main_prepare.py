@@ -87,7 +87,8 @@ def get_conventional_set():
 
 #------------------------------------------#
 def process_hdf(set_name_idx):
-	'''sub process that will be spawned'''
+	'''sub process that will be spawned.
+	'''
 
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	
@@ -135,7 +136,7 @@ def process_hdf(set_name_idx):
 	print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
 	print '  len clip_ids: %d' % len(clip_ids)
 	# for data (x)
-	''' Temporary, to add y_LDA.
+	
 	for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
 		print '    process %s' % dataset_name
 		data_to_store = file_write[dataset_name]
@@ -151,11 +152,9 @@ def process_hdf(set_name_idx):
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
 					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
 					# raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
-	'''
+	
 	# for labels (y)
 	for dataset_label_name in dataset_label_names:
-		if not dataset_label_name == 'y_LDA':
-			continue
 		print '    process %s' % dataset_label_name
 		data_to_store = file_write[dataset_label_name]
 		print '    size: ', data_to_store.shape
@@ -195,10 +194,7 @@ def get_LDA(X, num_components=10, show_topics=True):
 	'''
 
 	from sklearn.decomposition import NMF
-	if X == None:
-		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
-		X = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
-
+	
 	nmf = NMF(init='nndsvd', n_components=num_components, max_iter=400) # 400 is too large, but it doesn't hurt.
 	W = nmf.fit_transform(X)
 	H = nmf.components_
@@ -214,6 +210,7 @@ def get_LDA(X, num_components=10, show_topics=True):
 		if show_topics:	
 			print "Topic %d: %s" % ( topic_index, ", ".join( term_ranking ) )
 	print '='*60
+	cP.dump(nmf, open(PATH_DATA + 'NMF_object.cP', 'w'))
 	cP.dump(term_rankings, open(PATH_DATA + ('topics_strings_%d_components.cP' % num_components), 'w'))
 	for row_idx, row in enumerate(W):
 		if np.max(row) != 0:
@@ -741,7 +738,11 @@ if __name__ == '__main__':
 	# 	num_pc = int(sys.argv[1])
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
-	
+	mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
+
+	reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
+	np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
+	sys.exit()
 	
 	# prepare_y()
 	# prepare_x()
