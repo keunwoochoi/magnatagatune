@@ -180,9 +180,46 @@ def prepare_hdf():
 
 
 #------------------------------------------#
+def get_LDA(X, num_components=10, show_topics=True):
+	''' Latent Dirichlet Allication by NMF.
+	21 Nov 2015, Keunwoo Choi
+
+	LDA for a song-tag matrix. The motivation is same as get_LSI. 
+	With NMF, it is easier to explain what each topic represent - by inspecting 'H' matrix,
+	where X ~= X' = W*H as a result of NMF. 
+	It is also good to have non-negative elements, straight-forward for both W and H.
+
+	'''
+
+	from sklearn.decomposition import NMF
+	if X == None:
+		print 'X is omitted, so just assume it is the mood tag mtx w audio.'
+		X = np.load(PATH_DATA + FILE_DICT["mood_tags_matrix"]) #np matrix, 9320-by-100
+
+	nmf = NMF(init='nndsvd', n_components=num_components, max_iter=400) # 400 is too large, but it doesn't hurt.
+	W = nmf.fit_transform(X)
+	H = nmf.components_
+	print '='*60
+	print "NMF done with k=%d, average error:%2.4f" % (num_components, nmf.reconstruction_err_/(X.shape[0]*X.shape[1]))
+
+	term_rankings = []
+	moodnames = cP.load(open(PATH_DATA + FILE_DICT['sorted_tags'], 'r')) #list, 100
+	for topic_index in range( H.shape[0] ):
+		top_indices = np.argsort( H[topic_index,:] )[::-1][0:10]
+		term_ranking = [moodnames[i] for i in top_indices]
+		term_rankings.append(term_ranking)
+		if show_topics:	
+			print "Topic %d: %s" % ( topic_index, ", ".join( term_ranking ) )
+	print '='*60
+	cP.dump(term_rankings, open(PATH_DATA + ('topics_strings_%d_components.cP' % num_components), 'w'))
+	for row_idx, row in enumerate(W):
+		if np.max(row) != 0:
+			W[row_idx] = row / np.max(row)
+	return W / np.max(W) # return normalised matrix, [0, 1]
+	''''''
+
 
 def prepare_y():
-
 	# create a file manager
 	if os.path.exists(PATH_DATA + FILE_DICT["file_manager"]):
 		fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
@@ -195,6 +232,17 @@ def prepare_y():
 	# refine tags
 	my_utils.refine_label_matrix()
 
+	# also, create sorted label matrix.	
+	label_matrix = np.load(PATH_DATA + FILE_DICT['label_matrix'])
+	sum_labels = np.sum(label_matrix, axis=0)
+	sort_args = np.argsort(sum_labels[::-1])
+	sorted_label_matrix = np.zeros(label_matrix.shape, dtype=np.int)
+
+	for read_idx, write_idx in enumerate(sort_args):
+		sorted_label_matrix[:, write_idx] = label_matrix[:, read_idx]
+
+	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_label_matrix)
+	# and LDA-50 version of sorted label matrix.
 #------------------------------------------#
 
 def do_cqt(src, clip_id, seg_idx):
@@ -684,19 +732,12 @@ if __name__ == '__main__':
 	# 	num_pc = int(sys.argv[1])
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
-	
-	label_matrix = np.load(PATH_DATA + FILE_DICT['label_matrix'])
-	sum_labels = np.sum(label_matrix, axis=0)
-	sort_args = np.argsort(sum_labels[::-1])
-	sorted_label_matrix = np.zeros(label_matrix.shape, dtype=np.int)
+	mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
 
-	for read_idx, write_idx in enumerate(sort_args):
-		sorted_label_matrix[:, write_idx] = label_matrix[:, read_idx]
+	reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
+	np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
 
-	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_label_matrix)
 	sys.exit()
-
-
 	prepare_y()
 	prepare_x()
 	prepare_hdf() # put numpy files into hdf without shuffling
