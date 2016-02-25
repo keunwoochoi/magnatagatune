@@ -94,7 +94,7 @@ def process_hdf(set_name_idx):
 	label_matrices = {}
 	label_matrices['y_original'] = np.load(PATH_DATA + FILE_DICT['sorted_label_matrix'])
 	label_matrices['y_merged'] = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
-	label_matrices['y_LDA'] = = np.load(PATH_DATA + FILE_DICT['LDA_50_label_matrix'])
+	label_matrices['y_LDA'] = np.load(PATH_DATA + FILE_DICT['LDA_50_label_matrix'])
 	set_names = [str(ele) for ele in range(16)] # ['0','1','2','3',..'15']
 	folder_names = set_names[:10] + ['a','b','c','d','e','f']
 	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc']
