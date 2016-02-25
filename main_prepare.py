@@ -94,11 +94,11 @@ def process_hdf(set_name_idx):
 	label_matrices = {}
 	label_matrices['y_original'] = np.load(PATH_DATA + FILE_DICT['sorted_label_matrix'])
 	label_matrices['y_merged'] = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
-
+	label_matrices['y_LDA'] = = np.load(PATH_DATA + FILE_DICT['LDA_50_label_matrix'])
 	set_names = [str(ele) for ele in range(16)] # ['0','1','2','3',..'15']
 	folder_names = set_names[:10] + ['a','b','c','d','e','f']
 	dataset_names = ['cqt', 'stft', 'melgram', 'mfcc']
-	dataset_label_names=['y_merged','y_original']
+	dataset_label_names=['y_merged','y_original', 'y_LDA']
 
 	print '='*60
 	print '====== prepare_hdf, %d ======' % set_name_idx
@@ -135,6 +135,7 @@ def process_hdf(set_name_idx):
 	print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
 	print '  len clip_ids: %d' % len(clip_ids)
 	# for data (x)
+	''' Temporary, to add y_LDA.
 	for dataset_name in dataset_names: # e.g. 'cqt', 'stft',..
 		print '    process %s' % dataset_name
 		data_to_store = file_write[dataset_name]
@@ -150,9 +151,11 @@ def process_hdf(set_name_idx):
 					tf_here = fm.load_file(file_type=dataset_name, clip_idx=clip_idx, seg_idx=seg_idx)
 					data_to_store[write_idx + seg_idx*len(clip_ids)] = (tf_here - means[dataset_name])/stds[dataset_name]
 					# raise RuntimeError('Error on loaded tf:%s, clip_idx:%d, seg_idx:%d'%(dataset_name, clip_idx,seg_idx))
-					
+	'''
 	# for labels (y)
 	for dataset_label_name in dataset_label_names:
+		if not dataset_label_name == 'y_LDA':
+			continue
 		print '    process %s' % dataset_label_name
 		data_to_store = file_write[dataset_label_name]
 		print '    size: ', data_to_store.shape
@@ -172,7 +175,7 @@ def prepare_hdf():
 	# 	process_hdf(set_name_idx)
 	p = Pool(16)
 	set_name_indices = range(16)
-	p.map(process_hdf, set_name_indices[9:])
+	p.map(process_hdf, set_name_indices)
 	
 	print 'ALL DONE.'
 	print 'Now shuffle and copy it from %s to c4dm server.' % PATH_HDF_LOCAL
@@ -220,7 +223,6 @@ def get_LDA(X, num_components=10, show_topics=True):
 
 
 def prepare_y():
-	# create a file manager
 	if os.path.exists(PATH_DATA + FILE_DICT["file_manager"]):
 		fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
 	else:
@@ -243,6 +245,11 @@ def prepare_y():
 
 	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_label_matrix)
 	# and LDA-50 version of sorted label matrix.
+	mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
+
+	reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
+	np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
+
 #------------------------------------------#
 
 def do_cqt(src, clip_id, seg_idx):
@@ -616,11 +623,10 @@ def prepare_divide_merge_shuffle_per_set():
 	# train_filenames = ['magna_shuffled_%d.hdf'%idx for idx in range(12)]
 	# dataset_names = h5py.File(PATH_HDF_LOCAL + 'magna_0.hdf', 'r').keys()
 
-	sets_numbers = [range(12), [12], [13,14,15]] # number of sets of train/valid/data.
+	# sets_numbers = [range(12), [12], [13,14,15]] # number of sets of train/valid/data.
+	sets_numbers = [range(12)]
 	for set_nums_idx, set_nums in enumerate(sets_numbers): # trains, valids, tests
 		
-		if set_nums_idx == 0: # because it;s done. 
-			continue
 
 		print '#'*50
 		print 'set nums:', set_nums
@@ -640,6 +646,9 @@ def prepare_divide_merge_shuffle_per_set():
 		shuffled_idx_list = get_permutation(num_datapoints_total / NUM_SEG)
 
 		dataset_names = f_read_example.keys()
+
+		'''temporary...'''
+		dataset_names = ['y_LDA']
 
 		# make a merged set for temporary. (also freq normalised)
 		
@@ -732,14 +741,10 @@ if __name__ == '__main__':
 	# 	num_pc = int(sys.argv[1])
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
-	mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
-
-	reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
-	np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
-
-	sys.exit()
-	prepare_y()
-	prepare_x()
+	
+	
+	# prepare_y()
+	# prepare_x()
 	prepare_hdf() # put numpy files into hdf without shuffling
 	prepare_divide_merge_shuffle_per_set() # shuffles within each set (training/valid/test)
 	

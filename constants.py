@@ -19,6 +19,8 @@ FILE_DICT['file_manager'] = 'file_manager.cP'
 FILE_DICT['sorted_label_matrix'] = 'sorted_label_matrix.npy'
 FILE_DICT['sorted_tags'] = 'sorted_tags.cP'
 
+FILE_DICT['LDA_50_label_matrix'] = 'LDA_50_label_matrix.npy'
+
 FILE_DICT['sorted_merged_label_matrix'] = 'sorted_merged_label_matrix.npy'
 FILE_DICT['sorted_merged_tags'] = 'sorted_merged_tags.cP'
 FILE_DICT['conventional_set_idxs'] = 'conventional_set_idxs.npy'
