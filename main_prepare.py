@@ -685,6 +685,18 @@ if __name__ == '__main__':
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
 	
+	label_matrix = np.load(PATH_DATA + FILE_DICT['label_matrix'])
+	sum_labels = np.sum(label_matrix, axis=0)
+	sort_args = np.argsort(sum_labels[::-1])
+	sorted_label_matrix = np.zeros(label_matrix.shape, dtype=np.int)
+
+	for read_idx, write_idx in enumerate(sort_args):
+		sorted_label_matrix[:, write_idx] = label_matrix[:, read_idx]
+
+	np.save(PATH_DATA + FILE_DICT['sorted_label_matrix'], sorted_label_matrix)
+	sys.exit()
+
+
 	prepare_y()
 	prepare_x()
 	prepare_hdf() # put numpy files into hdf without shuffling
