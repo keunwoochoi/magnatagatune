@@ -726,7 +726,6 @@ if __name__ == '__main__':
 	python main_prepare.py 2 0 # in pc 1
 	python main_prepare.py 2 1 # in pc 2
 
-
 	prepare_y()
 	prepare_x()
 	prepare_hdf()
@@ -738,10 +737,22 @@ if __name__ == '__main__':
 	# 	num_pc = int(sys.argv[1])
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
-	mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
+	# mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
 
-	reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
-	np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
+	# reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
+	# np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
+
+	f_names = ['magna_shuffled_%d.hdf'%i for i in range(12)] + ['magna_%d.hdf'%i for i in range(12,16)]
+	f_paths = [PATH_HDF_LOCAL + f_name for f_name in f_names]
+	for f_path in f_paths:
+		f = h5py.File(f_path, 'r+')
+		if 'y_LDA' not in f:
+			f.create_dataset('y_LDA' ,(f['y_original'].shape[0], 50))
+
+		nmf = cP.load(open(PATH_DATA + 'NMF_object.cP', 'r'))
+		f['y_LDA'] = nmf.transform(f['y_original'])
+		print 'done:%s' % f_path
+	print 'done all!'
 	sys.exit()
 	
 	# prepare_y()
