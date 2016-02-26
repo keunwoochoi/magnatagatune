@@ -28,8 +28,7 @@ import hyperparams_manager
 def evaluate_result(y_true, y_pred, hyperparams):
 	ret = {}
 	if not hyperparams['is_LDA']:
-		ret['roc_auc_micro'] = metrics.roc_auc_score(y_true, y_pred, average='micro')
-		ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
+		ret['auc'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
 	# ret['coverage_error'] = metrics.coverage_error(y_true, y_pred)
 	# ret['label_ranking_average_precision_score'] = metrics.label_ranking_average_precision_score(y_true, y_pred)
 	# ret['label_ranking_loss'] = metrics.label_ranking_loss(y_true, y_pred)
@@ -99,6 +98,18 @@ def append_history(total_history, local_history):
 def str2bool(v):
 	return v.lower() in ("yes", "true", "t", "1")
 
+def is_bigger(a, b): # old, new
+	return a<b
+
+def is_smaller(a, b): # old, new
+	return a>b
+
+def get_getting_beter_func(hyperparams):
+	if hyperparams['is_LDA']:
+		return is_bigger
+	else:
+		return is_smaller
+
 def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# f = open('will_stop.keunwoo', 'w')
 	# f.close()
@@ -107,8 +118,14 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# pick top-N from label matrix
 	dim_labels = hyperparams['dim_labels']	
 	
-	
-	best_auc = 0.0
+	if hyperparams['is_LDA']: 
+		best_result = 1.0 # mse
+		criteria = 'mse'
+	else:
+		best_result = 0.0 # auc
+		criteria = 'auc'
+	is_getting_better = get_getting_beter_func
+
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
@@ -215,8 +232,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 			previous_history = cP.load(open(PATH_RESULTS + hyperparams['resume'] + '/total_history.cP', 'r'))
 			print 'previously learned weight: %s is loaded ' % hyperparams['resume']
 			append_history(total_history, previous_history)
-			if 'auc' in total_history:
-				best_auc = min(total_history['auc'])
+			best_result = min(total_history[criteria])
 	
 	if not hyperparams['do_not_learn']:
 		my_plots.save_model_as_image(model, save_path=PATH_RESULTS + model_name_dir + 'images/', 
@@ -307,44 +323,38 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				# [check if should stop]
 				val_result = evaluate_result(valid_y, predicted, hyperparams)
 				history = {}
-				history['auc'] = [val_result['roc_auc_macro']]
-				if hyperparams['is_LDA']:
+				
+				history[criteria] = [val_result[criteria]]
+				print '[%d] %s: %f' % (total_epoch_count, criteria, val_result[criteria])
 					# history['coverage_error'] = [val_result['coverage_error']]
 					# history['label_ranking_average_precision_score'] = [val_result['label_ranking_average_precision_score']]
 					# history['label_ranking_loss'] = [val_result['label_ranking_loss']]
-					history['mse'] = [val_result['mse']]
+				
 				if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 					history['val_loss'] = [val_loss_here]
-				
-				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
-				if hyperparams['is_LDA']:
-					# print '[%d] coverage error: %f' % (total_epoch_count, val_result['coverage_error'])
-					# print '[%d] label_ranking_average_precision_score: %f' % (total_epoch_count, val_result['label_ranking_average_precision_score'])
-					# print '[%d] label_ranking_loss: %f' % (total_epoch_count, val_result['label_ranking_loss'])
-					print '[%d] mse: %f' % (total_epoch_count, val_result['mse'])
+								
 				if not hyperparams['is_LDA']:
-					if val_result['roc_auc_macro'] > best_auc:
-						print ', which is new record! it was %f btw (%s)' % (best_auc, model_name)
-						best_auc = val_result['roc_auc_macro']
+					if is_getting_better(val_result[criteria] > best_result):
+						print ', which is new record! it was %f btw (%s)' % (best_result, model_name)
+						best_result = val_result[criteria]
 						model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
 											overwrite=True)
 					else:
-						print 'Keep old auc record, %f' % best_auc
+						print 'Keep old auc record, %f' % best_result
 				else:
 					pass
 				append_history(total_history, history)
 				append_history(total_history, loss_history.history)
-				if not hyperparams['is_LDA']:
-					my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_auc.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
-				my_plots.export_list_png(total_history['mse'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_MSE.png', title=model_name + 'MSE' + '\n'+hyperparams['!memo'] )
+				
+				my_plots.export_list_png(total_history[criteria], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + ('plot_%s.png' % criteria), title=model_name + criteria + '\n'+hyperparams['!memo'] )
 				
 				my_plots.export_history(total_history['loss'], total_history['val_loss'], 
 													acc=total_history['acc'], 
 													val_acc=total_history['val_acc'], 
 													out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'loss_plots.png')
 		
-
-			print '[%d], %d-th of %d epoch is complete, auc:%f' % (total_epoch_count, total_epoch, num_epoch, val_result['roc_auc_macro'])
+			
+			print '[%d], %d-th of %d epoch is complete, %s:%f' % (total_epoch_count, total_epoch, num_epoch, criteria, val_result[criteria])
 			total_epoch += 1
 
 			if os.path.exists('stop_asap.keunwoo'):
@@ -362,7 +372,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
 	if not hyperparams['is_test']:
-		if not best_auc == val_result['roc_auc_macro']: # load weights only it's necessary
+		if not best_result == val_result[criteria]: # load weights only it's necessary
 			print 'Load best weight for test sets'
 			model.load_weights(PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5") 
 	
@@ -396,23 +406,22 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 
 	# ADD weight change saving code
 	if total_history != {}:
-		if not hyperparams['is_LDA']:
-			max_auc = np.max(total_history['auc'])
-			best_batch = np.argmax(total_history['auc'])+1
-			num_run_epoch = len(total_history['auc'])
-			oneline_result = '%6.4f, auc %d_of_%d, %s' % (max_auc, best_batch, num_run_epoch, model_name)
-			with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
-				pass
-			f = open( (PATH_RESULTS + '%s_%s_auc_%06.4f_at_(%d_of_%d)_%s'  % \
-				(timename, hyperparams["loss_function"], max_auc, best_batch, num_run_epoch, nickname)), 'w')
-			f.close()
-			with open('one_line_log.txt', 'a') as f:
-				f.write(oneline_result)
-				f.write(' ' + ' '.join(argv) + '\n')
+		# max_auc = np.max(total_history['auc'])
+		best_batch = np.argmax(total_history[criteria])+1
+		num_run_epoch = len(total_history[criteria])
+		oneline_result = '%6.4f, %s %d_of_%d, %s' % (best_result, criteria, best_batch, num_run_epoch, model_name)
+		with open(PATH_RESULTS + model_name_dir + oneline_result, 'w') as f:
+			pass
+		f = open( (PATH_RESULTS + '%s_%s_%s_%06.4f_at_(%d_of_%d)_%s'  % \
+			(timename, hyperparams["loss_function"], criteria, best_result, best_batch, num_run_epoch, nickname)), 'w')
+		f.close()
+		with open('one_line_log.txt', 'a') as f:
+			f.write(oneline_result)
+			f.write(' ' + ' '.join(argv) + '\n')
 	else:
 		max_auc = 0.0
 	print '========== DONE: %s ==========' % model_name
-	return max_auc
+	return best_result
 
 	
 if __name__ == '__main__':
