@@ -107,7 +107,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
 	hdf_xs = io.load_x(hyperparams['tf_type'], is_test=hyperparams['is_test'])
-	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'], merged=hyperparams['merged'])
+	hdf_ys = io.load_y(dim_labels, is_test=hyperparams['is_test'], merged=hyperparams['merged'], is_LDA=hyperparams['is_LDA'], is_LDA_normalised=hyperparams['is_LDA_normalised'])
 	hdf_train_xs = hdf_xs[:12]
 	hdf_valid_xs = hdf_xs[12:13]
 	hdf_test_xs = hdf_xs[13:]
@@ -533,6 +533,9 @@ if __name__ == '__main__':
 	TR_CONST['maxout_sparse_layer'] = True
 	TR_CONST['num_sparse_units'] = 128
 	
+	TR_CONST['is_LDA'] = True
+	TR_CONST['is_LDA_normalised'] = True
+
 
 	# TR_CONST['input_normalisation'] = True
 	#--------------------------------------------------------#

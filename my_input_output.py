@@ -70,9 +70,19 @@ def load_x(tf_type, is_test=False):
 	
 	return ret
 
-def load_y(top_n=50, merged=True, is_test=False):
+def load_y(top_n=50, merged=True, is_test=False, is_LDA=True, is_LDA_normalisd=True):
+
+
+
 	print 'Load y will load top-%d labels. is it merged? %s' % (top_n, str(merged))
-	if merged:
+	if is_LDA:
+		print '..However LDA would overed merged option. '
+		if is_LDA_normalisd:
+			print '.... + normalised LDA'
+			name = 'y_LDA_normal'
+		else:
+			name = 'y_LDA'
+	elif merged:
 		name = 'y_merged'
 	else:
 		name = 'y_original'
