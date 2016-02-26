@@ -70,7 +70,7 @@ def load_x(tf_type, is_test=False):
 	
 	return ret
 
-def load_y(top_n=50, merged=True, is_test=False, is_LDA=True, is_LDA_normalisd=True):
+def load_y(top_n=50, merged=True, is_test=False, is_LDA=True, is_LDA_normalised=True):
 
 
 
