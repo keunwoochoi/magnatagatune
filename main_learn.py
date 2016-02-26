@@ -304,7 +304,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 							valid_y = np.vstack((valid_y, valid_y_partial))
 
 				# [check if should stop]
-				val_result = evaluate_result(valid_y, predicted)
+				val_result = evaluate_result(valid_y, predicted, hyperparams)
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
 				if hyperparams['is_LDA']:
@@ -382,7 +382,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 		else:
 			predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
 		test_y = np.vstack((test_y, test_y_partial))
-	eval_result_final = evaluate_result(test_y, predicted)
+	eval_result_final = evaluate_result(test_y, predicted, hyperparams)
 	print '.'*60
 	for key in sorted(eval_result_final.keys()):
 		print key, eval_result_final[key]
