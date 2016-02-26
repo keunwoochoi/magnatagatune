@@ -30,10 +30,11 @@ def evaluate_result(y_true, y_pred, hyperparams):
 	if not hyperparams['is_LDA']:
 		ret['roc_auc_micro'] = metrics.roc_auc_score(y_true, y_pred, average='micro')
 		ret['roc_auc_macro'] = metrics.roc_auc_score(y_true, y_pred, average='macro')
-	ret['coverage_error'] = metrics.coverage_error(y_true, y_pred)
-	ret['label_ranking_average_precision_score'] = metrics.label_ranking_average_precision_score(y_true, y_pred)
-	ret['label_ranking_loss'] = metrics.label_ranking_loss(y_true, y_pred)
-	
+	# ret['coverage_error'] = metrics.coverage_error(y_true, y_pred)
+	# ret['label_ranking_average_precision_score'] = metrics.label_ranking_average_precision_score(y_true, y_pred)
+	# ret['label_ranking_loss'] = metrics.label_ranking_loss(y_true, y_pred)
+	ret['mse'] = metrics.mean_squared_error(y_true, y_pred)
+
 	print '.'*60
 	for key in ret:
 		print key, ret[key]
@@ -308,19 +309,19 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				history = {}
 				history['auc'] = [val_result['roc_auc_macro']]
 				if hyperparams['is_LDA']:
-					history['coverage_error'] = [val_result['coverage_error']]
-					history['label_ranking_average_precision_score'] = [val_result['label_ranking_average_precision_score']]
-					history['label_ranking_loss'] = [val_result['label_ranking_loss']]
-
+					# history['coverage_error'] = [val_result['coverage_error']]
+					# history['label_ranking_average_precision_score'] = [val_result['label_ranking_average_precision_score']]
+					# history['label_ranking_loss'] = [val_result['label_ranking_loss']]
+					history['mse'] = [val_result['mse']]
 				if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 					history['val_loss'] = [val_loss_here]
 				
 				print '[%d] AUC: %f' % (total_epoch_count, val_result['roc_auc_macro'])
 				if hyperparams['is_LDA']:
-					print '[%d] coverage error: %f' % (total_epoch_count, val_result['coverage_error'])
-					print '[%d] label_ranking_average_precision_score: %f' % (total_epoch_count, val_result['label_ranking_average_precision_score'])
-					print '[%d] label_ranking_loss: %f' % (total_epoch_count, val_result['label_ranking_loss'])
-				
+					# print '[%d] coverage error: %f' % (total_epoch_count, val_result['coverage_error'])
+					# print '[%d] label_ranking_average_precision_score: %f' % (total_epoch_count, val_result['label_ranking_average_precision_score'])
+					# print '[%d] label_ranking_loss: %f' % (total_epoch_count, val_result['label_ranking_loss'])
+					print '[%d] mse: %f' % (total_epoch_count, val_result['mse'])
 				if not hyperparams['is_LDA']:
 					if val_result['roc_auc_macro'] > best_auc:
 						print ', which is new record! it was %f btw (%s)' % (best_auc, model_name)
@@ -335,9 +336,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				append_history(total_history, loss_history.history)
 				if not hyperparams['is_LDA']:
 					my_plots.export_list_png(total_history['auc'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_auc.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
-				my_plots.export_list_png(total_history['coverage_error'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_coverage_error.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
-				my_plots.export_list_png(total_history['label_ranking_average_precision_score'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_label_ranking_average_precision_score.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
-				my_plots.export_list_png(total_history['label_ranking_loss'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_label_ranking_loss.png', title=model_name + 'AUC' + '\n'+hyperparams['!memo'] )
+				my_plots.export_list_png(total_history['mse'], out_filename=PATH_RESULTS + model_name_dir + 'plots/' + 'plot_MSE.png', title=model_name + 'MSE' + '\n'+hyperparams['!memo'] )
 				
 				my_plots.export_history(total_history['loss'], total_history['val_loss'], 
 													acc=total_history['acc'], 
