@@ -77,7 +77,7 @@ def load_y(top_n=50, merged=True, is_test=False, is_LDA=True, is_LDA_normalised=
 	print 'Load y will load top-%d labels. is it merged? %s' % (top_n, str(merged))
 	if is_LDA:
 		print '..However LDA would overed merged option. '
-		if is_LDA_normalisd:
+		if is_LDA_normalised:
 			print '.... + normalised LDA'
 			name = 'y_LDA_normal'
 		else:
