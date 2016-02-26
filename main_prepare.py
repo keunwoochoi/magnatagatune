@@ -744,13 +744,14 @@ if __name__ == '__main__':
 
 	f_names = ['magna_shuffled_%d.hdf'%i for i in range(12)] + ['magna_%d.hdf'%i for i in range(12,16)]
 	f_paths = [PATH_HDF_LOCAL + f_name for f_name in f_names]
+	key = 'y_LDA'
 	for f_path in f_paths:
 		f = h5py.File(f_path, 'r+')
-		if 'y_LDA' not in f:
-			f.create_dataset('y_LDA' ,(f['y_original'].shape[0], 50))
+		if key not in f:
+			f.create_dataset(key ,(f['y_original'].shape[0], 50))
 
 		nmf = cP.load(open(PATH_DATA + 'NMF_object.cP', 'r'))
-		f['y_LDA'] = nmf.transform(f['y_original'])
+		f[key][:] = nmf.transform(f['y_original'])
 		print 'done:%s' % f_path
 	print 'done all!'
 	sys.exit()
