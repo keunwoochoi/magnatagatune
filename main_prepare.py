@@ -756,11 +756,11 @@ if __name__ == '__main__':
 		nmf = cP.load(open(PATH_DATA + 'NMF_object.cP', 'r'))
 		W_recon = nmf.transform(f['y_original'])
 		
-		for row_idx, row in W_recon:
+		for row_idx, row in enumerate(W_recon):
 			f[key][row_idx] = row
 			if np.max(row) > 0:
 				f[key_nor][row_idx] = row / np.max(row)
-			
+
 		print 'done:%s' % f_path
 	print 'done all!'
 	sys.exit()
