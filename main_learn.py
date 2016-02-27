@@ -334,7 +334,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					history['val_loss'] = [val_loss_here]
 								
 				
-				if is_getting_better(val_result[criteria] > best_result):
+				if is_getting_better(val_result[criteria], best_result):
 					print ', which is new record! it was %f btw (%s)' % (best_result, model_name)
 					best_result = val_result[criteria]
 					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
