@@ -333,16 +333,15 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 				if hyperparams['model_type'] in ['multi_task', 'multi_input']:
 					history['val_loss'] = [val_loss_here]
 								
-				if not hyperparams['is_LDA']:
-					if is_getting_better(val_result[criteria] > best_result):
-						print ', which is new record! it was %f btw (%s)' % (best_result, model_name)
-						best_result = val_result[criteria]
-						model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
-											overwrite=True)
-					else:
-						print 'Keep old auc record, %f' % best_result
+				
+				if is_getting_better(val_result[criteria] > best_result):
+					print ', which is new record! it was %f btw (%s)' % (best_result, model_name)
+					best_result = val_result[criteria]
+					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
+										overwrite=True)
 				else:
-					pass
+					print 'Keep old auc record, %f' % best_result
+				
 				append_history(total_history, history)
 				append_history(total_history, loss_history.history)
 				
