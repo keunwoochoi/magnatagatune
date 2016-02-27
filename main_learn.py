@@ -339,6 +339,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 					best_result = val_result[criteria]
 					model.save_weights(filepath=PATH_RESULTS_W + model_weight_name_dir + "weights_best.hdf5", 
 										overwrite=True)
+
 				else:
 					print 'Keep old auc record, %f' % best_result
 				
@@ -370,6 +371,31 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# [summarise]
 	if hyperparams["debug"] == True:
 		pdb.set_trace()
+	##################################
+	# test with last weights
+	predicted = np.zeros((0, dim_labels))
+	test_y = np.zeros((0, dim_labels))
+
+	for test_idx, (test_x_partial, test_y_partial) in enumerate(zip(hdf_test_xs, hdf_test_ys)):
+		if hyperparams['model_type'] == 'multi_input':
+			mfcc_test_x_partial = mfcc_hdf_test_xs[test_idx]
+		else:
+			mfcc_test_x_partial = None
+		if hyperparams['model_type'] in ['multi_task', 'multi_input']:
+			fit_dict = get_fit_dict(test_x_partial, test_y_partial, hyperparams['dim_labels'], mfcc_train_x=mfcc_test_x_partial)
+			predicted_dict = model.predict(fit_dict, batch_size=batch_size)
+			predicted = np.vstack((predicted, merge_multi_outputs(predicted_dict)))
+		else:
+			predicted = np.vstack((predicted, model.predict(test_x_partial, batch_size=batch_size)))
+		test_y = np.vstack((test_y, test_y_partial))
+	eval_result_final = evaluate_result(test_y, predicted, hyperparams)
+	print '.'*60
+	for key in sorted(eval_result_final.keys()):
+		print key, eval_result_final[key]
+	print '.'*60
+	
+	#####################
+
 	if not hyperparams['is_test']:
 		if not best_result == val_result[criteria]: # load weights only it's necessary
 			print 'Load best weight for test sets'
