@@ -124,7 +124,7 @@ def run_with_setting(hyperparams, argv=None, batch_size=None):
 	else:
 		best_result = 0.0 # auc
 		criteria = 'auc'
-	is_getting_better = get_getting_beter_func
+	is_getting_better = get_getting_beter_func(hyperparams)
 
 	# label_matrix = np.load(PATH_DATA + FILE_DICT['sorted_merged_label_matrix'])
 	# label_matrix = label_matrix[:, :dim_labels]
