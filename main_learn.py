@@ -106,9 +106,9 @@ def is_smaller(a, b): # old, new
 
 def get_getting_beter_func(hyperparams):
 	if hyperparams['is_LDA']:
-		return is_bigger
+		return is_smaller # MSE
 	else:
-		return is_smaller
+		return is_bigger # AUC.
 
 def run_with_setting(hyperparams, argv=None, batch_size=None):
 	# f = open('will_stop.keunwoo', 'w')
