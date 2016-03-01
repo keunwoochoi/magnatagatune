@@ -129,9 +129,18 @@ def process_hdf(set_name_idx):
 
 	# load files and put them into corresponding hdf files.
 	folder_name = folder_names[file_write_idx]
-	#paths_in = [path for path in fm.paths if path[0] == folder_name]
-	clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
-	shuffle(clip_ids)
+	
+	# clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+	# permutation_file = 'shuffle_for_%s_%d_%d.npy' % (folder_name, set_idx, num_clips)	
+	# if os.path.exists(PATH_DATA + permutation_file):
+	# 	permutation_list = np.load(PATH_DATA+permutation_file)
+	# else:
+	# 	permutation_list = np.random.permutation(num_clips)
+	# 	np.save(PATH_DATA+permutation_file, permutation_list)
+
+	# clip_ids = [clip_ids[i] for i in permutation_list]
+	# np.save((PATH_DATA + 'shuffled_clip_ids_%s' % folder_name), clip_ids)
+
 	print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
 	print '  paths_in[-1]: %s' % fm.id_to_paths[str(clip_ids[-1])]
 	print '  len clip_ids: %d' % len(clip_ids)
@@ -174,7 +183,7 @@ def prepare_hdf():
 	# 	process_hdf(set_name_idx)
 	p = Pool(16)
 	set_name_indices = range(16)
-	p.map(process_hdf, set_name_indices)
+	p.map(process_hdf, set_name_indices[12:])
 	
 	print 'ALL DONE.'
 	print 'Now shuffle and copy it from %s to c4dm server.' % PATH_HDF_LOCAL
@@ -768,5 +777,5 @@ if __name__ == '__main__':
 	# prepare_y()
 	# prepare_x()
 	prepare_hdf() # put numpy files into hdf without shuffling
-	prepare_divide_merge_shuffle_per_set() # shuffles within each set (training/valid/test)
+	# prepare_divide_merge_shuffle_per_set() # shuffles within each set (training/valid/test)
 	
