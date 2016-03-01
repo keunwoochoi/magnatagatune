@@ -140,7 +140,7 @@ def process_hdf(set_name_idx):
 	# 	permutation_list = np.random.permutation(num_clips)
 	# 	np.save(PATH_DATA+permutation_file, permutation_list)
 
-	clip_ids = [clip_ids[i] for i in permutation_list]
+	# clip_ids = [clip_ids[i] for i in permutation_list]
 	np.save((PATH_DATA + 'list_clip_ids_of_%s' % folder_name), clip_ids)
 
 	print '  paths_in[0]: %s' % fm.id_to_paths[str(clip_ids[0])]
