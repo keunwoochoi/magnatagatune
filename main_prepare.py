@@ -88,6 +88,8 @@ def get_conventional_set():
 #------------------------------------------#
 def process_hdf(set_name_idx):
 	'''sub process that will be spawned.
+	it doesn't shuffle now, but previously (and mistakenly) it shuffles without any track of how it was shuffled... (yes it's my fault)
+	so don't trust the magna_0.hdf to magna_11.hdf, they are already shuffled.
 	'''
 
 	fm = cP.load(open(PATH_DATA + FILE_DICT["file_manager"], 'r'))
@@ -746,34 +748,32 @@ if __name__ == '__main__':
 	# 	num_pc = int(sys.argv[1])
 	# 	idx_pc = int(sys.argv[2])
 	# 	prepare_x(num_pc, idx_pc)
-	# mtx = np.load(PATH_DATA + 'sorted_label_matrix.npy')
 
-	# reduced_mtx = get_LDA(mtx, num_components=50, show_topics=True)
-	# np.save(PATH_DATA + 'LDA_50_label_matrix.npy', reduced_mtx)
-
-	f_names = ['magna_shuffled_%d.hdf'%i for i in range(12)] + ['magna_%d.hdf'%i for i in range(12,16)]
-	f_paths = [PATH_HDF_LOCAL + f_name for f_name in f_names]
-	key = 'y_LDA'
-	key_nor = 'y_LDA_normal'
-	for f_path in f_paths:
-		f = h5py.File(f_path, 'r+')
-		if key not in f:
-			f.create_dataset(key ,(f['y_original'].shape[0], 50))
-		if key_nor not in f:
-			f.create_dataset(key_nor ,(f['y_original'].shape[0], 50))
+	# get LDA. shit.
+	# f_names = ['magna_shuffled_%d.hdf'%i for i in range(12)] + ['magna_%d.hdf'%i for i in range(12,16)]
+	# f_paths = [PATH_HDF_LOCAL + f_name for f_name in f_names]
+	# key = 'y_LDA'
+	# key_nor = 'y_LDA_normal'
+	# for f_path in f_paths:
+	# 	f = h5py.File(f_path, 'r+')
+	# 	if key not in f:
+	# 		f.create_dataset(key ,(f['y_original'].shape[0], 50))
+	# 	if key_nor not in f:
+	# 		f.create_dataset(key_nor ,(f['y_original'].shape[0], 50))
 		
-		nmf = cP.load(open(PATH_DATA + 'NMF_object.cP', 'r'))
-		W_recon = nmf.transform(f['y_original'])
+	# 	nmf = cP.load(open(PATH_DATA + 'NMF_object.cP', 'r'))
+	# 	W_recon = nmf.transform(f['y_original'])
 		
-		for row_idx, row in enumerate(W_recon):
-			f[key][row_idx] = row
-			if np.max(row) > 0:
-				f[key_nor][row_idx] = row / np.max(row)
+	# 	for row_idx, row in enumerate(W_recon):
+	# 		f[key][row_idx] = row
+	# 		if np.max(row) > 0:
+	# 			f[key_nor][row_idx] = row / np.max(row)
 
-		print 'done:%s' % f_path
-	print 'done all!'
-	sys.exit()
-	
+	# 	print 'done:%s' % f_path
+	# print 'done all!'
+	# sys.exit()
+	# get LDA done
+
 	# prepare_y()
 	# prepare_x()
 	prepare_hdf() # put numpy files into hdf without shuffling
