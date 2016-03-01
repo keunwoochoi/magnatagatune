@@ -132,7 +132,9 @@ def process_hdf(set_name_idx):
 	# load files and put them into corresponding hdf files.
 	folder_name = folder_names[file_write_idx]
 	
-	# clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+	clip_ids = [clip_id for clip_id in fm.clip_ids if fm.id_to_paths[str(clip_id)][0] == folder_name] # [2,6,...
+	
+
 	# permutation_file = 'shuffle_for_%s_%d_%d.npy' % (folder_name, set_idx, num_clips)	
 	# if os.path.exists(PATH_DATA + permutation_file):
 	# 	permutation_list = np.load(PATH_DATA+permutation_file)
